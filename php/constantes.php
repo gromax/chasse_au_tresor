@@ -1,9 +1,9 @@
 <?php
-	//define("PATH_TO_MEEKRODB", "./meekrodb/db.class.php");
+	define("PATH_TO_MEEKRODB", "../vendor/sergeytsalkov/meekrodb/db.class.php");
 	define("PATH_TO_CLASS", "../php/class");
 
 	// Chemin du dossier
-	//define("BDD_CONFIG","./config/bddConfig.php");
+	define("BDD_CONFIG","../php/config/bddConfig.php");
 
 	// Utilisateurs
 	define("PSEUDO_MIN_SIZE", 6);
