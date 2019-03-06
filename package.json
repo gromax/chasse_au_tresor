@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/gromax/jeu"
+    "url": "https://github.com/gromax/chasse_au_tresor"
   },
   "description": "Application de chasse au trésor / rallye",
   "main": "index.js",
