@@ -15,17 +15,58 @@ require_once "../php/myFunctions.php";
 require_once "../php/constantes.php";
 require "../php/class/Router.php";
 
-$router = Router::getInstance();
+if (file_exists("../php/config/bddConfig.php")) {
+	$router = Router::getInstance();
 
-// session
-$router->addRule('api/session', 'session', 'fetch', 'GET'); // Session active
-// $router->addRule('api/session/:id', 'session', 'insert', 'PUT'); // reconnexion
-// $router->addRule('api/session', 'session', 'insert', 'POST'); // Tentative de connexion
-// $router->addRule('api/session/:id', 'session', 'delete', 'DELETE'); // Déconnexion
-$router->addRule('api/session/test', 'session', 'logged', 'GET'); // Vérifie l'état de connexion
+	// session
+	$router->addRule('api/session', 'session', 'fetch', 'GET'); // Session active
+	$router->addRule('api/session/:id', 'session', 'insert', 'PUT'); // reconnexion
+	$router->addRule('api/session', 'session', 'insert', 'POST'); // Tentative de connexion
+	$router->addRule('api/session/:id', 'session', 'delete', 'DELETE'); // Déconnexion
+	$router->addRule('api/session/test', 'session', 'logged', 'GET'); // Vérifie l'état de connexion
+
+	// redacteurs
+	$router->addRule('api/redacteurs/:id', 'redacteurs', 'fetch', 'GET');
+	$router->addRule('api/redacteurs/:id', 'redacteurs', 'delete', 'DELETE');
+	$router->addRule('api/redacteurs/:id', 'redacteurs', 'update', 'PUT');
+	$router->addRule('api/redacteurs', 'redacteurs', 'insert', 'POST');
+	//$router->addRule('api/redacteur/:id/init', 'users', 'forgottenWithId', 'POST');
+
+	// redacteurs
+	$router->addRule('api/joueurs/:id', 'joueurs', 'fetch', 'GET');
+	$router->addRule('api/joueurs/:id', 'joueurs', 'delete', 'DELETE');
+	$router->addRule('api/joueurs/:id', 'joueurs', 'update', 'PUT');
+	$router->addRule('api/joueurs', 'joueurs', 'insert', 'POST');
+
+	// evenements
+	$router->addRule('api/evenements/:id', 'evenements', 'fetch', 'GET');
+	$router->addRule('api/evenements/:id', 'evenements', 'delete', 'DELETE');
+	$router->addRule('api/evenements/:id', 'evenements', 'update', 'PUT');
+	$router->addRule('api/evenements', 'evenements', 'insert', 'POST');
+
+	// evenements
+	$router->addRule('api/itemsEvenement/:id', 'itemsEvenement', 'fetch', 'GET');
+	$router->addRule('api/itemsEvenement/:id', 'itemsEvenement', 'delete', 'DELETE');
+	$router->addRule('api/itemsEvenement/:id', 'itemsEvenement', 'update', 'PUT');
+	$router->addRule('api/itemsEvenement', 'itemsEvenement', 'insert', 'POST');
+
+	// evenements
+	$router->addRule('api/images/:id', 'images', 'fetch', 'GET');
+	$router->addRule('api/images/:id', 'images', 'delete', 'DELETE');
+	$router->addRule('api/images', 'images', 'insert', 'POST');
+
+	// data
+	$router->addRule('api/customData/:asks', 'data', 'customFetch', 'GET');
 
 
-$response = $router->load();
+
+	$response = $router->load();
+} else {
+	$response = array("error" => "Le fichier bddConfig.php n'existe pas !");
+	EC::set_error_code(422);
+}
+
+
 EC::header(); // Doit être en premier !
 if ($response === false) {
 	echo json_encode(array("ajaxMessages"=>EC::messages()));
