@@ -3,6 +3,7 @@
 namespace RouteController;
 use ErrorController as EC;
 use SessionController as SC;
+use BDDObject\Logged;
 
 class session
 {
@@ -30,7 +31,7 @@ class session
         return $this->getData(null);
     }
 
-    /*public function insert()
+    public function insert()
     {
         $data = json_decode(file_get_contents("php://input"),true);
 
@@ -45,32 +46,29 @@ class session
             return false;
         }
 
-        $logged = Logged::tryConnexion($identifiant, $pwd);
+        $adm = (isset($data['adm'])&&($data['adm']));
+        $uLog = Logged::tryConnexion($identifiant, $pwd, $adm);
 
-        if ($logged == null)
+        if ($uLog == null)
         {
             return false;
         }
         else
         {
-            return array_merge(
-                $logged->toArray(),
-                array("unread"=>Message::unReadNumber($logged->getId()) )
-            );
-            //return $logged->toArray();
+            return $uLog->toArray();
         }
-    }*/
+    }
 
     public function logged()
     {
-        return array( "logged" => false );
+        return Logged::getConnectedUser();
     }
 
 
     protected function getData($uLog = null)
     {
         return array(
-            "logged" => array( "connected" => false ),
+            "logged" => Logged::getConnectedUser()->toArray(),
             "messages" => EC::messages()
         );
     }
