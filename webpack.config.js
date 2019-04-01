@@ -26,7 +26,8 @@ let config = {
       'app$': path.resolve(__dirname, 'dev/components/app.coffee'),
       'apps': path.resolve(__dirname, 'dev/components/apps'),
       'entities': path.resolve(__dirname, 'dev/components/entities'),
-      'templates': path.resolve(__dirname, 'dev/templates')
+      'templates': path.resolve(__dirname, 'dev/templates'),
+      "jquery-ui": path.resolve(__dirname, 'node_modules/jquery-ui/ui/widgets'),
     }
   },
   module: {
@@ -62,7 +63,7 @@ let config = {
         ]
       },
       {
-        test: /\.jst$/,
+        test: /\.tpl$/,
         loader: 'underscore-template-loader'
       },
       {
@@ -114,6 +115,10 @@ let config = {
       {
         from: './dev/assets/api.php',
         to: './api.php'
+      },
+      {
+        from: './dev/assets/image.php',
+        to: './image.php'
       }
     ]),
     new webpack.ProvidePlugin({
