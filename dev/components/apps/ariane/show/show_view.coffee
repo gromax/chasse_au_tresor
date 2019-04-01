@@ -1,7 +1,7 @@
 import Marionette from 'backbone.marionette'
-import showNoViewTemplate from 'templates/ariane/show/show-noview.jst'
-import showItemTemplate from 'templates/ariane/show/show-item.jst'
-import showListTemplate from 'templates/ariane/show/show-list.jst'
+import showNoViewTemplate from 'templates/ariane/show/show-noview.tpl'
+import showItemTemplate from 'templates/ariane/show/show-item.tpl'
+import showListTemplate from 'templates/ariane/show/show-list.tpl'
 
 
 app = require('app').app
@@ -77,6 +77,6 @@ export default Marionette.View.extend {
 		@subCollection = new CollectionView {
 			collection: @collection
 		}
-		@showChildView('body', @subCollection)
+		@getRegion('body').show(@subCollection)
 }
 
