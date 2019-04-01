@@ -1,5 +1,5 @@
 import Marionette from 'backbone.marionette'
-import template from 'templates/home/show/off.tpl'
+import template from 'templates/home/show/install.tpl'
 
 app = require('app').app
 export default Marionette.Application.extend {
