@@ -27,6 +27,7 @@ Session = Backbone.Model.extend {
 		return {
 			identifiant: @get("identifiant")
 			pwd: @get("pwd")
+			adm: @get("adm")
 		}
 
 	parse: (data)->
@@ -34,6 +35,7 @@ Session = Backbone.Model.extend {
 			logged = data.logged
 		else
 			logged = data
+		if logged?.rank is "root" then logged.id = -1 # sinon l'élément est considéré nouveau et sa destruction ne provoque pas de requête DELETE
 		return logged
 
 	refresh: (data)->
@@ -45,21 +47,6 @@ Session = Backbone.Model.extend {
 		@fetch({
 			success: callback
 		})
-
-	getWithForgottenKey: (key) ->
-		that = @
-		defer = $.Deferred()
-		request = $.ajax("api/forgotten/"+key,{
-			method:'GET'
-			dataType:'json'
-		})
-		request.done( (response)->
-			that.refresh(response)
-			defer.resolve()
-		).fail( (response)->
-			defer.reject(response)
-		)
-		return defer.promise()
 }
 
 API = {
@@ -72,19 +59,9 @@ API = {
 		Auth.getAuth(callback)
 		return Auth
 
-	sendForgottenEmail: (email)->
-		return request = $.ajax(
-			"api/forgotten",
-			{
-				method:'POST'
-				dataType:'json'
-				data: { email:email }
-			}
-		)
 }
 
 channel = Radio.channel('entities')
 channel.reply('session:entity', API.getSession )
-channel.reply('forgotten:password', API.sendForgottenEmail )
 
 module.exports = Session
