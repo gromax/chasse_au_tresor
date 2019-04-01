@@ -1,4 +1,5 @@
 import Marionette from 'backbone.marionette'
+import Syphon from 'backbone.syphon'
 
 Manager = Marionette.Application.extend {
 	region: '#app'
@@ -22,6 +23,7 @@ Manager = Marionette.Application.extend {
 
 		@regions.getRegion("dialog").onShow = (region,view) ->
 			self = @
+			require 'jquery-ui/dialog.js'
 			closeDialog = () ->
 				self.stopListening()
 				self.empty()
@@ -41,7 +43,12 @@ Manager = Marionette.Application.extend {
 		self = @
 		historyStart = () ->
 			require('apps/home/app_home.coffee')
+			require('apps/redacteurs/app_redacteurs.coffee')
+			require('apps/joueurs/app_joueurs.coffee')
+			require('apps/evenements/app_evenements.coffee')
+			require('apps/parties/app_parties.coffee')
 			require('apps/ariane/app_ariane.coffee')
+			require('apps/header/app_header.coffee')
 			# import des différentes app
 			self.trigger "ariane:show"
 			self.trigger "header:show"
