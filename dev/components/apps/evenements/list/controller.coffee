@@ -1,8 +1,7 @@
 import Marionette from 'backbone.marionette'
 import AlertView from 'apps/common/alert_view.coffee'
 import Layout from 'apps/common/list_layout.coffee'
-import Panel from 'apps/evenements/list/panel.coffee'
-import ListView from 'apps/evenements/list/view.coffee'
+import { RedacteurListView, JoueurListView, PanelView } from 'apps/evenements/list/view.coffee'
 import FormView from 'apps/evenements/common/form_view.coffee'
 
 app = require('app').app
@@ -10,11 +9,11 @@ app = require('app').app
 Controller = Marionette.Object.extend {
 	channelName: 'entities'
 
-	list: (criterion)->
+	listRedacteur: (criterion)->
 		criterion = criterion ? ""
 		app.trigger("header:loading", true)
 		listLayout = new Layout()
-		listPanel = new Panel {
+		listPanel = new PanelView {
 			filterCriterion:criterion
 			showAddButton: app.Auth.get("rank") is "redacteur"
 		}
@@ -26,7 +25,7 @@ Controller = Marionette.Object.extend {
 
 		fetching = channel.request("custom:entities", ["evenements"])
 		$.when(fetching).done( (items)->
-			listView = new ListView {
+			listView = new RedacteurListView {
 				collection: items
 				filterCriterion: criterion
 			}
@@ -113,6 +112,46 @@ Controller = Marionette.Object.extend {
 
 				app.regions.getRegion('dialog').show(view)
 
+			listView.on "item:activation:toggle", (childView)->
+				model = childView.model
+				model.set("actif", not model.get("actif"))
+				updatingItem = model.save()
+				app.trigger("header:loading", true)
+				$.when(updatingItem).done( ()->
+					childView.render()
+					childView.flash("success")
+				).fail( (response)->
+					switch response.status
+						when 401
+							alert("Vous devez vous (re)connecter !")
+							view.trigger("dialog:close")
+							app.trigger("home:logout")
+						else
+							alert("Erreur inconnue. Essayez à nouveau ou prévenez l'administrateur [code #{response.status}/031]")
+				).always( ()->
+					app.trigger("header:loading", false)
+				)
+
+			listView.on "item:visible:toggle", (childView)->
+				model = childView.model
+				model.set("visible", not model.get("visible"))
+				updatingItem = model.save()
+				app.trigger("header:loading", true)
+				$.when(updatingItem).done( ()->
+					childView.render()
+					childView.flash("success")
+				).fail( (response)->
+					switch response.status
+						when 401
+							alert("Vous devez vous (re)connecter !")
+							view.trigger("dialog:close")
+							app.trigger("home:logout")
+						else
+							alert("Erreur inconnue. Essayez à nouveau ou prévenez l'administrateur [code #{response.status}/031]")
+				).always( ()->
+					app.trigger("header:loading", false)
+				)
+
 			listView.on "item:delete", (childView,e)->
 				model = childView.model
 				idItem = model.get("id")
@@ -130,6 +169,51 @@ Controller = Marionette.Object.extend {
 			listView.on "item:show", (childView,e) ->
 				id = childView.model.get("id")
 				app.trigger("evenement:show", id)
+			app.regions.getRegion('main').show(listLayout)
+		).fail( (response)->
+			if response.status is 401
+				alert("Vous devez vous (re)connecter !")
+				app.trigger("home:logout")
+			else
+				alertView = new AlertView()
+				app.regions.getRegion('main').show(alertView)
+		).always( ()->
+			app.trigger("header:loading", false)
+		)
+
+	listJoueur: (criterion)->
+		criterion = criterion ? ""
+		app.trigger("header:loading", true)
+		listLayout = new Layout()
+		listPanel = new PanelView {
+			filterCriterion:criterion
+			showAddButton: false
+		}
+
+		channel = @getChannel()
+
+		require "entities/dataManager.coffee"
+		Item = require("entities/evenements.coffee").Item
+
+		fetching = channel.request("custom:entities", ["evenements"])
+		$.when(fetching).done( (items)->
+			listView = new JoueurListView {
+				collection: items
+				filterCriterion: criterion
+			}
+
+			listPanel.on "items:filter", (filterCriterion)->
+				listView.triggerMethod("set:filter:criterion", filterCriterion, { preventRender:false })
+				app.trigger("evenements:filter", filterCriterion)
+
+			listLayout.on "render", ()->
+				listLayout.getRegion('panelRegion').show(listPanel)
+				listLayout.getRegion('itemsRegion').show(listView)
+
+
+			listView.on "item:select", (childView,e) ->
+				id = childView.model.get("id")
+				app.trigger("partie:start", id)
 			app.regions.getRegion('main').show(listLayout)
 		).fail( (response)->
 			if response.status is 401
