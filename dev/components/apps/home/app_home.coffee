@@ -5,6 +5,7 @@ Router = Backbone.Router.extend {
 		"" : "showHome"
 		"home" : "showHome"
 		"login" : "showLogin"
+		"signup" : "showSignUp"
 	}
 
 	showHome: ->
@@ -18,6 +19,15 @@ Router = Backbone.Router.extend {
 		else
 			app.Ariane.reset [{text:"Connexion", link:"login", e:"home:login"}]
 			require("./login/login_controller.coffee").controller.showLogin()
+
+	showSignUp: ->
+		if app.Auth.get("logged_in")
+			app.Ariane.reset []
+			require("./show/show_controller.coffee").controller.showHome()
+		else
+			app.Ariane.reset [{text:"Inscription", link:"signup", e:"home:signup"}]
+			require("./signup/signup_controller.coffee").controller.show()
+
 
 	logout: ->
 		if app.Auth.get("logged_in")
@@ -42,6 +52,10 @@ app.on "home:show", ()->
 app.on "home:login", ()->
 	app.navigate("login")
 	router.showLogin()
+
+app.on "home:signup", ()->
+	app.navigate("signin")
+	router.showSignUp()
 
 app.on "home:logout", ()->
 	router.logout()
