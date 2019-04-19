@@ -2,7 +2,7 @@ import Marionette from 'backbone.marionette'
 import template from 'templates/home/show/root.tpl'
 
 app = require('app').app
-export default Marionette.Application.extend {
+export default Marionette.View.extend {
 	template: template
 	triggers: {
 		"click a.js-redacteurs": "redacteurs:list"

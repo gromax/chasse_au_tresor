@@ -2,7 +2,7 @@ import Marionette from 'backbone.marionette'
 import template from 'templates/home/show/redacteur.tpl'
 
 app = require('app').app
-export default Marionette.Application.extend {
+export default Marionette.View.extend {
 	template: template
 	triggers: {
 		"click a.js-edit-me": "edit:me"
@@ -10,7 +10,7 @@ export default Marionette.Application.extend {
 		"click a.js-parties": "parties:list"
 	},
 
-	onRedacteursList: (e) ->
+	onEditMe: (e) ->
 		app.trigger "edit:me"
 
 	onEvenementsList: (e) ->
