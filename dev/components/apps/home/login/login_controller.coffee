@@ -6,7 +6,6 @@ app = require("app").app
 Controller = Marionette.Object.extend {
 	channelName: "entities"
 	showLogin: ->
-		that = @
 		view = new LoginView({ generateTitle: true })
 		view.on "form:submit", (data) ->
 			openingSession = app.Auth.save(data)
@@ -27,6 +26,7 @@ Controller = Marionette.Object.extend {
 				view.triggerMethod("form:data:invalid", app.Auth.validationError)
 
 		app.regions.getRegion('main').show(view);
+
 }
 
 export controller = new Controller()
