@@ -1,10 +1,10 @@
 import Marionette from 'backbone.marionette'
 import AlertView from 'apps/common/alert_view.coffee'
 import MissingView from 'apps/common/missing.coffee'
-import { ListeView, Layout, EnteteView } from 'apps/evenements/edit/list.coffee'
+import { ListeView, Layout, EnteteView } from 'apps/evenements/edit/ie_list_view.coffee'
 import FormView from 'apps/evenements/common/formItem_view.coffee'
-import { ItemPanelView, SubItemCollectionView, ItemLayoutView } from 'apps/evenements/edit/itemEvenement_view.coffee'
-import { ImagesView } from 'apps/common/images_loader.coffee'
+import { PanelView, SubItemCollectionView, ItemLayoutView } from 'apps/evenements/edit/ie_edit_view.coffee'
+import { FilesView } from 'apps/common/files_loader.coffee'
 
 app = require('app').app
 
@@ -181,22 +181,22 @@ Controller = Marionette.Object.extend {
 					{ text: "clé ##{id}", e:"evenement:cle:show", data:id, link:"evenements:#{idEvenement}/cle:#{id}"}
 				]
 				layout = new ItemLayoutView()
-				view = new ItemPanelView({ model:item })
+				panel = new PanelView({ model:item })
 				subItemsCollection = item.get("subCollection")
-				subItemsView = new SubItemCollectionView({ collection: subItemsCollection })
+				subItemsView = new SubItemCollectionView({ collection: subItemsCollection, redacteurMode: true })
 
-				view.on "type:toggle", () ->
+				panel.on "type:toggle", () ->
 					mtype = item.get("type")
 					item.set("type", (mtype+1) % 3)
 					savingItem = item.save()
 					app.trigger("header:loading", true)
 					$.when(savingItem).done( ()->
-						view.render()
+						panel.render()
 					).fail( (response)->
 						switch response.status
 							when 401
 								alert("Vous devez vous (re)connecter !")
-								view.trigger("dialog:close")
+								panel.trigger("dialog:close")
 								app.trigger("home:logout")
 							else
 								alert("Erreur inconnue. Essayez à nouveau ou prévenez l'administrateur [code #{response.status}/030]")
@@ -225,8 +225,8 @@ Controller = Marionette.Object.extend {
 
 				subItemsView.on "subItem:edit", (childView)->
 					model = childView.model
-					if not model.get("editMode")
-						model.set("editMode", true)
+					if not childView.editMode
+						childView.editMode = true
 						childView.render()
 
 				subItemsView.on "subItem:form:submit", (childView, data)->
@@ -242,14 +242,13 @@ Controller = Marionette.Object.extend {
 					updatingItem = item.save()
 					app.trigger("header:loading", true)
 					$.when(updatingItem).done( ()->
-						model.set("editMode", false)
+						childView.editMode = false
 						childView.render()
 						#childView.flash("success")
 					).fail( (response)->
 						switch response.status
 							when 401
 								alert("Vous devez vous (re)connecter !")
-								view.trigger("dialog:close")
 								app.trigger("home:logout")
 							else
 								alert("Erreur inconnue. Essayez à nouveau ou prévenez l'administrateur [code #{response.status}/031]")
@@ -272,18 +271,19 @@ Controller = Marionette.Object.extend {
 							app.trigger("header:loading", false)
 						)
 
-				subItemsView.on "subItem:image", (childView) ->
-					console.log "pwet"
-					imgView = new ImagesView { model:evenement, title: "Images de ##{evenement.get('id')}: #{evenement.get('titre')}", images:images, selectButton:true }
-					imgView.on "image:select", (v,e)->
-						childView.$el.find("input[name='imgUrl']").val(v.getSelectedHash())
+				subItemsView.on "subItem:image:select", (childView) ->
+					imgView = new FilesView { model:evenement, title: "Images de ##{evenement.get('id')}: #{evenement.get('titre')}", items:images, selectButton:true }
+					imgView.on "item:select", (v,e)->
+						{ hash, ext } = v.getSelectedAttr()
+						childView.$el.find("input[name='imgUrl']").val("#{hash}.#{ext}")
 						imgView.trigger("dialog:close")
+
 					app.regions.getRegion('dialog').show(imgView)
 
-				view.on "subItem:new", (v,e)->
+				panel.on "subItem:new", (v,e)->
 					type = $(e.currentTarget).attr("type") ? "brut"
 					index = subItemsCollection.models.length
-					subItemsCollection.add({type, index, editMode:true}, { parse:true })
+					subItemsCollection.add({type, index }, { parse:true })
 					updatingItem = item.save()
 					app.trigger("header:loading", true)
 					$.when(updatingItem).done( ()->
@@ -296,12 +296,55 @@ Controller = Marionette.Object.extend {
 						app.trigger("header:loading", false)
 					)
 
-				view.on "images:show", (v,e)->
-					imgView = new ImagesView { model:evenement, title: "Images de ##{evenement.get('id')}: #{evenement.get('titre')}", images:images }
-					app.regions.getRegion('dialog').show(imgView)
+				panel.on "files:show", (v)->
+					fileView = new FilesView {
+						model:evenement
+						title:"Images de ##{evenement.get('id')}: #{evenement.get('titre')}"
+						items:images
+						addFile:true
+						delFile:true
+					}
+
+					fileView.on "item:submit", (formData)->
+						Item = require("entities/images.coffee").Item
+						nItem = new Item()
+						nItem.set("idEvenement", idEvenement)
+						uploadingItem = nItem.saveImg(formData)
+						app.trigger("header:loading", true)
+						$.when(uploadingItem).done( (response)->
+							items.add(nItem)
+							fileView.showLast()
+						).fail( (response)->
+							switch response.status
+								when 401
+									alert("Vous devez vous (re)connecter !")
+									fileView.trigger("dialog:close")
+									app.trigger("home:logout")
+								else
+									alert("Erreur inconnue. Essayez à nouveau ou prévenez l'administrateur [code #{response.status}/031]")
+						).always( ()->
+							app.trigger("header:loading", false)
+						)
+
+					fileView.on "item:delete", (model)->
+						if model and confirm("Supprimer l'élément actif ?")
+							destroyRequest = model.destroy()
+							app.trigger("header:loading", true)
+							$.when(destroyRequest).done( ()->
+								fileView.refreshList()
+								fileView.render()
+							).fail( (response)->
+								alert("Erreur. Essayez à nouveau !")
+							).always( ()->
+								app.trigger("header:loading", false)
+							)
+
+					app.regions.getRegion('dialog').show(fileView)
+
+
 
 				layout.on "render", ()->
-					layout.getRegion('panelRegion').show(view)
+					layout.getRegion('panelRegion').show(panel)
 					layout.getRegion('itemsRegion').show(subItemsView)
 
 				app.regions.getRegion('main').show(layout)
