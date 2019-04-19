@@ -10,7 +10,7 @@ use BDDObject\Evenement;
 
 final class Image extends Item
 {
-	protected static $BDDName = "image";
+	protected static $BDDName = "images";
 
 	##################################### METHODES STATIQUES #####################################
 
@@ -19,6 +19,7 @@ final class Image extends Item
 		return array(
 			'idEvenement' => array( 'def' => 0, 'type'=> 'integer'),	// id de l'événement lié
 			'hash' => array( 'def' => "", 'type'=> 'string'),	// données paramétrant cet item
+			'ext' => array( 'def' => "", 'type'=> 'string'),	// extension
 			);
 	}
 
@@ -54,11 +55,11 @@ final class Image extends Item
 		try {
 			if (isset($options['redacteur']))
 				// rédacteur
-				return DB::query("SELECT i.id, i.idEvenement, i.hash FROM (".PREFIX_BDD."images i JOIN ".PREFIX_BDD."evenements e ON e.id = i.idEvenement) WHERE e.idProprietaire=%i", $options['redacteur']);
+				return DB::query("SELECT i.id, i.idEvenement, i.hash, i.ext FROM (".PREFIX_BDD."images i JOIN ".PREFIX_BDD."evenements e ON e.id = i.idEvenement) WHERE e.idProprietaire=%i", $options['redacteur']);
 			elseif (isset($options['evenement']))
-				return DB::query("SELECT id, idEvenement, hash FROM ".PREFIX_BDD."images WHERE idEvenement=%i", $options['evenement']);
+				return DB::query("SELECT id, idEvenement, hash, ext FROM ".PREFIX_BDD."images WHERE idEvenement=%i", $options['evenement']);
 			elseif (isset($options['root']))
-				return DB::query("SELECT id, idEvenement, hash FROM ".PREFIX_BDD."images");
+				return DB::query("SELECT id, idEvenement, hash, ext FROM ".PREFIX_BDD."images");
 			else
 				return array();
 
@@ -99,7 +100,7 @@ final class Image extends Item
 
 	public function moveUploadedFile($uploadedFileName)
 	{
-		return move_uploaded_file($uploadedFileName, PATH_TO_UPLOAD.$this->hash);
+		return move_uploaded_file($uploadedFileName, PATH_TO_UPLOAD.$this->values['hash']);
 	}
 
 }

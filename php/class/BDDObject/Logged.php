@@ -23,7 +23,6 @@ class Logged
 	private $isConnected = null; 	// Permet d'éviter de répéter la modification de bdd en vas de plusieurs check de connexion
 
 	private $nom = "Déconnecté";
-	private $description = false;
 	private $email = "";
 	private $rank = false;
 	private $id = false;
@@ -45,9 +44,6 @@ class Logged
 		}
 		if(isset($params['id'])){
 			$this->id = (integer) $params['id']; // pas pour root
-		}
-		if(isset($params['description'])){
-			$this->description = (integer) $params['description']; // seulement pour joueur
 		}
 
 		$this->ip=$_SERVER['REMOTE_ADDR'];
@@ -71,10 +67,10 @@ class Logged
 	}
 
 
-	public static function tryConnexion($identifiant, $pwd, $adm)
+	public static function tryConnexion($email, $pwd, $adm)
 	{
 		// $adm true spécifie une connexion de rédac ou adm
-		if ($identifiant !== ''){
+		if ($email !== ''){
 			if ($pwd === "") {
 				EC::addError("Vous avez envoyé un mot de passe vide !");
 				EC::set_error_code(422);
@@ -83,7 +79,7 @@ class Logged
 
 			if ($adm){
 				// connexion rédac ou adm
-				if ($identifiant==ROOT_USERNAME){
+				if ($email==ROOT_USERNAME){
 					if (password_verify($pwd, ROOT_PASSWORD_HASH)) {
 						// succès de la connexion root
 
@@ -93,7 +89,7 @@ class Logged
 					// sinon connexion rédacteur
 					require_once BDD_CONFIG;
 					try {
-						$bdd_result = DB::queryFirstRow("SELECT id, nom, email, hash FROM ".PREFIX_BDD."redacteurs WHERE email=%s", $identifiant);
+						$bdd_result = DB::queryFirstRow("SELECT id, nom, email, hash FROM ".PREFIX_BDD."redacteurs WHERE email=%s", $email);
 					} catch(MeekroDBException $e) {
 						EC::set_error_code(501);
 						EC::addBDDError($e->getMessage(), 'Logged/tryConnexion');
@@ -113,7 +109,7 @@ class Logged
 			} else {
 				require_once BDD_CONFIG;
 				try {
-					$bdd_result = DB::queryFirstRow("SELECT id, nom, description, email, hash FROM ".PREFIX_BDD."joueurs WHERE email=%s", $identifiant);
+					$bdd_result = DB::queryFirstRow("SELECT id, nom, email, hash FROM ".PREFIX_BDD."joueurs WHERE email=%s", $email);
 				} catch(MeekroDBException $e) {
 					EC::set_error_code(501);
 					EC::addBDDError($e->getMessage(), 'Logged/tryConnexion');
@@ -132,7 +128,7 @@ class Logged
 			}
 
 		}
-		EC::addError("Mot de passe ou identifiant invalide.");
+		EC::addError("Mot de passe ou identifiant/email invalide.");
 		EC::set_error_code(422);
 		return null;
 	}
@@ -186,7 +182,7 @@ class Logged
 		} elseif ($this->rank == self::RANK_REDAC){
 			return array("id"=>$this->id, "nom"=>$this->nom, "email"=>$this->email, "rank"=>self::RANK_REDAC, "logged_in"=>true);
 		} elseif ($this->rank == self::RANK_JOUEUR){
-			return array("id"=>$this->id, "nom"=>$this->nom, "description"=>$this->description, "email"=>$this->email, "rank"=>self::RANK_JOUEUR, "logged_in"=>true);
+			return array("id"=>$this->id, "nom"=>$this->nom, "email"=>$this->email, "rank"=>self::RANK_JOUEUR, "logged_in"=>true);
 		} else {
 			return array("nom"=>$this->nom, "rank"=>self::RANK_OFF, "logged_in"=>false);
 		}

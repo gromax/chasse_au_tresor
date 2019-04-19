@@ -7,6 +7,7 @@ use ErrorController as EC;
 use SessionController as SC;
 use MeekroDBException;
 use BDDObject\Evenement;
+use BDDObject\ClePartie;
 
 final class ItemEvenement extends Item
 {
@@ -57,6 +58,11 @@ final class ItemEvenement extends Item
 				return DB::query("SELECT id, idEvenement, data, cle, type FROM ".PREFIX_BDD."itemsEvenement WHERE idEvenement=%i", $options['evenement']);
 			elseif (isset($options['root']))
 				return DB::query("SELECT id, idEvenement, data, cle, type FROM ".PREFIX_BDD."itemsEvenement");
+			elseif (isset($options['starting']))
+			{
+				// Cas où on veut les clés des points de départ d'un événement
+				return DB::query("SELECT id, cle FROM ".PREFIX_BDD."itemsEvenement WHERE idEvenement=%i AND type=".static::ITEM_INITIAL,$options['starting']);
+			}
 			else
 				return array();
 
@@ -64,6 +70,30 @@ final class ItemEvenement extends Item
 			if (BDD_DEBUG_ON) return array('error'=>true, 'message'=>"#ItemEvenement/getList : ".$e->getMessage());
 			return array('error'=>true, 'message'=>'Erreur BDD');
 		}
+	}
+
+	public static function tryCle($idEvenement, $cle)
+	{
+		require_once BDD_CONFIG;
+		$re = "/".$cle."/";
+		try
+		{
+			$list = DB::query("SELECT id, cle FROM ".PREFIX_BDD."itemsEvenement WHERE idEvenement=%i",$idEvenement);
+			foreach ($list as $value) {
+				// Il faut vérifier si $value['cle'] match $cle
+				// debug: echo "$re ? ".$value['cle']." -> ".preg_match($re,$value['cle'])."<br>";
+				if (preg_match($re,$value['cle'])==1)
+				{
+					// correspondance trouvée
+					return self::getObject($value['id']);
+				}
+			}
+		}
+		catch(MeekroDBException $e)
+		{
+			EC::addBDDError($e->getMessage(), "ItemEvenement/tryCle");
+		}
+		return null;
 	}
 
 	##################################### METHODES #####################################
@@ -85,6 +115,14 @@ final class ItemEvenement extends Item
 			return null;
 		}
 	}
+
+	public function customDelete()
+	{
+		$options = array("evenement"=>$this->id);
+		return (ClePartie::deleteList($options));
+	}
+
+
 
 }
 

@@ -72,16 +72,16 @@ final class Joueur extends Item
 		if(isset($modifs['email']))
 			$email = $modifs['email'];
 		elseif ($full)
-			$email = $this->email;
+			$email = $this->values['email'];
 		else
 			$email = false;
 		$errors = array();
 		if (($email!==false)&&(self::emailExists($email)!==false )) {
 			$errors['email'] = "L'identifiant (email) existe déjà.";
 		}
-		if ($full && ($this->hash==="") && !isset($modifs['pwd']))
+		if ($full && ($this->values['hash']==="") && !isset($modifs['pwd']))
 			$errors['pwd'] = "Mot de passe invalide";
-		if (isset($modifs['pwd']) && (self::checkPwd($modifs['pwd'])!==false) )
+		if (isset($modifs['pwd']) && (self::checkPwd($modifs['pwd'])!==true) )
 			$errors['pwd'] = "Mot de passe invalide";
 		if (count($errors)>0)
 			return $errors;

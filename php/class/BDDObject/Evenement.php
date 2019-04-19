@@ -23,6 +23,7 @@ final class Evenement extends Item
 			'idProprietaire' => array( 'def' => 0, 'type'=> 'integer'),	// id du Rédacteur propriétaire
 			'description' => array( 'def' => "", 'type'=> 'string'),	// description de l'événement
 			'actif' => array( 'def' => true, 'type'=> 'boolean'),	// l'événement est-il actif ?
+			'visible' => array( 'def' => true, 'type'=> 'boolean'),	// l'événement est-il visible ?
 			);
 	}
 
@@ -31,16 +32,16 @@ final class Evenement extends Item
 		require_once BDD_CONFIG;
 		try {
 			if (isset($options['redacteur']))
-				return DB::query("SELECT e.id, e.titre, e.idProprietaire, r.nom AS nomProprietaire, e.description, e.actif, (SELECT COUNT(p.id) FROM ".PREFIX_BDD."parties p where p.idEvenement = e.id) AS count_parties, (SELECT COUNT(i.id) FROM ".PREFIX_BDD."itemsEvenement i where i.idEvenement = e.id AND i.type = 0) AS count_items FROM (".PREFIX_BDD."evenements e JOIN ".PREFIX_BDD."redacteurs r ON r.id = e.idProprietaire) WHERE e.idProprietaire=%i", $options['redacteur']);
+				return DB::query("SELECT e.id, e.titre, e.idProprietaire, r.nom AS nomProprietaire, e.description, e.actif, e.visible, (SELECT COUNT(p.id) FROM ".PREFIX_BDD."parties p where p.idEvenement = e.id) AS count_parties, (SELECT COUNT(i.id) FROM ".PREFIX_BDD."itemsEvenement i where i.idEvenement = e.id AND i.type = 0) AS count_items FROM (".PREFIX_BDD."evenements e JOIN ".PREFIX_BDD."redacteurs r ON r.id = e.idProprietaire) WHERE e.idProprietaire=%i", $options['redacteur']);
 			elseif (isset($options['joueur']))
-				return DB::query("SELECT id, titre, idProprietaire, description, actif, (SELECT COUNT(i.id) FROM ".PREFIX_BDD."itemsEvenement i where i.idEvenement = e.id AND i.type = 0) AS count_items FROM ".PREFIX_BDD."evenements WHERE actif=1", $options['proprietaire']);
+				return DB::query("SELECT e.id, e.titre, e.idProprietaire, e.description, e.actif, p.id as idPartie, p.fini, (SELECT COUNT(i.id) FROM ".PREFIX_BDD."itemsEvenement i where i.idEvenement = e.id AND i.type = 0) AS count_items FROM (".PREFIX_BDD."evenements e LEFT JOIN ".PREFIX_BDD."parties p ON e.id = p.idEvenement) WHERE e.visible=1", $options['joueur']);
 			elseif (isset($options['root']))
-				return DB::query("SELECT e.id, e.titre, e.idProprietaire, r.nom AS nomProprietaire, e.description, e.actif, (SELECT COUNT(p.id) FROM ".PREFIX_BDD."parties p where p.idEvenement = e.id) AS count_parties, (SELECT COUNT(i.id) FROM ".PREFIX_BDD."itemsEvenement i where i.idEvenement = e.id AND i.type = 0) AS count_items FROM (".PREFIX_BDD."evenements e JOIN ".PREFIX_BDD."redacteurs r ON r.id = e.idProprietaire)");
+				return DB::query("SELECT e.id, e.titre, e.idProprietaire, r.nom AS nomProprietaire, e.description, e.actif, e.visible, (SELECT COUNT(p.id) FROM ".PREFIX_BDD."parties p where p.idEvenement = e.id) AS count_parties, (SELECT COUNT(i.id) FROM ".PREFIX_BDD."itemsEvenement i where i.idEvenement = e.id AND i.type = 0) AS count_items FROM (".PREFIX_BDD."evenements e JOIN ".PREFIX_BDD."redacteurs r ON r.id = e.idProprietaire)");
 			else
 				return array();
 
 		} catch(MeekroDBException $e) {
-			if (BDD_DEBUG_ON) return array('error'=>true, 'message'=>"#Redacteur/getList : ".$e->getMessage());
+			if (BDD_DEBUG_ON) return array('error'=>true, 'message'=>"#Evenement/getList : ".$e->getMessage());
 			return array('error'=>true, 'message'=>'Erreur BDD');
 		}
 	}
