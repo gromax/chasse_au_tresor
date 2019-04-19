@@ -20,9 +20,6 @@ export default Marionette.View.extend {
 			$title = $("<div>", { text: "Connexion", class:"card-header"})
 			@$el.prepend($title)
 
-	serializeData: ->
-		{ showForgotten: @options.showForgotten }
-
 	submitClicked: (e)->
 		e.preventDefault()
 		data = Syphon.serialize(@)
@@ -49,4 +46,7 @@ export default Marionette.View.extend {
 
 		clearFormErrors()
 		_.each(errors, markErrors)
+
+	templateContext: ->
+		{ showForgotten: @options.showForgotten }
 }
