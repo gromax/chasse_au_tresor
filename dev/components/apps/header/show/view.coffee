@@ -8,6 +8,7 @@ export default Marionette.View.extend {
 		"click a.js-home": "home:show"
 		"click a.js-edit-me": "home:editme"
 		"click a.js-login": "home:login"
+		"click a.js-logup": "home:signup"
 		"click a.js-logout": "home:logout"
 	}
 
@@ -35,6 +36,9 @@ export default Marionette.View.extend {
 
 	onHomeLogin: (e) ->
 		app.trigger("home:login")
+
+	onHomeSignup: (e) ->
+		app.trigger("home:signup")
 
 	onHomeLogout: (e) ->
 		app.trigger("home:logout")
