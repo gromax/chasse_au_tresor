@@ -27,7 +27,7 @@ API = {
 						when "evenements" then colObj = require("entities/evenements.coffee")
 						when "parties" then colObj = require("entities/parties.coffee")
 						when "itemsEvenement" then colObj = require("entities/itemsEvenement.coffee")
-						when "clesPartie" then colObj =  require("entities/clesPartie.coffee")
+						when "clesPartie" then colObj = require("entities/clesPartie.coffee")
 						when "images" then colObj =  require("entities/images.coffee")
 						else colObj = false
 					if (colObj isnt false) and (data[colName])
@@ -39,6 +39,30 @@ API = {
 			)
 		return promise = defer.promise()
 
+	getCustomPartie: (id, cle) ->
+		defer = $.Deferred()
+
+		if cle then requestedData = { cle }
+		else requestedData = { }
+
+		request = $.ajax("api/customData/partie/#{id}",{
+			method:'GET'
+			dataType:'json'
+			data: requestedData
+		})
+
+		request.done( (data)->
+			ItemPartie = require("entities/parties.coffee").Item
+			partie = new ItemPartie(data.partie)
+			ItemEvenement = require("entities/evenements.coffee").Item
+			evenement = new ItemEvenement(data.evenement)
+			ColClesPartie = require("entities/clesPartie.coffee").Collection
+			cles = new ColClesPartie(data.cles, {parse:true})
+			defer.resolve { evenement, partie, cles, startCles:data.startCles }
+		).fail( (response)->
+			defer.reject(response)
+		)
+		return defer.promise()
 	purge: ->
 		console.log("purge des données")
 		API.stored_data = {}
@@ -47,4 +71,5 @@ API = {
 
 channel = Radio.channel('entities')
 channel.reply('custom:entities', API.getCustomEntities )
+channel.reply('custom:partie', API.getCustomPartie )
 channel.reply('data:purge', API.purge )

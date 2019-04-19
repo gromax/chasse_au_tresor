@@ -2,13 +2,13 @@ Item = Backbone.Model.extend {
 	urlRoot: "api/parties"
 
 	defaults: {
-		titre: ""
 		idEvenement: false
 		idProprietaire: false
 		fini: false
 		nomProprietaire: ""
 		fini: false
 		titreEvenement: ""
+		descriptionEvenement: ""
 		dateDebut_fr: ""
 		duree: "-"
 	},
@@ -24,6 +24,10 @@ Item = Backbone.Model.extend {
 			data.dateDebut_fr = data.dateDebut
 		data.fini = (data.fini is "1") or (data.fini is 1) or (data.fini is true)
 		return data
+
+	toJSON: ->
+		return _.pick(this.attributes, 'id', 'fini', 'idEvenement');
+
 }
 
 Collection = Backbone.Collection.extend {

@@ -20,16 +20,14 @@ Item = Backbone.Model.extend {
 
 	validate: (attrs, options) ->
 		errors = {}
-		if not attrs.nom
-			errors.nom = "Ne doit pas être vide"
-		else
-			if attrs.nom.length<2
-				errors.nom = "Trop court"
-		# en présence d'un cas, peut importe l'email
-		reCas =  /^[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+$/
+		if (not attrs.nom) or (attrs.nom.length<4)
+			errors.nom = true
 
-		if not attrs.email
-			errors.nom = "L'identifiant ne doit pas être vide"
+		if (not attrs.email) or (attrs.email.length<4)
+			errors.email = true
+
+		if (not attrs.pwd) or (attrs.pwd.length<4)
+			errors.pwd = true
 
 		if not _.isEmpty(errors)
 			return errors

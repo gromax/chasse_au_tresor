@@ -14,10 +14,14 @@ Session = Backbone.Model.extend {
 			}
 		)
 
+	default: {
+		adm: false
+	}
+
 	validate: (attrs, options)->
 		errors = []
-		if not attrs.identifiant
-			errors.push { success:false, message:"L'email ne doit pas être vide" }
+		if not attrs.email
+			errors.push { success:false, message:"L'email/identifiant ne doit pas être vide" }
 		if not attrs.pwd
 			errors.push { success:false, message:"Le mot de passe ne doit pas être vide" }
 		if not _.isEmpty(errors)
@@ -25,7 +29,7 @@ Session = Backbone.Model.extend {
 
 	toJSON: ->
 		return {
-			identifiant: @get("identifiant")
+			email: @get("email")
 			pwd: @get("pwd")
 			adm: @get("adm")
 		}
@@ -36,6 +40,7 @@ Session = Backbone.Model.extend {
 		else
 			logged = data
 		if logged?.rank is "root" then logged.id = -1 # sinon l'élément est considéré nouveau et sa destruction ne provoque pas de requête DELETE
+		logged.adm = (logged.adm is true) or (logged.rank is "redacteur") or (logged.rank is "root")
 		return logged
 
 	refresh: (data)->
@@ -56,6 +61,7 @@ API = {
 			@unset("id")
 			channel = Radio.channel('entities')
 			channel.request("data:purge")
+			@set("adm",false)
 		Auth.getAuth(callback)
 		return Auth
 

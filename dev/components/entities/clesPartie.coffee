@@ -1,43 +1,46 @@
 Item = Backbone.Model.extend {
-	urlRoot: "api/clesPartie"
+  urlRoot: "api/clesPartie"
 
-	defaults: {
-		idPartie: false
-		succes: false
-		essai:""
-	},
+  defaults: {
+    idPartie: false
+    idItem: false
+    succes: false
+    essai:""
+  },
 
-	toJSON: ->
-		out = _.pick(this.attributes, 'id', 'idPartie', 'essai', 'date', 'data')
-		out['data'] = JSON.stringify(out['data'])
-		return out
+  toJSON: ->
+    out = _.pick(this.attributes, 'id', 'idPartie', 'essai', 'date', 'data')
+    out['data'] = JSON.stringify(out['data'])
+    return out
 
-	parse: (data) ->
-		if (data.id)
-			data.id = Number(data.id)
-		if (data.idPartie)
-			data.idPartie = Number(data.idPartie)
-		data.succes = (data.succes is "1") or (data.succes is 1) or (data.succes is true)
-		if data.data then data.data = JSON.parse(data.data)
-		else data.data = {}
-		return data
+  parse: (data) ->
+    if (data.id)
+      data.id = Number(data.id)
+    if (data.idPartie)
+      data.idPartie = Number(data.idPartie)
+    if (data.idItem)
+      data.idItem = Number(data.idItem)
+    data.succes = (data.succes is "1") or (data.succes is 1) or (data.succes is true)
+    if data.data then data.data = JSON.parse(data.data)
+    else data.data = {}
+    return data
 
-	validate: (attrs, options) ->
-		errors = {}
-		if not attrs.essai
-			errors.essai = "Ne doit pas être vide"
-		if not _.isEmpty(errors)
-			return errors
+  validate: (attrs, options) ->
+    errors = {}
+    if not attrs.essai
+      errors.essai = "Ne doit pas être vide"
+    if not _.isEmpty(errors)
+      return errors
 
 }
 
 Collection = Backbone.Collection.extend {
-	url: "api/clesPartie"
-	model: Item
-	comparator: "date"
+  url: "api/clesPartie"
+  model: Item
+  comparator: "date"
 }
 
 export {
-	Item
-	Collection
+  Item
+  Collection
 }

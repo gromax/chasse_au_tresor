@@ -1,21 +1,19 @@
 SubItem = Backbone.Model.extend {
 	defaults: {
 		type: "brut"
-		editMode: false
 		index: 0
 	}
 
 	parse: (data)->
+		unless data.width? then data.width=false
 		switch data.type
 			when "brut"
 				unless data.contenu? then data.contenu=""
-			when "url-image"
+			when "image"
 				unless data.imgUrl? then data.imgUrl=""
-			when "upload-image"
-				unless data.imgName? then data.imgName=""
+			when "pdf"
+				unless data.url? then data.url=""
 		return data
-	toJSON: ->
-		return _.omit(@attributes, "editMode")
 }
 
 SubCollection = Backbone.Collection.extend {
@@ -34,7 +32,8 @@ Item = Backbone.Model.extend {
 	},
 
 	toJSON: ->
-		@set("data", JSON.stringify(@get("subCollection").toJSON()))
+		sc = @get("subCollection")
+		if sc then @set("data", JSON.stringify(sc.toJSON()))
 		return _.pick(this.attributes, 'id', 'idEvenement', 'type', 'data', 'cle');
 
 	parse: (data) ->
