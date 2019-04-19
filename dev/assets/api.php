@@ -50,15 +50,20 @@ if (file_exists("../php/config/bddConfig.php")) {
 	$router->addRule('api/itemsEvenement/:id', 'itemsEvenement', 'update', 'PUT');
 	$router->addRule('api/itemsEvenement', 'itemsEvenement', 'insert', 'POST');
 
-	// evenements
+	// images
 	$router->addRule('api/images/:id', 'images', 'fetch', 'GET');
 	$router->addRule('api/images/:id', 'images', 'delete', 'DELETE');
 	$router->addRule('api/images', 'images', 'insert', 'POST');
 
+	// parties
+	$router->addRule('api/parties/:id', 'parties', 'fetch', 'GET');
+	$router->addRule('api/parties/:id', 'parties', 'delete', 'DELETE');
+	$router->addRule('api/parties', 'parties', 'insert', 'POST');
+
+
 	// data
 	$router->addRule('api/customData/:asks', 'data', 'customFetch', 'GET');
-
-
+	$router->addRule('api/customData/partie/:id', 'data', 'partieFetch', 'GET');
 
 	$response = $router->load();
 } else {
