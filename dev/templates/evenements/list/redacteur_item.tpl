@@ -3,6 +3,12 @@
 <td><%- count_parties %></td>
 <td align="right">
 	<div class="btn-group" role="group">
+		<!-- Bouton de visibilité -->
+		<% if (visible) { %>
+		<button type="button" class="btn btn-success btn-sm js-visible"><i class="fa fa-eye" title="Rendre invisible"></i></button>
+		<% } else { %>
+		<button type="button" class="btn btn-danger btn-sm js-visible"><i class="fa fa-eye-slash" title="Rendre visible"></i></button>
+		<% } %>
 		<!-- Bouton d'activité -->
 		<% if (actif) { %>
 		<button type="button" class="btn btn-success btn-sm js-actif"><i class="fa fa-check-circle-o" title="Désactiver"></i></button>

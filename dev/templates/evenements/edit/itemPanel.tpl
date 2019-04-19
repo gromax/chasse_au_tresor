@@ -12,8 +12,7 @@
 				</button>
 				<div class="dropdown-menu">
 					<a class="dropdown-item js-add" type="brut" href="#">Brut</a>
-					<a class="dropdown-item js-add" type="url-image" href="#">Url-Image</a>
-					<a class="dropdown-item js-add" type="upload-image" href="#">Upload-Image</a>
+					<a class="dropdown-item js-add" type="image" href="#">Image</a>
 					<a class="dropdown-item js-add" type="svg">Svg</a>
 				</div>
 			</div>

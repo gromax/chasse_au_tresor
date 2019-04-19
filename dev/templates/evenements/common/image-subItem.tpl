@@ -1,3 +1,4 @@
+<% if (redacteurMode) {%>
 <div class="card-header">
   <ul class="nav nav-pills card-header-pills">
     <li class="nav-item">
@@ -17,27 +18,8 @@
     </li>
   </ul>
 </div>
-<% switch(type) { case "brut" : %>
-
-<% if(editMode){%>
-<div class="card-body">
-  <form>
-    <div class="form-group">
-      <label for="subitem-<%-index%>">Contenu</label>
-      <textarea class="form-control rounded-0" id="subitem-<%-index%>" rows="3" name="contenu"><%=contenu%></textarea>
-    </div>
-    <button type="submit" class="btn btn-primary js-submit">Valider</button>
-  </form>
-</div>
-<%} else {%>
-<div class="card-body">
-  <% if(contenu!==""){%><%=contenu%><%} else {%><p class="text-muted">Élément vide</p><%}%>
-</div>
-<%}%>
-
-<% break; case "url-image": %>
-
-<% if(editMode){%>
+<% }
+if(editMode){%>
 <div class="card-body">
   <form>
     <div class="form-group">
@@ -49,6 +31,12 @@
           <button class="btn btn-outline-secondary js-image" type="button"><i class="fa fa-file-image-o"></i></button>
         </div>
       </div>
+      <div class="input-group">
+        <input type="text" name="width" class="form-control" id="subitem-width" placeholder="Largeur" value="<%-width %>">
+        <div class="input-group-append">
+          <span class="input-group-text"><i class="fa fa-arrows-h"></i></span>
+        </div>
+      </div>
     </div>
     <button type="submit" class="btn btn-primary js-submit">Valider</button>
   </form>
@@ -57,7 +45,23 @@
 if (imgUrl !== ""){
   if (imgUrl.indexOf("/")==-1){
     // C'est une image uploadée
-    %><img src="./image.php?src=<%-imgUrl%>" class="card-img"><%
+    _imgUrl = imgUrl.split(".");
+    if (_imgUrl.length>1) { ext = _imgUrl[1]; } else { ext = ""; }
+    if(ext=="pdf")
+    {
+    %><embed src='./image.php?src=<%-_imgUrl[0]%>&ext=pdf&seed=<%-Math.random()%>' height=400 type='application/pdf'/><%
+    }
+    else
+    {
+      if (width==0)
+      {
+        %><img src="./image.php?src=<%-_imgUrl[0]%>" class="card-img"><%
+      }
+      else
+      {
+        %><div class="card-body"><img src="./image.php?src=<%-_imgUrl[0]%>" width="<%-width%>"></div><%
+      }
+    }
   } else {
     // C'est une adresse web
     %><img src="<%-imgUrl%>" class="card-img"><%
@@ -69,39 +73,3 @@ if (imgUrl !== ""){
 <%}
 }%>
 
-<% break; case "upload-image": %>
-
-<% if(editMode){%>
-<div class="card-body">
-  <form>
-    <input type="file" name="imgLoad">
-    <button type="submit" class="btn btn-primary js-submit">Valider</button>
-  </form>
-</div>
-<%} else {
-if (imgName !== ""){%><img src="./image.php?src='<%-imgName%>'" class="card-img">
-<%} else {%>
-<div class="card-body">
-  <p class="text-muted">Élément vide</p>
-</div>
-<%}
-}%>
-
-<% break; case "svg": %>
-
-<% if(editMode){%>
-<div class="card-body">
-  Édition type svg
-</div>
-<%} else {%>
-<div class="card-body">
-  Affichage type svg
-</div>
-<%}%>
-
-<% break; default: %>
-<div class="card-body">
-  <h5 class="card-title">Erreur !</h5>
-  <p class="card-text">Cet élément a un type inconnu</p>
-</div>
-<%}%>

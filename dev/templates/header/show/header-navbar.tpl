@@ -7,7 +7,8 @@
 	<div class="collapse navbar-collapse" id="navbarSupportedContent">
 		<% if (isOff) { %>
 		<ul class="navbar-nav ml-auto">
-			<li class="nav-item"><a class="nav-link js-login" href="#login"><i class="fa fa-sign-in" aria-hidden="true"></i> Connexion</a></li>
+			<li class="nav-item"><a class="nav-link js-signup" href="#signup"><i class="fa fa-star-o"></i> Créer un compte</a></li>
+			<li class="nav-item"><a class="nav-link js-login" href="#login"><i class="fa fa-sign-in"></i> Connexion</a></li>
 		</ul>
 		<%} else {%>
 		<ul class="navbar-nav ml-auto">

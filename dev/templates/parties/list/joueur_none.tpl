@@ -1,0 +1,1 @@
+Aucune partie à afficher !

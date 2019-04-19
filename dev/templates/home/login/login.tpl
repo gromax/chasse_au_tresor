@@ -1,9 +1,9 @@
 <div class="card-body">
 	<form>
 		<div class="form-group row">
-			<label for="user-identifiant" class="col-form-label col-sm-3">Email / Identifiant</label>
+			<label for="user-email" class="col-form-label col-sm-3">Email / Identifiant</label>
 			<div class="col-sm-9">
-				<input type="email" class="form-control" name="identifiant" id="user-identifiant" placeholder="Entrez un email" value="">
+				<input type="input" class="form-control" name="email" id="user-email" placeholder="Entrez un email" value="">
 			</div>
 		</div>
 
