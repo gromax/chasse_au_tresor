@@ -1,6 +1,24 @@
 <?php
 require_once "../php/constantes.php";
 
+if (isset($_GET['ext'])&&($_GET['ext']=="pdf"))
+{
+  if(isset($_GET['src'])&&(file_exists(PATH_TO_UPLOAD.$_GET['src'])))
+  {
+    $file = PATH_TO_UPLOAD.$_GET['src'];
+  } else {
+    exit;
+  }
+
+  header('Content-type: application/pdf');
+  header('Content-Disposition: inline; filename="fichier.pdf"');
+  header('Content-Transfer-Encoding: binary');
+  header('Content-Length: ' . filesize($file));
+  header('Accept-Ranges: bytes');
+  @readfile($file);
+  exit;
+}
+
 if(isset($_GET['src'])&&(file_exists(PATH_TO_UPLOAD.$_GET['src'])))
 {
     $file = PATH_TO_UPLOAD.$_GET['src'];
