@@ -1,7 +1,10 @@
 import Marionette from 'backbone.marionette'
-import templateList from 'templates/parties/list/list.tpl'
-import templateItem from 'templates/parties/list/item.tpl'
-import templateNone from 'templates/parties/list/none.tpl'
+import templateList from 'templates/parties/list/redacteur_list.tpl'
+import templateItem from 'templates/parties/list/redacteur_item.tpl'
+import templateNone from 'templates/parties/list/redacteur_none.tpl'
+import templatePanel from 'templates/parties/list/panel.tpl'
+import templateJoueurItem from 'templates/parties/list/joueur_item.tpl'
+import templateJoueurNone from 'templates/parties/list/joueur_none.tpl'
 
 app = require('app').app
 
@@ -35,7 +38,7 @@ ItemView = Marionette.View.extend {
 		)
 }
 
-export default Marionette.CollectionView.extend {
+RedacteurListView = Marionette.CollectionView.extend {
 	tagName: "table"
 	className:"table table-hover"
 	template: templateList
@@ -88,3 +91,73 @@ export default Marionette.CollectionView.extend {
 		if itemView then itemView.flash("success")
 
 }
+
+PanelView = Marionette.View.extend {
+	template: templatePanel
+
+	events: {
+		"submit #filter-form": "applyFilter"
+	}
+
+	ui: {
+		criterion: "input.js-filter-criterion"
+	},
+
+	templateContext: ->
+		{
+			filterCriterion: @options.filterCriterion or ""
+			showAddButton: @options.showAddButton is true
+		}
+
+	applyFilter: (e)->
+		e.preventDefault();
+		criterion = @ui.criterion.val()
+		@trigger("items:filter", criterion);
+
+	onSetFilterCriterion: (criterion)->
+		@ui.criterion.val(criterion)
+}
+
+JoueurNoView = Marionette.View.extend {
+	template:  templateJoueurNone
+	tagName: "a"
+	className:"list-group-item list-group-item-action disabled"
+}
+
+JoueurItemView = Marionette.View.extend {
+	tagName: "a"
+	attributes: { href: '#' }
+	className:"list-group-item list-group-item-action"
+	template: templateJoueurItem
+	triggers: {
+		"click": "select"
+	}
+}
+
+JoueurListView = Marionette.CollectionView.extend {
+	tagName: "div"
+	className:"list-group"
+	childView:JoueurItemView
+	childViewEventPrefix: "item"
+	emptyView:JoueurNoView
+	filterCriterion:null
+
+	initialize: ()->
+		if @options.filterCriterion
+			@filterCriterion = @options.filterCriterion
+
+	viewFilter: (child, index, collection) ->
+		criterion = @filterCriterion
+		model = child.model
+		if criterion is "" or criterion is null or model.get("titre").toLowerCase().indexOf(criterion) isnt -1 or model.get("description").toLowerCase().indexOf(criterion) isnt -1
+			return true
+		else
+			return false
+
+	onSetFilterCriterion: (criterion, options)->
+		@filterCriterion = criterion.toLowerCase()
+		@render()
+
+}
+
+export { RedacteurListView, PanelView, JoueurListView }
