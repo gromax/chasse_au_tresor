@@ -1,22 +1,30 @@
 import Marionette from 'backbone.marionette'
-import templateList from 'templates/evenements/list/list.tpl'
-import templateItem from 'templates/evenements/list/item.tpl'
-import templateNone from 'templates/evenements/list/none.tpl'
+import templateList from 'templates/evenements/list/redacteur_list.tpl'
+import templateRedacteurItem from 'templates/evenements/list/redacteur_item.tpl'
+import templateRedacteurNone from 'templates/evenements/list/redacteur_none.tpl'
+import template from 'templates/evenements/list/panel.tpl'
+
+import templateJoueurItem from 'templates/evenements/list/joueur_item.tpl'
+import templateJoueurNone from 'templates/evenements/list/joueur_none.tpl'
+
+
 
 app = require('app').app
 
-noView = Marionette.View.extend {
-	template:  templateNone
+RedacteurNoView = Marionette.View.extend {
+	template: templateRedacteurNone
 	tagName: "tr"
 	className: "alert"
 }
 
-ItemView = Marionette.View.extend {
+RedacteurItemView = Marionette.View.extend {
 	tagName: "tr"
-	template: templateItem
+	template: templateRedacteurItem
 	triggers: {
 		"click td a.js-edit": "edit"
 		"click button.js-delete": "delete"
+		"click button.js-actif": "activation:toggle"
+		"click button.js-visible": "visible:toggle"
 		"click": "show"
 	}
 
@@ -37,14 +45,44 @@ ItemView = Marionette.View.extend {
 		)
 }
 
-export default Marionette.CollectionView.extend {
+PanelView = Marionette.View.extend {
+	template: template
+
+	triggers: {
+		"click button.js-new": "item:new"
+	}
+
+	events: {
+		"submit #filter-form": "applyFilter"
+	}
+
+	ui: {
+		criterion: "input.js-filter-criterion"
+	},
+
+	applyFilter: (e)->
+		e.preventDefault();
+		criterion = @ui.criterion.val()
+		@trigger("items:filter", criterion);
+
+	onSetFilterCriterion: (criterion)->
+		@ui.criterion.val(criterion)
+
+	templateContext: ->
+		{
+			filterCriterion: @options.filterCriterion or ""
+			showAddButton: @options.showAddButton is true
+		}
+}
+
+RedacteurListView = Marionette.CollectionView.extend {
 	tagName: "table"
 	className:"table table-hover"
 	template: templateList
 	childViewContainer: "tbody"
-	childView:ItemView
+	childView:RedacteurItemView
 	childViewEventPrefix: 'item'
-	emptyView:noView
+	emptyView:RedacteurNoView
 	filterCriterion:null
 
 	initialize: ()->
@@ -86,5 +124,52 @@ export default Marionette.CollectionView.extend {
 		# check whether the new user view is displayed (it could be
 		# invisible due to the current filter criterion)
 		if itemView then itemView.flash("success")
+}
+
+JoueurNoView = Marionette.View.extend {
+	template:  templateJoueurNone
+	tagName: "a"
+	className:"list-group-item list-group-item-action disabled"
+}
+
+JoueurItemView = Marionette.View.extend {
+	tagName: "a"
+	attributes: { href: '#' }
+	className: ->
+		if @model.get("actif")
+			"list-group-item list-group-item-action"
+		else
+			"list-group-item list-group-item-action disabled"
+	template: templateJoueurItem
+	triggers: {
+		"click": "select"
+	}
+}
+
+JoueurListView = Marionette.CollectionView.extend {
+	tagName: "div"
+	className:"list-group"
+	childView:JoueurItemView
+	childViewEventPrefix: 'item'
+	emptyView:JoueurNoView
+	filterCriterion:null
+
+	initialize: ()->
+		if @options.filterCriterion
+			@filterCriterion = @options.filterCriterion
+
+	viewFilter: (child, index, collection) ->
+		criterion = @filterCriterion
+		model = child.model
+		if criterion is "" or criterion is null or model.get("titre").toLowerCase().indexOf(criterion) isnt -1 or model.get("description").toLowerCase().indexOf(criterion) isnt -1
+			return true
+		else
+			return false
+
+	onSetFilterCriterion: (criterion, options)->
+		@filterCriterion = criterion.toLowerCase()
+		@render()
 
 }
+
+export { RedacteurListView, JoueurListView, PanelView }
