@@ -35,9 +35,9 @@ class session
     {
         $data = json_decode(file_get_contents("php://input"),true);
 
-        if (isset($data['identifiant']) && isset($data['pwd']))
+        if (isset($data['email']) && isset($data['pwd']))
         {
-            $identifiant=$data['identifiant'];
+            $email=$data['email'];
             $pwd=$data['pwd'];
         }
         else
@@ -47,7 +47,7 @@ class session
         }
 
         $adm = (isset($data['adm'])&&($data['adm']));
-        $uLog = Logged::tryConnexion($identifiant, $pwd, $adm);
+        $uLog = Logged::tryConnexion($email, $pwd, $adm);
 
         if ($uLog == null)
         {

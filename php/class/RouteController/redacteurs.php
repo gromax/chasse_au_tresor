@@ -11,7 +11,7 @@ class redacteurs
      * paramères de la requète
      * @array
      */
-    const $testMethod = "isRedacteur"
+    const TestMethod = "isRedacteur";
     private $params;
     /**
      * Constructeur
@@ -131,14 +131,14 @@ class redacteurs
             EC::set_error_code(401);
             return false;
         }
-        if (!$uLog->{static::testMethod}() && !$uLog->isRoot())
+        if (!$uLog->{static::TestMethod}() && !$uLog->isRoot())
         {
             EC::set_error_code(403);
             return false;
         }
 
         $id = (integer) $this->params['id'];
-        if ($uLog->{static::testMethod}() && ($uLog->getId() != $id)) {
+        if ($uLog->{static::TestMethod}() && ($uLog->getId() != $id)) {
             // Un rédacteur ne peut modifier que se modifier lui même
             EC::set_error_code(403);
             return false;

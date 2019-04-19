@@ -5,7 +5,7 @@ use ErrorController as EC;
 use BDDObject\Image;
 use BDDObject\Logged;
 
-class itemsEvenement
+class images
 {
     /**
      * paramères de la requète
@@ -95,15 +95,18 @@ class itemsEvenement
         $uLog=Logged::getConnectedUser();
         if ($uLog->isRedacteur())
         {
-            $data = json_decode(file_get_contents("php://input"),true);
-            if (isset($_FILES['image']) && isset($data['idEvenement']))
+            //$data = json_decode(file_get_contents("php://input"),true);
+            //var_dump($_POST);
+
+
+            if (isset($_FILES['image']) && isset($_POST['idEvenement']))
             {
                 $file = $_FILES['image']['tmp_name'];
+                $ext = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
                 $hash = md5_file($file);
-                $data['hash'] = $hash;
-                $item = new Image($data);
+                $item = new Image(array("idEvenement"=>$_POST['idEvenement'], "hash"=>$hash, "ext"=>$ext));
                 $item->moveUploadedFile($file);
-                $id = $item->update($data);
+                $id = $item->insertion();
                 if ($id!==null)
                 {
                     return $item->getValues();

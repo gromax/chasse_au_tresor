@@ -11,7 +11,7 @@ class joueurs
      * paramères de la requète
      * @array
      */
-    const $testMethod = "isJoueur"
+    const TestMethod = "isJoueur";
     private $params;
     /**
      * Constructeur
@@ -94,7 +94,7 @@ class joueurs
     public function insert()
     {
         $uLog=Logged::getConnectedUser();
-        if ($uLog->isRoot())
+        if (!$uLog->connexionOk())
         {
             $data = json_decode(file_get_contents("php://input"),true);
             $itAdd = new Item();
@@ -129,14 +129,14 @@ class joueurs
             EC::set_error_code(401);
             return false;
         }
-        if (!$uLog->{static::testMethod}() && !$uLog->isRoot())
+        if (!$uLog->{static::TestMethod}() && !$uLog->isRoot())
         {
             EC::set_error_code(403);
             return false;
         }
 
         $id = (integer) $this->params['id'];
-        if ($uLog->{static::testMethod}() && ($uLog->getId() != $id)) {
+        if ($uLog->{static::TestMethod}() && ($uLog->getId() != $id)) {
             // Un rédacteur ne peut modifier que se modifier lui même
             EC::set_error_code(403);
             return false;
