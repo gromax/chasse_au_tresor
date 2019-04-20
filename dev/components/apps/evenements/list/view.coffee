@@ -1,4 +1,4 @@
-import Marionette from 'backbone.marionette'
+import { View, CollectionView } from 'backbone.marionette'
 import templateList from 'templates/evenements/list/redacteur_list.tpl'
 import templateRedacteurItem from 'templates/evenements/list/redacteur_item.tpl'
 import templateRedacteurNone from 'templates/evenements/list/redacteur_none.tpl'
@@ -11,13 +11,13 @@ import templateJoueurNone from 'templates/evenements/list/joueur_none.tpl'
 
 app = require('app').app
 
-RedacteurNoView = Marionette.View.extend {
+RedacteurNoView = View.extend {
 	template: templateRedacteurNone
 	tagName: "tr"
 	className: "alert"
 }
 
-RedacteurItemView = Marionette.View.extend {
+RedacteurItemView = View.extend {
 	tagName: "tr"
 	template: templateRedacteurItem
 	triggers: {
@@ -41,11 +41,11 @@ RedacteurItemView = Marionette.View.extend {
 		@$el.fadeOut( ()->
 			#self.model.destroy()
 			self.trigger("model:destroy", @model)
-			Marionette.View.prototype.remove.call(self)
+			View.prototype.remove.call(self)
 		)
 }
 
-PanelView = Marionette.View.extend {
+PanelView = View.extend {
 	template: template
 
 	triggers: {
@@ -75,7 +75,7 @@ PanelView = Marionette.View.extend {
 		}
 }
 
-RedacteurListView = Marionette.CollectionView.extend {
+RedacteurListView = CollectionView.extend {
 	tagName: "table"
 	className:"table table-hover"
 	template: templateList
@@ -126,13 +126,13 @@ RedacteurListView = Marionette.CollectionView.extend {
 		if itemView then itemView.flash("success")
 }
 
-JoueurNoView = Marionette.View.extend {
+JoueurNoView = View.extend {
 	template:  templateJoueurNone
 	tagName: "a"
 	className:"list-group-item list-group-item-action disabled"
 }
 
-JoueurItemView = Marionette.View.extend {
+JoueurItemView = View.extend {
 	tagName: "a"
 	attributes: { href: '#' }
 	className: ->
@@ -146,7 +146,7 @@ JoueurItemView = Marionette.View.extend {
 	}
 }
 
-JoueurListView = Marionette.CollectionView.extend {
+JoueurListView = CollectionView.extend {
 	tagName: "div"
 	className:"list-group"
 	childView:JoueurItemView
