@@ -53,7 +53,7 @@ if (imgUrl !== ""){
     }
     else
     {
-      if (width==0)
+      if ((width==0)||!redacteurMode)
       {
         %><img src="./image.php?src=<%-_imgUrl[0]%>" class="card-img"><%
       }
