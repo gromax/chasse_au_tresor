@@ -2,8 +2,8 @@ import { View, CollectionView, Behavior } from 'backbone.marionette'
 import Syphon from 'backbone.syphon'
 import templateLayout from "templates/evenements/edit/itemLayout.tpl"
 import templatePanel from "templates/evenements/edit/itemPanel.tpl"
-import templateNoSub from "templates/evenements/edit/noSubItem.tpl"
 
+import templateNoSub from "templates/evenements/common/noSubItem.tpl"
 import templateImageSub from "templates/evenements/common/image-subItem.tpl"
 import templateBrutSub from "templates/evenements/common/brut-subItem.tpl"
 import templateSvgSub from "templates/evenements/common/svg-subItem.tpl"
@@ -67,7 +67,7 @@ DefaultItemView = View.extend {
 	templateContext: ->
 		{
 			editMode: @editMode
-			redacteurMode: @options.redacteurMode is true
+			redacteurMode: true
 		}
 }
 
@@ -91,9 +91,7 @@ SubItemCollectionView = CollectionView.extend {
 			when "image" then ImageSubitemView
 			else DefaultItemView
 	emptyView: EmptyView
-	childViewOptions: -> {
-		redacteurMode: @options.redacteurMode is true
-	}
+
 	childViewEventPrefix: 'subItem'
 }
 
