@@ -183,7 +183,7 @@ Controller = Marionette.Object.extend {
 				layout = new ItemLayoutView()
 				panel = new PanelView({ model:item })
 				subItemsCollection = item.get("subCollection")
-				subItemsView = new SubItemCollectionView({ collection: subItemsCollection, redacteurMode: true })
+				subItemsView = new SubItemCollectionView({ collection: subItemsCollection })
 
 				panel.on "type:toggle", () ->
 					mtype = item.get("type")
