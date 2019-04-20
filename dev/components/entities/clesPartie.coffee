@@ -4,7 +4,6 @@ Item = Backbone.Model.extend {
   defaults: {
     idPartie: false
     idItem: false
-    succes: false
     essai:""
   },
 
@@ -20,7 +19,6 @@ Item = Backbone.Model.extend {
       data.idPartie = Number(data.idPartie)
     if (data.idItem)
       data.idItem = Number(data.idItem)
-    data.succes = (data.succes is "1") or (data.succes is 1) or (data.succes is true)
     if data.data then data.data = JSON.parse(data.data)
     else data.data = {}
     return data
