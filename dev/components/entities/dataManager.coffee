@@ -52,13 +52,18 @@ API = {
 		})
 
 		request.done( (data)->
-			ItemPartie = require("entities/parties.coffee").Item
-			partie = new ItemPartie(data.partie)
-			ItemEvenement = require("entities/evenements.coffee").Item
-			evenement = new ItemEvenement(data.evenement)
+			OPartie = require("entities/parties.coffee").Item
+			partie = new OPartie(data.partie)
+			OEvenement = require("entities/evenements.coffee").Item
+			evenement = new OEvenement(data.evenement)
 			ColClesPartie = require("entities/clesPartie.coffee").Collection
 			cles = new ColClesPartie(data.cles, {parse:true})
-			defer.resolve { evenement, partie, cles, startCles:data.startCles }
+			if data.item?
+				OItemEvenement = require("entities/itemsEvenement.coffee").Item
+				item = new OItemEvenement(data.item, {parse:true})
+				defer.resolve { evenement, partie, cles, startCles:data.startCles, item }
+			else
+				defer.resolve { evenement, partie, cles, startCles:data.startCles }
 		).fail( (response)->
 			defer.reject(response)
 		)
