@@ -2,7 +2,6 @@ import Marionette from 'backbone.marionette'
 import template from 'templates/common/alert.tpl'
 
 export default Marionette.View.extend {
-	tag:"div"
 	template: template
 	className: ->
 		return "alert alert-"+(@options.type or "danger")
