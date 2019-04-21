@@ -36,7 +36,7 @@ Router = Backbone.Router.extend {
 				# En cas d'échec de connexion, l'api server renvoie une erreur
 				# Le delete n'occasione pas de raffraichissement des données
 				# Il faut donc le faire manuellement
-				app.Auth.refresh(response.logged)
+				app.Auth.refresh(response)
 				require("./show/show_controller.coffee").controller.showHome()
 			).fail( (response)->
 				alert("Erreur inconnue. Essayez à nouveau ou prévenez l'administrateur [code #{response.status}/024]");
