@@ -40,7 +40,7 @@ PanelView = View.extend {
 SubItemView = View.extend {
   className: "card"
   attributes: ->
-    if @model.get("type") is "image" and @model.get("width") isnt 0
+    if @model.get("type") is "image" and @model.get("width") isnt "100%"
       { style:"width:#{@model.get("width")};"}
     else
       {}
@@ -78,6 +78,9 @@ CleCollectionView = CollectionView.extend {
   childView: CleView
   childViewEventPrefix: 'cle'
   childViewContainer: "#content"
+  triggers:{
+    "click a.js-home-cle":"home"
+  }
   childViewOptions: ->
     {
       idSelected: @options.idSelected
