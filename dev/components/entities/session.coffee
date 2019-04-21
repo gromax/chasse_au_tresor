@@ -34,13 +34,20 @@ Session = Backbone.Model.extend {
 			adm: @get("adm")
 		}
 
-	parse: (data)->
-		if data.logged
-			logged = data.logged
+	parse: (logged)->
+		if logged.rank isnt "off"
+			logged.logged_in = true
+			if logged?.rank is "root" then logged.id = -1 # sinon l'élément est considéré nouveau et sa destruction ne provoque pas de requête DELETE
+			logged.adm = (logged.adm is true) or (logged.rank is "redacteur") or (logged.rank is "root")
 		else
-			logged = data
-		if logged?.rank is "root" then logged.id = -1 # sinon l'élément est considéré nouveau et sa destruction ne provoque pas de requête DELETE
-		logged.adm = (logged.adm is true) or (logged.rank is "redacteur") or (logged.rank is "root")
+			logged = {
+				id:-1
+				logged_in: false
+				rank:"off"
+				nom:"Déconnecté"
+				email: ""
+				adm: false
+			}
 		return logged
 
 	refresh: (data)->
