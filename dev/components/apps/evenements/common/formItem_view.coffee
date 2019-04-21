@@ -18,6 +18,9 @@ export default FormView.extend {
 		test = @ui.test.val()
 		test = test.normalize('NFD').replace(/[\u0300-\u036f]/g, "")
 		cle = @ui.cle.val()
+		# si cle est un simple texte, on ajoute ^et$
+		if /^[\w]+$/i.test(cle) isnt false
+			cle = "^"+cle+"$"
 		result = false
 		if test!="" and cle !=""
 			try
