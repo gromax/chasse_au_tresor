@@ -62,13 +62,21 @@ DefaultItemView = View.extend {
 
 	remove: ()->
 		@model.destroy()
-		Marionette.View.prototype.remove.call(@)
+		View.prototype.remove.call(@)
 
 	templateContext: ->
 		{
 			editMode: @editMode
 			redacteurMode: true
 		}
+	onFormDataInvalid: (error)->
+		# Il faut effacer le invalid de chaque clé
+		$el = $(@el)
+		$("[id|='subitem-']").each (index)->
+			$(@).removeClass("is-invalid")
+		_.mapObject error, (val, key)->
+			$el.find("#subitem-#{key}").each (index)->
+				$(@).addClass("is-invalid")
 }
 
 ImageSubitemView = DefaultItemView.extend {
