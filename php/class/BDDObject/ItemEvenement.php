@@ -75,7 +75,7 @@ final class ItemEvenement extends Item
 	public static function tryCle($idEvenement, $cle)
 	{
 		require_once BDD_CONFIG;
-		$re = "/".$cle."/";
+		$re = "/".$cle."/i";
 		try
 		{
 			$list = DB::query("SELECT id, cle FROM ".PREFIX_BDD."itemsEvenement WHERE idEvenement=%i",$idEvenement);
