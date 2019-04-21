@@ -36,6 +36,9 @@ if(editMode){%>
         <div class="input-group-append">
           <span class="input-group-text"><i class="fa fa-arrows-h"></i></span>
         </div>
+        <div class="invalid-feedback">
+          Par exemple 50px ou 85%.
+        </div>
       </div>
     </div>
     <button type="submit" class="btn btn-primary js-submit">Valider</button>
@@ -53,7 +56,7 @@ if (imgUrl !== ""){
     }
     else
     {
-      if ((width==0)||!redacteurMode)
+      if ((width=="100%")||!redacteurMode)
       {
         %><img src="./image.php?src=<%-_imgUrl[0]%>" class="card-img"><%
       }
