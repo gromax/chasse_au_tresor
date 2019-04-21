@@ -38,7 +38,7 @@ final class SessionController
 	public function start ()
 	{
 		// Si la session est déjà démarrée, on ne fait rien
-		if ($this->isStarted ()) return;
+		if ($this->session_started) return;
 
 		// Sinon on renomme la session
 		$this->rename ();
@@ -89,13 +89,6 @@ final class SessionController
 		session_name ($this->session_name);
 	}
 
-	/* Savoir si une session est démarrée */
-
-	public function isStarted ()
-	{
-	    return $this->session_started;
-	}
-
 	/* Savoir si le tableau $_SESSION est vide */
 
 	public function isEmpty ()
@@ -109,14 +102,14 @@ final class SessionController
 
 	public function setParam ($key , $value)
 	{
-		if (!$this->isStarted ()) $this->start();
+		if (!$this->session_started) $this->start();
 		$_SESSION[$key] = $value;
 	}
 
 	/* Effacer une valeur en session */
 	public function unsetParam ($key)
 	{
-		if (!$this->isStarted ()) $this->start();
+		if (!$this->session_started) $this->start();
 		unset($_SESSION[$key]);
 	}
 
@@ -124,7 +117,7 @@ final class SessionController
 
 	public function getParam ($key, $defaultValue=false)
 	{
-		if ( $this->isStarted() && isset($_SESSION[$key]) ) return $_SESSION[$key];
+		if ( $this->session_started && isset($_SESSION[$key]) ) return $_SESSION[$key];
 		else return $defaultValue;
 	}
 
@@ -132,20 +125,20 @@ final class SessionController
 
 	public function setParamInCollection($keyCollection, $key, $value)
 	{
-		if (!$this->isStarted ()) $this->start();
+		if (!$this->session_started) $this->start();
 		if (!isset($_SESSION[$keyCollection])) $_SESSION[$keyCollection] = array();
 		$_SESSION[$keyCollection][$key] = $value;
 	}
 
 	public function unsetParamInCollection($keyCollection, $key)
 	{
-		if (!$this->isStarted ()) $this->start();
+		if (!$this->session_started) $this->start();
 		if (isset($_SESSION[$keyCollection])) unset($_SESSION[$keyCollection][$key]);
 	}
 
 	public function getParamInCollection($keyCollection, $key, $defaultValue=false)
 	{
-		if (!$this->isStarted ()) $this->start();
+		if (!$this->session_started) $this->start();
 		if (!isset($_SESSION[$keyCollection]) || !isset($_SESSION[$keyCollection][$key]) ) return $defaultValue;
 		return $_SESSION[$keyCollection][$key];
 	}
