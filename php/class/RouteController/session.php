@@ -3,7 +3,7 @@
 namespace RouteController;
 use ErrorController as EC;
 use SessionController as SC;
-use BDDObject\Logged;
+use AuthController as AC;
 
 class session
 {
@@ -22,13 +22,29 @@ class session
 
     public function fetch()
     {
-        return $this->getData(null);
+        $ac = new AC();
+        if ($ac->connexionOk())
+        {
+            return $ac->getloggedUserData();
+        }
+        else
+        {
+            return array("rank"=>"off");
+        }
     }
 
     public function delete()
     {
         SC::get()->destroy();
-        return $this->getData(null);
+        $ac = new AC();
+        if ($ac->connexionOk())
+        {
+            return $ac->getloggedUserData();
+        }
+        else
+        {
+            return array("rank"=>"off");
+        }
     }
 
     public function insert()
@@ -47,46 +63,18 @@ class session
         }
 
         $adm = (isset($data['adm'])&&($data['adm']));
-        $uLog = Logged::tryConnexion($email, $pwd, $adm);
+        $loginSuccess = AC::tryLogin($email, $pwd, $adm);
 
-        if ($uLog == null)
+        if ($loginSuccess)
         {
-            return false;
+            $ac = new AC();
+            return $ac->getloggedUserData();
         }
         else
         {
-            return $uLog->toArray();
-        }
-    }
-
-    public function logged()
-    {
-        return Logged::getConnectedUser();
-    }
-
-
-    protected function getData($uLog = null)
-    {
-        return array(
-            "logged" => Logged::getConnectedUser()->toArray(),
-            "messages" => EC::messages()
-        );
-    }
-
-    /*public function reinitMDP()
-    {
-        $key = $this->params["key"];
-        Logged::tryConnexionOnInitMDP($key);
-        $uLog = Logged::getConnectedUser();
-        if ($uLog->connexionOk())
-        {
-            return $data = $this->getData($uLog);
-        }
-        else
-        {
-            EC::set_error_code(401);
             return false;
         }
-    }*/
+    }
+
 }
 ?>
