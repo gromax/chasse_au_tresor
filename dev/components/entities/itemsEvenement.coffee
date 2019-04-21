@@ -5,18 +5,27 @@ SubItem = Backbone.Model.extend {
 	}
 
 	parse: (data)->
-		unless data.width? then data.width=false
 		switch data.type
 			when "brut"
 				unless data.contenu? then data.contenu=""
 			when "image"
 				unless data.imgUrl? then data.imgUrl=""
+				unless data.width? then data.width="100%"
 			when "pdf"
 				unless data.url? then data.url=""
 		return data
+
+	validate: (attrs) ->
+		errors = {}
+		if _.has(attrs,"width")
+			regexWidth = /^[1-9][0-9]*(px|%)$/
+			if regexWidth.test(attrs.width) is false
+				errors.width = "La largeur doit être de forme 50px ou 50%"
+		if not _.isEmpty(errors)
+			return errors
 }
 
-SubCollection = Backbone.Collection.extend {
+SubItemCollection = Backbone.Collection.extend {
 	model: SubItem
 	comparator: "index"
 }
@@ -27,14 +36,9 @@ Item = Backbone.Model.extend {
 	defaults: {
 		idEvenement: false
 		type: 0
-		data:""
+		subItemsData:"[]"
 		cle:""
 	},
-
-	toJSON: ->
-		sc = @get("subCollection")
-		if sc then @set("data", JSON.stringify(sc.toJSON()))
-		return _.pick(this.attributes, 'id', 'idEvenement', 'type', 'data', 'cle');
 
 	parse: (data) ->
 		if (data.id)
@@ -43,14 +47,6 @@ Item = Backbone.Model.extend {
 			data.idEvenement = Number(data.idEvenement)
 		if (data.type)
 			data.type = Number(data.type)
-		data.subCollection = new SubCollection()
-		try
-			d = JSON.parse(data.data)
-			if not _.isArray(d) then d = []
-		catch e
-			d = []
-		finally
-			data.subCollection.add d, { parse:true }
 		return data
 
 	validate: (attrs, options) ->
@@ -70,4 +66,5 @@ Collection = Backbone.Collection.extend {
 export {
 	Item
 	Collection
+	SubItemCollection
 }
