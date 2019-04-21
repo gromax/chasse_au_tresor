@@ -27,7 +27,16 @@ Controller = Marionette.Object.extend {
       idCleSelected = -1
       if data.item?
         # on a trouvé un item à afficher
-        subItemsCollection = data.item.get("subCollection")
+        subItemsData = data.item.get("subItemsData")
+        try
+          d = JSON.parse(subItemsData)
+          if not _.isArray(d) then d = []
+        catch e
+          d = []
+        finally
+          SubItemCollection = require("entities/itemsEvenement.coffee").SubItemCollection
+          subItemsCollection = new SubItemCollection()
+          subItemsCollection.add(d, {parse:true})
         vuePrincipale = new SubItemCollectionView { collection: subItemsCollection }
         cleSelected = data.cles.where({idItem:data.item.get("id")})[0]
         if cleSelected
@@ -47,6 +56,9 @@ Controller = Marionette.Object.extend {
       vueCles = new CleCollectionView { collection: data.cles, idSelected:idCleSelected }
       vueCles.on "cle:select", (v)->
         app.trigger("partie:show:cle", id, v.model.get("essai"))
+
+      vueCles.on "home", (v)->
+        app.trigger("partie:show", id)
 
       layout.on "render", ()->
         layout.getRegion('panelRegion').show(panel)
