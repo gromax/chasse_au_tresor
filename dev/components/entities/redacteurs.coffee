@@ -25,8 +25,6 @@ Item = Backbone.Model.extend {
 		else
 			if attrs.nom.length<2
 				errors.nom = "Trop court"
-		# en présence d'un cas, peut importe l'email
-		reCas =  /^[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+$/
 
 		if not attrs.email
 			errors.nom = "L'identifiant ne doit pas être vide"
