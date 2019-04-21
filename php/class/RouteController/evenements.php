@@ -2,9 +2,10 @@
 
 namespace RouteController;
 use ErrorController as EC;
+use AuthController as AC;
 use BDDObject\Evenement;
 use BDDObject\ItemEvenement;
-use BDDObject\Logged;
+
 
 class evenements
 {
@@ -23,14 +24,14 @@ class evenements
 
     public function fetch()
     {
-        $uLog =Logged::getConnectedUser();
-        if (!$uLog->connexionOk())
+        $ac = new AC();
+        if (!$ac->connexionOk())
         {
             EC::set_error_code(401);
             return false;
         }
 
-        if (!$uLog->isRoot() && !$uLog->isRedacteur()) {
+        if (!$ac->isRoot() && !$ac->isRedacteur()) {
             EC::set_error_code(403);
             return false;
         }
@@ -43,7 +44,7 @@ class evenements
             return false;
         }
 
-        if ($uLog->isRedacteur() && ($uLog->getId()!==$item->getIdProprietaire()))
+        if ($ac->isRedacteur() && ($ac->getLoggedUserId()!==$item->getIdProprietaire()))
         {
             EC::set_error_code(403);
             return false;
@@ -56,15 +57,15 @@ class evenements
 
     public function fetchList()
     {
-        $uLog =Logged::getConnectedUser();
-        if (!$uLog->connexionOk())
+        $ac = new AC();
+        if (!$ac->connexionOk())
         {
             EC::set_error_code(401);
             return false;
         }
 
-        if ($uLog->isRoot()) return Evenement::getList(array("root"=>true));
-        if ($uLog->isRedacteur()) return Evenement::getList(array('redacteur'=>$uLog->getId()));
+        if ($ac->isRoot()) return Evenement::getList(array("root"=>true));
+        if ($ac->isRedacteur()) return Evenement::getList(array('redacteur'=>$ac->getLoggedUserId()));
 
         EC::set_error_code(403);
         return false;
@@ -73,14 +74,14 @@ class evenements
 
     public function delete()
     {
-        $uLog=Logged::getConnectedUser();
-        if (!$uLog->connexionOk())
+        $ac = new AC();
+        if (!$ac->connexionOk())
         {
             EC::set_error_code(401);
             return false;
         }
 
-        if (!$uLog->isRoot() && !$uLog->isRedacteur()) {
+        if (!$ac->isRoot() && !$ac->isRedacteur()) {
             EC::set_error_code(403);
             return false;
         }
@@ -93,7 +94,7 @@ class evenements
             return false;
         }
 
-        if ($uLog->isRedacteur() && ($uLog->getId()!==$item->getIdProprietaire()))
+        if ($ac->isRedacteur() && ($ac->getLoggedUserId()!==$item->getIdProprietaire()))
         {
             EC::set_error_code(403);
             return false;
@@ -110,16 +111,16 @@ class evenements
     public function insert()
     {
         // Seul un rédacteur peut créer un événement
-        $uLog=Logged::getConnectedUser();
-        if ($uLog->isRedacteur())
+        $ac = new AC();
+        if ($ac->isRedacteur())
         {
             $data = json_decode(file_get_contents("php://input"),true);
-            $data['idProprietaire'] = $uLog->getId();
+            $data['idProprietaire'] = $ac->getLoggedUserId();
             $item = new Evenement();
             $id = $item->update($data);
             if ($id!==null)
                 $out = $item->getValues();
-                $out["nomProprietaire"] = $uLog->toArray()["nom"];
+                $out["nomProprietaire"] = $ac->getloggedUserData()["nom"];
                 return $out;
         }
         else
@@ -134,13 +135,13 @@ class evenements
     public function update()
     {
         // Seul le rédacteur propriétaire peut changer un événement
-        $uLog=Logged::getConnectedUser();
-        if (!$uLog->connexionOk())
+        $ac = new AC();
+        if (!$ac->connexionOk())
         {
             EC::set_error_code(401);
             return false;
         }
-        if (!$uLog->isRedacteur()){
+        if (!$ac->isRedacteur()){
             EC::set_error_code(403);
             return false;
         }
@@ -152,7 +153,7 @@ class evenements
             return false;
         }
 
-        if ($uLog->getId()!==$item->getIdProprietaire())
+        if ($ac->getLoggedUserId()!==$item->getIdProprietaire())
         {
             EC::set_error_code(403);
             return false;

@@ -2,8 +2,8 @@
 
 namespace RouteController;
 use ErrorController as EC;
+use AuthController as AC;
 use BDDObject\Image;
-use BDDObject\Logged;
 
 class images
 {
@@ -23,14 +23,14 @@ class images
     public function fetch()
     {
         // Rédacteur seul
-        $uLog =Logged::getConnectedUser();
-        if (!$uLog->connexionOk())
+        $ac = new AC();
+        if (!$ac->connexionOk())
         {
             EC::set_error_code(401);
             return false;
         }
 
-        if (!$uLog->isRedacteur()) {
+        if (!$ac->isRedacteur()) {
             EC::set_error_code(403);
             return false;
         }
@@ -43,7 +43,7 @@ class images
             return false;
         }
 
-        if ($uLog->getId()!==$item->getIdProprietaire())
+        if ($ac->getLoggedUserId()!==$item->getIdProprietaire())
         {
             EC::set_error_code(403);
             return false;
@@ -55,14 +55,14 @@ class images
     public function delete()
     {
         // Rédacteur seul
-        $uLog=Logged::getConnectedUser();
-        if (!$uLog->connexionOk())
+        $ac = new AC();
+        if (!$ac->connexionOk())
         {
             EC::set_error_code(401);
             return false;
         }
 
-        if (!$uLog->isRedacteur()) {
+        if (!$ac->isRedacteur()) {
             EC::set_error_code(403);
             return false;
         }
@@ -75,7 +75,7 @@ class images
             return false;
         }
 
-        if ($uLog->getId()!==$item->getIdProprietaire())
+        if ($ac->getLoggedUserId()!==$item->getIdProprietaire())
         {
             EC::set_error_code(403);
             return false;
@@ -92,8 +92,8 @@ class images
     public function insert()
     {
         // Seul un rédacteur peut créer un événement
-        $uLog=Logged::getConnectedUser();
-        if ($uLog->isRedacteur())
+        $ac = new AC();
+        if ($ac->isRedacteur())
         {
             //$data = json_decode(file_get_contents("php://input"),true);
             //var_dump($_POST);

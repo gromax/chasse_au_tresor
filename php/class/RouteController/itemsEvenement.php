@@ -2,8 +2,8 @@
 
 namespace RouteController;
 use ErrorController as EC;
+use AuthController as AC;
 use BDDObject\ItemEvenement;
-use BDDObject\Logged;
 
 class itemsEvenement
 {
@@ -23,14 +23,14 @@ class itemsEvenement
     public function fetch()
     {
         // Rédacteur seul
-        $uLog =Logged::getConnectedUser();
-        if (!$uLog->connexionOk())
+        $ac = new AC();
+        if (!$ac->connexionOk())
         {
             EC::set_error_code(401);
             return false;
         }
 
-        if (!$uLog->isRedacteur()) {
+        if (!$ac->isRedacteur()) {
             EC::set_error_code(403);
             return false;
         }
@@ -43,7 +43,7 @@ class itemsEvenement
             return false;
         }
 
-        if ($uLog->getId()!==$item->getIdProprietaire())
+        if ($ac->getLoggedUserId()!==$item->getIdProprietaire())
         {
             EC::set_error_code(403);
             return false;
@@ -55,14 +55,14 @@ class itemsEvenement
     public function delete()
     {
         // Rédacteur seul
-        $uLog=Logged::getConnectedUser();
-        if (!$uLog->connexionOk())
+        $ac = new AC();
+        if (!$ac->connexionOk())
         {
             EC::set_error_code(401);
             return false;
         }
 
-        if (!$uLog->isRedacteur()) {
+        if (!$ac->isRedacteur()) {
             EC::set_error_code(403);
             return false;
         }
@@ -75,7 +75,7 @@ class itemsEvenement
             return false;
         }
 
-        if ($uLog->getId()!==$item->getIdProprietaire())
+        if ($ac->getLoggedUserId()!==$item->getIdProprietaire())
         {
             EC::set_error_code(403);
             return false;
@@ -92,8 +92,8 @@ class itemsEvenement
     public function insert()
     {
         // Seul un rédacteur peut créer un événement
-        $uLog=Logged::getConnectedUser();
-        if ($uLog->isRedacteur())
+        $ac = new AC();
+        if ($ac->isRedacteur())
         {
             $data = json_decode(file_get_contents("php://input"),true);
             $item = new ItemEvenement();
@@ -113,13 +113,13 @@ class itemsEvenement
     public function update()
     {
         // Seul le rédacteur propriétaire peut changer un événement
-        $uLog=Logged::getConnectedUser();
-        if (!$uLog->connexionOk())
+        $ac = new AC();
+        if (!$ac->connexionOk())
         {
             EC::set_error_code(401);
             return false;
         }
-        if (!$uLog->isRedacteur()){
+        if (!$ac->isRedacteur()){
             EC::set_error_code(403);
             return false;
         }
@@ -131,7 +131,7 @@ class itemsEvenement
             return false;
         }
 
-        if ($uLog->getId()!==$item->getIdProprietaire())
+        if ($ac->getLoggedUserId()!==$item->getIdProprietaire())
         {
             EC::set_error_code(403);
             return false;

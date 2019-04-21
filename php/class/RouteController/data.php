@@ -2,7 +2,7 @@
 
 namespace RouteController;
 use ErrorController as EC;
-use BDDObject\Logged;
+use AuthController as AC;
 use BDDObject\Evenement;
 use BDDObject\Joueur;
 use BDDObject\Redacteur;
@@ -34,9 +34,8 @@ class data
     public function customFetch()
     {
         // Renvoie les données demandées
-
-        $uLog =Logged::getConnectedUser();
-        if (!$uLog->connexionOk())
+        $ac = new AC();
+        if (!$ac->connexionOk())
         {
             EC::addError("Déconnecté !");
             EC::set_error_code(401);
@@ -55,12 +54,12 @@ class data
             "fichiers" => "Fichier"
             );
 
-        if ($uLog->isRoot())
+        if ($ac->isRoot())
             $options = array("root" => true);
-        elseif ($uLog->isRedacteur())
-            $options = array("redacteur"=>$uLog->getId());
+        elseif ($ac->isRedacteur())
+            $options = array("redacteur"=> $ac->getLoggedUserId());
         else
-            $options = array("joueur"=>$uLog->getId());
+            $options = array("joueur"=> $ac->getLoggedUserId());
 
         $output = array();
         foreach ($collections as $key => $class){
@@ -82,15 +81,15 @@ class data
 
     public function partieFetch()
     {
-        $uLog =Logged::getConnectedUser();
-        if (!$uLog->connexionOk())
+        $ac = new AC();
+        if (!$ac->connexionOk())
         {
             EC::addError("Déconnecté !");
             EC::set_error_code(401);
             return false;
         }
 
-        if ($uLog->isJoueur())
+        if ($ac->isJoueur())
         {
             $id = (integer) $this->params['id'];
             $partie = Partie::getObject($id);
@@ -99,7 +98,7 @@ class data
                 EC::set_error_code(404);
                 return false;
             }
-            if ($partie->getIdProprietaire() !== $uLog->getId())
+            if ($partie->getIdProprietaire() !== $ac->getLoggedUserId())
             {
                 EC::set_error_code(403);
                 return false;

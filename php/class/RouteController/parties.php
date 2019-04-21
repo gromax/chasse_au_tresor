@@ -2,9 +2,9 @@
 
 namespace RouteController;
 use ErrorController as EC;
+use AuthController as AC;
 use BDDObject\Partie;
 use BDDObject\ClePartie;
-use BDDObject\Logged;
 
 class parties
 {
@@ -23,14 +23,14 @@ class parties
 
     public function fetch()
     {
-        $uLog =Logged::getConnectedUser();
-        if (!$uLog->connexionOk())
+        $ac = new AC();
+        if (!$ac->connexionOk())
         {
             EC::set_error_code(401);
             return false;
         }
 
-        if ($uLog->isRoot()) {
+        if ($ac->isRoot()) {
             EC::set_error_code(403);
             return false;
         }
@@ -44,22 +44,22 @@ class parties
             return false;
         }
 
-        if ($uLog->isRedacteur()) {
+        if ($ac->isRedacteur()) {
             $evenement = $item->getEvenement();
             if ($evenement===null)
             {
                 EC::set_error_code(501);
                 return false;
             }
-            if ($evenement->getIdProprietaire() !== $uLog->getId())
+            if ($evenement->getIdProprietaire() !== $ac->getLoggedUserId())
             {
                 EC::set_error_code(403);
                 return false;
             }
         }
-        elseif ($uLog->isJoueur())
+        elseif ($ac->isJoueur())
         {
-            if ($item->getIdProprietaire() !== $uLog->getId())
+            if ($item->getIdProprietaire() !== $ac->getLoggedUserId())
             {
                 EC::set_error_code(403);
                 return false;
@@ -73,14 +73,14 @@ class parties
 
     public function delete()
     {
-        $uLog=Logged::getConnectedUser();
-        if (!$uLog->connexionOk())
+        $ac = new AC();
+        if (!$ac->connexionOk())
         {
             EC::set_error_code(401);
             return false;
         }
 
-        if (!$uLog->isRoot() && !$uLog->isRedacteur()) {
+        if (!$ac->isRoot() && !$ac->isRedacteur()) {
             EC::set_error_code(403);
             return false;
         }
@@ -93,10 +93,10 @@ class parties
             return false;
         }
 
-        if ($uLog->isRedacteur())
+        if ($ac->isRedacteur())
         {
             $evenement = $item->getEvenement();
-            if (($evenement!==null)&&($evenement->getIdProprietaire() !== $uLog->getId()))
+            if (($evenement!==null)&&($evenement->getIdProprietaire() !== $ac->getLoggedUserId()))
             {
                 EC::set_error_code(403);
                 return false;
@@ -114,11 +114,11 @@ class parties
     public function insert()
     {
         // Seul un joueur peut créer une partie
-        $uLog=Logged::getConnectedUser();
-        if ($uLog->isJoueur())
+        $ac = new AC();
+        if ($ac->isJoueur())
         {
             $data = json_decode(file_get_contents("php://input"),true);
-            $data['idProprietaire'] = $uLog->getId();
+            $data['idProprietaire'] = $ac->getLoggedUserId();
             # La vérification que cet événement n'existe pas pour ce joueur sera faite dans l'insertion
             $item = new Partie();
             $validation = $item->insert_validation($data);
@@ -148,13 +148,13 @@ class parties
     public function update()
     {
         // Seul le joueur propriétaire peut changer un événement
-        $uLog=Logged::getConnectedUser();
-        if (!$uLog->connexionOk())
+        $ac = new AC();
+        if (!$ac->connexionOk())
         {
             EC::set_error_code(401);
             return false;
         }
-        if (!$uLog->isJoueur()){
+        if (!$ac->isJoueur()){
             EC::set_error_code(403);
             return false;
         }
@@ -166,7 +166,7 @@ class parties
             return false;
         }
 
-        if ($uLog->getId()!==$item->getIdProprietaire())
+        if ($ac->getLoggedUserId()!==$item->getIdProprietaire())
         {
             EC::set_error_code(403);
             return false;

@@ -2,8 +2,8 @@
 
 namespace RouteController;
 use ErrorController as EC;
+use AuthController as AC;
 use BDDObject\Redacteur as Item;
-use BDDObject\Logged;
 
 class redacteurs
 {
@@ -11,7 +11,6 @@ class redacteurs
      * paramères de la requète
      * @array
      */
-    const TestMethod = "isRedacteur";
     private $params;
     /**
      * Constructeur
@@ -23,15 +22,15 @@ class redacteurs
 
     public function fetch()
     {
-        $uLog =Logged::getConnectedUser();
-        if (!$uLog->connexionOk())
+        $ac = new AC();
+        if (!$ac->connexionOk())
         {
             EC::set_error_code(401);
             return false;
         }
 
         $id = (integer) $this->params['id'];
-        if (!$uLog->isRoot() && ($uLog->getId()!==$id)) {
+        if (!$ac->isRoot() && ($ac->getLoggedUserId()!==$id)) {
             EC::set_error_code(403);
             return false;
         }
@@ -49,14 +48,14 @@ class redacteurs
 
     public function fetchList()
     {
-        $uLog =Logged::getConnectedUser();
-        if (!$uLog->connexionOk())
+        $ac = new AC();
+        if (!$ac->connexionOk())
         {
             EC::set_error_code(401);
             return false;
         }
 
-        if ($uLog->isRoot()) return Item::getList(array("root"=>true));
+        if ($ac->isRoot()) return Item::getList(array("root"=>true));
         EC::set_error_code(403);
         return false;
     }
@@ -65,13 +64,13 @@ class redacteurs
     public function delete()
     {
         // Seul root peut effacer un rédacteur
-        $uLog=Logged::getConnectedUser();
-        if (!$uLog->connexionOk())
+        $ac = new AC();
+        if (!$ac->connexionOk())
         {
             EC::set_error_code(401);
             return false;
         }
-        if (!$uLog->isRoot())
+        if (!$ac->isRoot())
         {
             EC::set_error_code(403);
             return false;
@@ -93,8 +92,8 @@ class redacteurs
 
     public function insert()
     {
-        $uLog=Logged::getConnectedUser();
-        if ($uLog->isRoot())
+        $ac = new AC();
+        if ($ac->isRoot())
         {
             $data = json_decode(file_get_contents("php://input"),true);
             $itAdd = new Item();
@@ -125,21 +124,17 @@ class redacteurs
     public function update()
     {
         // Seul un utilisateur peut changer ses propres paramètres
-        $uLog=Logged::getConnectedUser();
-        if (!$uLog->connexionOk())
+        $ac = new AC();
+        if (!$ac->connexionOk())
         {
             EC::set_error_code(401);
             return false;
         }
-        if (!$uLog->{static::TestMethod}() && !$uLog->isRoot())
-        {
-            EC::set_error_code(403);
-            return false;
-        }
 
         $id = (integer) $this->params['id'];
-        if ($uLog->{static::TestMethod}() && ($uLog->getId() != $id)) {
-            // Un rédacteur ne peut modifier que se modifier lui même
+        if (!$ac->isRoot() && (!$ac->isRedacteur() || !($ac->getLoggedUserId() != $id)))
+        {
+            // Seul root ou rédacteur soi même peut modifier
             EC::set_error_code(403);
             return false;
         }
