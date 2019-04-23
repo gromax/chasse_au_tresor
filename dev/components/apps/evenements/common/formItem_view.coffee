@@ -6,25 +6,22 @@ export default FormView.extend {
 
 	ui: {
 		test: 'input.js-test'
-		cle: '#item-cle'
+		regexCle: '#item-regexCle'
 	}
 
 	triggers: {
 		"input @ui.test": "test:reload"
-		"input @ui.cle": "test:reload"
+		"input @ui.regexCle": "test:reload"
 	}
 
 	onTestReload: ->
 		test = @ui.test.val()
 		test = test.normalize('NFD').replace(/[\u0300-\u036f]/g, "")
-		cle = @ui.cle.val()
-		# si cle est un simple texte, on ajoute ^et$
-		if /^[\w]+$/i.test(cle) isnt false
-			cle = "^"+cle+"$"
+		regexCle = @ui.regexCle.val()
 		result = false
-		if test!="" and cle !=""
+		if test!="" and regexCle !=""
 			try
-				r = new RegExp(cle, 'gi')
+				r = new RegExp(regexCle, 'gi')
 				result = r.test(test)
 			catch e
 				result = false
