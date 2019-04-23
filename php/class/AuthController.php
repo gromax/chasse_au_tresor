@@ -20,11 +20,17 @@ class AuthController
 
   public function __construct()
   {
-    $loggedUserIp = SC::get()->getParam("loggedUserIp", null);
+    // la sauvegarde de l'ip crée problème avec connexion sur portable
+    //$loggedUserIp = SC::get()->getParam("loggedUserIp", null);
     $loggedUserData = SC::get()->getParam("loggedUserData", null);
-    if ( ($loggedUserIp == $_SERVER['REMOTE_ADDR']) && ($loggedUserData !==null) )
+    //if ( ($loggedUserIp == $_SERVER['REMOTE_ADDR']) && ($loggedUserData !==null) )
+    if ( $loggedUserData !==null )
     {
       $this->loggedUserData = $loggedUserData;
+    }
+    else
+    {
+      EC::addDebugError("Pas de data user dans la session");
     }
   }
 
@@ -40,7 +46,8 @@ class AuthController
       $loggedUserData["id"] = (integer) $id;
     }
     SC::get()->setParam('loggedUserData', $loggedUserData);
-    SC::get()->setParam('loggedUserIp', $_SERVER['REMOTE_ADDR']);
+    // la sauvegarde de l'ip crée problème avec connexion sur portable
+    // SC::get()->setParam('loggedUserIp', $_SERVER['REMOTE_ADDR']);
   }
 
   public static function tryLogin($email, $pwd, $adm)
