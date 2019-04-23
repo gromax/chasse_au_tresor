@@ -56,5 +56,5 @@ Inscription
 	</form>
 </div>
 <div class="card-footer text-muted">
-	Vous êtes libre d'entrer un simple nom d'utilisateur ou un email. Si vous donnez un email, il ne servira qu'à une chose : vous permettre de vous reconnecter en cas d'oubli. Les seules données conservées seront vos réponses aux différentes énigmes. Vous pourrez toujours effacer une partie ou même effacer votre compte, aucune trace n'en sera gardée.
+	Vous êtes libre d'entrer un simple nom d'utilisateur ou un email. Si vous donnez un email, il ne servira qu'à une chose : vous permettre de vous reconnecter en cas d'oubli. Les seules données conservées seront vos réponses aux différentes énigmes. Le seul usage qui en sera fait sera, dans le cas des rallyes, de compter les points.
 </div>
