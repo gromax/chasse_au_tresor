@@ -111,7 +111,7 @@ AccueilView = View.extend {
   clickStartCle: (e)->
     e.preventDefault()
     $el = $(e.currentTarget)
-    @trigger("essai",$el.attr("cle"))
+    @trigger("essai",$el.text())
 
   templateContext: ->
     {
