@@ -22,6 +22,6 @@
 <div>
 <h5>Clés pour démarrer</h5>
 <% _.each(startCles, function(item){%>
-<a href="#" class="badge badge-success js-startCle" cle="<%-item%>"><%-item%></a>
+<a href="#" class="badge badge-success js-startCle"><%-item%></a>
 <%});%>
 </div>
