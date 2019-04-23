@@ -145,11 +145,13 @@ class data
                 $startCles = array();
             }
 
+            $tagCleColumn = array_column($startCles,"tagCle");
+
             $output = array(
                 "partie"=>$partie->getValues(),
                 "evenement"=>$evenement->getValues(),
                 "cles"=>$cles,
-                "startCles"=>array_column($startCles,"cle")
+                "startCles"=>$tagCleColumn
                 );
 
             if ($itemEvenement!= null)
