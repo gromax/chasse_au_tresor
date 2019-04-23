@@ -191,7 +191,7 @@ abstract class Item
 		if (!isset($this->values['id'])) {
 			# il s'agit d'une insertion
 			try {
-				DB::insert(PREFIX_BDD.static::$BDDName, $modifs);
+				DB::insert(PREFIX_BDD.static::$BDDName, $this->values);
 			} catch(MeekroDBException $e) {
 				EC::addBDDError($e->getMessage(), static::$BDDName."/insertion");
 				return null;
