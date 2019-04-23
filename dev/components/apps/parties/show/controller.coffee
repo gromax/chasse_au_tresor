@@ -51,11 +51,12 @@ Controller = Marionette.Object.extend {
         }
 
         vuePrincipale.on "essai", (essai)->
-          app.trigger("partie:show:cle", id, essai)
+          app.trigger("partie:show:cle", id, essai.normalize('NFD').replace(/[\u0300-\u036f]/g, ""))
 
       vueCles = new CleCollectionView { collection: data.cles, idSelected:idCleSelected }
       vueCles.on "cle:select", (v)->
-        app.trigger("partie:show:cle", id, v.model.get("essai"))
+        essai = v.model.get("essai").normalize('NFD').replace(/[\u0300-\u036f]/g, "")
+        app.trigger("partie:show:cle", id, essai)
 
       vueCles.on "home", (v)->
         app.trigger("partie:show", id)
