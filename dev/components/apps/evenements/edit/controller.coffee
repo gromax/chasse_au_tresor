@@ -20,10 +20,12 @@ Controller = Marionette.Object.extend {
     $.when(fetchingData).done( (evenements, itemsEvenement)->
       evenement = evenements.get(id)
       if evenement isnt  undefined
-        app.Ariane.add [{ text:evenement.get("titre")}]
         layout = new Layout()
         entete = new EnteteView { model: evenement }
         liste = new ListeView { collection: itemsEvenement, idEvenement:evenement.get("id"), addButton: true }
+
+        entete.on "navigate:parent", ->
+          app.trigger "evenements:list"
 
         liste.on "item:new", ()->
           Item = require("entities/itemsEvenement.coffee").Item
@@ -148,7 +150,6 @@ Controller = Marionette.Object.extend {
       else
         view = new MissingView()
         app.regions.getRegion('main').show(view)
-        app.Ariane.add([{ text:"Inconnu"}])
     ).fail( (response) ->
       if response.status is 401
         alert("Vous devez vous (re)connecter !")
@@ -176,12 +177,8 @@ Controller = Marionette.Object.extend {
       else evenement = null
 
       if (item isnt undefined) and (evenement isnt undefined)
-        app.Ariane.add [
-          { text:evenement.get("titre"), e:"evenement:show", data:idEvenement, link:"evenement:#{idEvenement}"}
-          { text: "clé ##{id}", e:"evenement:cle:show", data:id, link:"evenements:#{idEvenement}/cle:#{id}"}
-        ]
         layout = new ItemLayoutView()
-        panel = new PanelView({ model:item })
+        panel = new PanelView({ model:item, evenement:evenement })
 
         subItemsData = item.get("subItemsData")
         try
@@ -194,6 +191,9 @@ Controller = Marionette.Object.extend {
           subItemsCollection = new SubItemCollection()
           subItemsCollection.add(d, {parse:true})
         subItemsView = new SubItemCollectionView({ collection: subItemsCollection })
+
+        panel.on "navigate:parent", ->
+          app.trigger "evenement:show", idEvenement
 
         panel.on "type:toggle", () ->
           mtype = item.get("type")
@@ -397,7 +397,6 @@ Controller = Marionette.Object.extend {
       else
         view = new MissingView()
         app.regions.getRegion('main').show(view)
-        app.Ariane.add([{ text:"Inconnu"}])
     ).fail( (response) ->
       if response.status is 401
         alert("Vous devez vous (re)connecter !")
