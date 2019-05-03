@@ -39,6 +39,7 @@ Item = Backbone.Model.extend {
 		subItemsData:"[]"
 		tagCle:"étiquette"
 		regexCle:"^cle$"
+		pts: 0
 	},
 
 	parse: (data) ->
@@ -48,6 +49,8 @@ Item = Backbone.Model.extend {
 			data.idEvenement = Number(data.idEvenement)
 		if (data.type)
 			data.type = Number(data.type)
+		if (data.pts)
+			data.pts = Number(data.pts)
 		return data
 
 	validate: (attrs, options) ->
@@ -56,6 +59,8 @@ Item = Backbone.Model.extend {
 			errors.tagCle = "Ne doit pas être vide"
 		if not attrs.regexCle
 			errors.regexCle = "Ne doit pas être vide"
+		if attrs.pts and (/^\s*[-+]?\s*[0-9]+$/.test(attrs.pts) is false)
+				errors.pts = "Entier positif ou négatif"
 		if not _.isEmpty(errors)
 			return errors
 
