@@ -1,6 +1,7 @@
 <td><span class="badge badge-pill badge-primary"><%- id %></span></td>
 <td><%- tagCle %></td>
 <td><%- regexCle %></td>
+<td><%- pts %></td>
 <td><% if (type == 1){%><button type="button" class="btn btn-success btn-sm js-type" title="Changer de type">Deb</button><%} else if(type ==2){%><button type="button" class="btn btn-danger btn-sm js-type" title="Changer de type">Fin</button><%} else {%><button type="button" class="btn btn-secondary btn-sm js-type" title="Changer de type">Norm</button><%}%></td>
 <td align="right">
 	<div class="btn-group" role="group">
