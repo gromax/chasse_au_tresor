@@ -10,7 +10,6 @@ Router = Backbone.Router.extend {
 	list: (criterion) ->
 		rank = app.Auth.get("rank")
 		if rank is "root"
-			app.Ariane.reset([{ text:"Rédacteurs", e:"redacteurs:list", link:"redacteurs"}]);
 			require("apps/redacteurs/list/controller.coffee").controller.list(criterion)
 }
 
