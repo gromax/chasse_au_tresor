@@ -1,7 +1,6 @@
 import Marionette from 'backbone.marionette'
 import AlertView from 'apps/common/alert_view.coffee'
-import Layout from 'apps/common/list_layout.coffee'
-import Panel from 'apps/redacteurs/list/panel.coffee'
+import { Layout, Panel } from 'apps/common/list.coffee'
 import ListView from 'apps/redacteurs/list/view.coffee'
 import FormView from 'apps/redacteurs/common/form_view.coffee'
 
@@ -15,6 +14,7 @@ Controller = Marionette.Object.extend {
 		app.trigger("header:loading", true)
 		listLayout = new Layout()
 		listPanel = new Panel {
+			title: "Rédacteurs"
 			filterCriterion:criterion
 			showAddButton:true
 		}
