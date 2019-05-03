@@ -1,6 +1,7 @@
 <nav class="navbar navbar-dark bg-dark">
-	<span class="navbar-text">
-		<span class="badge badge-pill badge-primary"><%- id %></span> <%- cle %>
+	<a href="#" class="navbar-brand js-parent" title="Item parent"><i class="fa fa-level-up"></i> <%-titreEvenement %></a>
+	<span class="navbar-text mr-auto">
+		 / <%- tagCle %> <span class="badge badge-pill badge-primary"><%- id %></span>
 	</span>
 	<form class="form-inline">
 		<div class="btn-group" role="group">
