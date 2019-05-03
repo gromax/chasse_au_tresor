@@ -7,9 +7,9 @@ use ErrorController as EC;
 use SessionController as SC;
 use MeekroDBException;
 
-final class ClePartie extends Item
+final class EssaiJoueur extends Item
 {
-	protected static $BDDName = "clesPartie";
+	protected static $BDDName = "essaisJoueur";
 
 	##################################### METHODES STATIQUES #####################################
 
@@ -27,20 +27,20 @@ final class ClePartie extends Item
   public static function deleteList($options = array())
   {
     if (self::SAVE_IN_SESSION) {
-      SC::get()->unsetParam("clesPartie");
+      SC::get()->unsetParam("essaisJoueur");
     }
     require_once BDD_CONFIG;
     try {
       if (isset($options['redacteur'])) {
-        DB::query("DELETE ".PREFIX_BDD."clesPartie FROM ((".PREFIX_BDD."clesPartie JOIN ".PREFIX_BDD."parties ON ".PREFIX_BDD."clesPartie.idPartie = ".PREFIX_BDD."parties.id) JOIN ".PREFIX_BDD."evenements ON ".PREFIX_BDD."parties.idEvenement = ".PREFIX_BDD."evenements.id) WHERE ".PREFIX_BDD."evenements.idProprietaire=%i", $options['redacteur']);
+        DB::query("DELETE ".PREFIX_BDD."essaisJoueur FROM ((".PREFIX_BDD."essaisJoueur JOIN ".PREFIX_BDD."parties ON ".PREFIX_BDD."essaisJoueur.idPartie = ".PREFIX_BDD."parties.id) JOIN ".PREFIX_BDD."evenements ON ".PREFIX_BDD."parties.idEvenement = ".PREFIX_BDD."evenements.id) WHERE ".PREFIX_BDD."evenements.idProprietaire=%i", $options['redacteur']);
       } elseif (isset($options['joueur'])) {
-        DB::query("DELETE ".PREFIX_BDD."clesPartie FROM (".PREFIX_BDD."clesPartie JOIN ".PREFIX_BDD."parties ON ".PREFIX_BDD."clesPartie.idPartie = ".PREFIX_BDD."parties.id) WHERE ".PREFIX_BDD."parties.idProprietaire=%i", $options['joueur']);
+        DB::query("DELETE ".PREFIX_BDD."essaisJoueur FROM (".PREFIX_BDD."essaisJoueur JOIN ".PREFIX_BDD."parties ON ".PREFIX_BDD."essaisJoueur.idPartie = ".PREFIX_BDD."parties.id) WHERE ".PREFIX_BDD."parties.idProprietaire=%i", $options['joueur']);
       } elseif (isset($options['evenement'])) {
-        DB::query("DELETE ".PREFIX_BDD."clesPartie FROM (".PREFIX_BDD."clesPartie JOIN ".PREFIX_BDD."parties ON ".PREFIX_BDD."clesPartie.idPartie = ".PREFIX_BDD."parties.id) WHERE ".PREFIX_BDD."parties.idEvenement=%i", $options['evenement']);
+        DB::query("DELETE ".PREFIX_BDD."essaisJoueur FROM (".PREFIX_BDD."essaisJoueur JOIN ".PREFIX_BDD."parties ON ".PREFIX_BDD."essaisJoueur.idPartie = ".PREFIX_BDD."parties.id) WHERE ".PREFIX_BDD."parties.idEvenement=%i", $options['evenement']);
       } elseif (isset($options['itemEvenement'])) {
-        DB::delete(PREFIX_BDD."clesPartie", 'idItem=%i', $options['itemEvenement']);
+        DB::delete(PREFIX_BDD."essaisJoueur", 'idItem=%i', $options['itemEvenement']);
       } elseif (isset($options['partie'])) {
-        DB::delete(PREFIX_BDD."clesPartie", "idPartie=%i", $options['partie']);
+        DB::delete(PREFIX_BDD."essaisJoueur", "idPartie=%i", $options['partie']);
       }
       return true;
     } catch(MeekroDBException $e) {
@@ -54,20 +54,20 @@ final class ClePartie extends Item
     require_once BDD_CONFIG;
     try {
       if (isset($options['joueur']))
-        return DB::query("SELECT c.id, c.idItem, c.essai, c.date FROM (".PREFIX_BDD."clesPartie c JOIN ".PREFIX_BDD."parties p ON p.id = c.idPartie) WHERE p.idProprietaire=%i", $options['joueur']);
+        return DB::query("SELECT c.id, c.idItem, c.essai, c.date FROM (".PREFIX_BDD."essaisJoueur c JOIN ".PREFIX_BDD."parties p ON p.id = c.idPartie) WHERE p.idProprietaire=%i", $options['joueur']);
       elseif (isset($options['redacteur']))
-        return DB::query("SELECT c.id, c.idItem, c.essai, c.date FROM ((".PREFIX_BDD."clesPartie c JOIN ".PREFIX_BDD."parties p ON p.id = c.idPartie) JOIN ".PREFIX_BDD."evenements e ON e.id = p.idEvenement) WHERE e.idProprietaire=%i", $options['redacteur']);
+        return DB::query("SELECT c.id, c.idItem, c.essai, c.date FROM ((".PREFIX_BDD."essaisJoueur c JOIN ".PREFIX_BDD."parties p ON p.id = c.idPartie) JOIN ".PREFIX_BDD."evenements e ON e.id = p.idEvenement) WHERE e.idProprietaire=%i", $options['redacteur']);
       elseif (isset($options['evenement']))
-        return DB::query("SELECT c.id, c.idItem, c.essai, c.date FROM (".PREFIX_BDD."clesPartie c JOIN ".PREFIX_BDD."parties p ON p.id = c.idPartie) WHERE p.idEvenement=%i", $options['evenement']);
+        return DB::query("SELECT c.id, c.idItem, c.essai, c.date FROM (".PREFIX_BDD."essaisJoueur c JOIN ".PREFIX_BDD."parties p ON p.id = c.idPartie) WHERE p.idEvenement=%i", $options['evenement']);
       elseif (isset($options['partie']))
-        return DB::query("SELECT id, idItem, essai, date FROM ".PREFIX_BDD."clesPartie WHERE idPartie=%i", $options['partie']);
+        return DB::query("SELECT id, idItem, essai, date FROM ".PREFIX_BDD."essaisJoueur WHERE idPartie=%i", $options['partie']);
       elseif (isset($options['root']))
-        return DB::query("SELECT id, essai, date FROM ".PREFIX_BDD."clesPartie");
+        return DB::query("SELECT id, essai, date FROM ".PREFIX_BDD."essaisJoueur");
       else
         return array();
 
     } catch(MeekroDBException $e) {
-      if (BDD_DEBUG_ON) return array('error'=>true, 'message'=>"#ClePartie/getList : ".$e->getMessage());
+      if (BDD_DEBUG_ON) return array('error'=>true, 'message'=>"#EssaiJoueur/getList : ".$e->getMessage());
       return array('error'=>true, 'message'=>'Erreur BDD');
     }
   }
@@ -88,11 +88,11 @@ final class ClePartie extends Item
     // il faut vérifier l'inexistance d'un couple de valeurs
     require_once BDD_CONFIG;
     try {
-      $bdd_result = DB::queryFirstRow("SELECT id FROM ".PREFIX_BDD."clesPartie WHERE idPartie=%i AND idItem=%i", $data['idPartie'], $data['idItem']);
+      $bdd_result = DB::queryFirstRow("SELECT id FROM ".PREFIX_BDD."essaisJoueur WHERE idPartie=%i AND idItem=%i", $data['idPartie'], $data['idItem']);
     }
     catch(MeekroDBException $e)
     {
-      if (BDD_DEBUG_ON) return array('error'=>true, 'message'=>"#ClePartie/insert_validation : ".$e->getMessage());
+      if (BDD_DEBUG_ON) return array('error'=>true, 'message'=>"#EssaiJoueur/insert_validation : ".$e->getMessage());
       return array('error'=>true, 'message'=>'Erreur BDD');
     }
 
