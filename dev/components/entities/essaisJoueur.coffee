@@ -1,10 +1,11 @@
 Item = Backbone.Model.extend {
-  urlRoot: "api/clesPartie"
+  urlRoot: "api/essaisJoueur"
 
   defaults: {
     idPartie: false
     idItem: false
-    essai:""
+    essai: ""
+    tagCle: ""
   },
 
   toJSON: ->
@@ -33,7 +34,7 @@ Item = Backbone.Model.extend {
 }
 
 Collection = Backbone.Collection.extend {
-  url: "api/clesPartie"
+  url: "api/essaisJoueur"
   model: Item
   comparator: "date"
 }
