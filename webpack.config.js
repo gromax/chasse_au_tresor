@@ -6,6 +6,7 @@ const path = require('path');
 const merge = require('webpack-merge');
 const OptimizeCSSAssetsPlugin = require("optimize-css-assets-webpack-plugin");
 const DashboardPlugin = require("webpack-dashboard/plugin");
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const devMode = process.env.NODE_ENV !== 'production'
 const devLiveReload = process.env.NODE_LIVERELOAD == 'active'
@@ -19,7 +20,7 @@ let config = {
   ],
   output: {
     path: path.resolve(__dirname, "public"),
-    filename: "app.js"
+    filename: devMode ? "app.js" : "app.[contentHash].js"
   },
   resolve: {
     alias:{
@@ -93,14 +94,14 @@ let config = {
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: devMode ? '[name].css' : '[name].[hash].css',
-      chunkFilename: devMode ? '[id].css' : '[id].[hash].css',
+      filename: devMode ? '[name].css' : '[name].[contentHash].css',
+      chunkFilename: devMode ? '[id].css' : '[id].[contentHash].css',
     }),
     new CopyWebpackPlugin([
-      {
+      /*{
         from: './dev/assets/index.html',
         to: './index.html'
-      },
+      },*/
       {
         from: './dev/assets/.htaccess'
       },
@@ -143,7 +144,15 @@ let config = {
       Tooltip: "exports-loader?Tooltip!bootstrap/js/dist/tooltip",
       Util: 'exports-loader?Util!bootstrap/js/dist/util'
     }),
-    new DashboardPlugin()
+    new DashboardPlugin(),
+    new HtmlWebpackPlugin({
+      title: 'Chasse au trésor',
+      filename: 'index.html',
+      template: 'dev/index.html'
+    }),
+    new webpack.DefinePlugin({
+      VERSION: JSON.stringify(require("./package.json").version)
+    })
   ],
   devServer: {
     contentBase: path.resolve(__dirname, "./public"),
