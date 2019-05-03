@@ -18,13 +18,12 @@ Controller = Marionette.Object.extend {
       partie = data.partie
       evenement = data.evenement
       layout = new Layout()
-      app.Ariane.add([{ text:evenement.get("titre"), e:"partie:show", data:[id], link:"partie:#{id}"}])
 
       panel = new PanelView { cle }
       panel.on "essai", (essai)->
         app.trigger("partie:show:cle", id, essai)
 
-      idCleSelected = -1
+      idEssaiSelected = -1
       if data.item?
         # on a trouvé un item à afficher
         subItemsData = data.item.get("subItemsData")
@@ -38,10 +37,9 @@ Controller = Marionette.Object.extend {
           subItemsCollection = new SubItemCollection()
           subItemsCollection.add(d, {parse:true})
         vuePrincipale = new SubItemCollectionView { collection: subItemsCollection }
-        cleSelected = data.cles.where({idItem:data.item.get("id")})[0]
-        if cleSelected
-          app.Ariane.add [{ text:cleSelected.get("essai")}]
-          idCleSelected = cleSelected.get("id")
+        itemSelected = data.essais.where({idItem:data.item.get("id")})[0]
+        if itemSelected
+          idEssaiSelected = itemSelected.get("id")
       else
         vuePrincipale = new AccueilView {
           model:partie
@@ -53,7 +51,7 @@ Controller = Marionette.Object.extend {
         vuePrincipale.on "essai", (essai)->
           app.trigger("partie:show:cle", id, essai.normalize('NFD').replace(/[\u0300-\u036f]/g, ""))
 
-      vueCles = new CleCollectionView { collection: data.cles, idSelected:idCleSelected }
+      vueCles = new CleCollectionView { collection: data.essais, idSelected: data.item?.get("id") ? -1 }
       vueCles.on "cle:select", (v)->
         essai = v.model.get("essai").normalize('NFD').replace(/[\u0300-\u036f]/g, "")
         app.trigger("partie:show:cle", id, essai)
@@ -70,7 +68,6 @@ Controller = Marionette.Object.extend {
       if response.status is 404
         view = new MissingView()
         app.regions.getRegion('main').show(view)
-        app.Ariane.add([{ text:"Inconnu"}])
       else if response.status is 401
         alert("Vous devez vous (re)connecter !")
         app.trigger("home:logout")
