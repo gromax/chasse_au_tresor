@@ -55,6 +55,9 @@ Layout = Marionette.View.extend {
 
 EnteteView = Marionette.View.extend {
 	template: templateEntete
+	triggers: {
+		"click a.js-parent": "navigate:parent"
+	}
 }
 
 ListeView = Marionette.CollectionView.extend {
