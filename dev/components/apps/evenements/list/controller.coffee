@@ -1,7 +1,7 @@
 import Marionette from 'backbone.marionette'
 import AlertView from 'apps/common/alert_view.coffee'
-import Layout from 'apps/common/list_layout.coffee'
-import { RedacteurListView, JoueurListView, PanelView } from 'apps/evenements/list/view.coffee'
+import { Layout, Panel } from 'apps/common/list.coffee'
+import { RedacteurListView, JoueurListView } from 'apps/evenements/list/view.coffee'
 import FormView from 'apps/evenements/common/form_view.coffee'
 
 app = require('app').app
@@ -13,7 +13,8 @@ Controller = Marionette.Object.extend {
 		criterion = criterion ? ""
 		app.trigger("header:loading", true)
 		listLayout = new Layout()
-		listPanel = new PanelView {
+		listPanel = new Panel {
+			title: "Événements"
 			filterCriterion:criterion
 			showAddButton: app.Auth.get("rank") is "redacteur"
 		}
@@ -185,7 +186,8 @@ Controller = Marionette.Object.extend {
 		criterion = criterion ? ""
 		app.trigger("header:loading", true)
 		listLayout = new Layout()
-		listPanel = new PanelView {
+		listPanel = new Panel {
+			title: "Événements"
 			filterCriterion:criterion
 			showAddButton: false
 		}
