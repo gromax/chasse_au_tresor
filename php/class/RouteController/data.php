@@ -6,7 +6,7 @@ use AuthController as AC;
 use BDDObject\Evenement;
 use BDDObject\Joueur;
 use BDDObject\Redacteur;
-use BDDObject\ClePartie;
+use BDDObject\EssaiJoueur;
 use BDDObject\Partie;
 use BDDObject\ItemEvenement;
 use BDDObject\Image;
@@ -48,7 +48,7 @@ class data
             "redacteurs" => "Redacteur",
             "joueurs" => "Joueur",
             "parties" => "Partie",
-            "clesPartie" => "ClePartie",
+            "essaisJoueur" => "EssaiJoueur",
             "itemsEvenement" => "ItemEvenement",
             "images" => "Image",
             "fichiers" => "Fichier"
@@ -116,18 +116,18 @@ class data
                     $itemEvenement = ItemEvenement::tryCle($evenement->getId(), $cle);
                     if ($itemEvenement!==null)
                     {
-                        // on inserre la clé correspondante dans la liste des clePartie
-                        $dataNewCle = array(
+                        // on inserre la clé correspondante dans la liste des essaiJoueur
+                        $dataNewEssai = array(
                             "idPartie"=>$id,
                             "essai"=>$cle,
                             "date"=> date("Y-m-d H:i:s"),
                             "idItem"=>$itemEvenement->getId()
                             );
-                        $clePartie = new ClePartie();
-                        $validation = $clePartie->insert_validation($dataNewCle);
+                        $essaiJoueur = new EssaiJoueur();
+                        $validation = $essaiJoueur->insert_validation($dataNewEssai);
                         if ($validation===true)
                         {
-                            $clePartie->update($dataNewCle);
+                            $essaiJoueur->update($dataNewEssai);
                         }
                         // inutile de charger cette clé, elle sera automatiquement chargée
                         // si la clé n'est pas crée car existait déjà, c'est idem
@@ -135,7 +135,7 @@ class data
                 }
             }
 
-            $cles = ClePartie::getList(array("partie"=>$id));
+            $essais = EssaiJoueur::getList(array("partie"=>$id));
             if ($evenement !==null)
             {
                 $startCles = ItemEvenement::getList(array("starting"=>$evenement->getId()));
@@ -150,7 +150,7 @@ class data
             $output = array(
                 "partie"=>$partie->getValues(),
                 "evenement"=>$evenement->getValues(),
-                "cles"=>$cles,
+                "essais"=>$essais,
                 "startCles"=>$tagCleColumn
                 );
 
