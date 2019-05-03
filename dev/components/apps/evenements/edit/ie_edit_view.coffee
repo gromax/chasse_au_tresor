@@ -107,10 +107,16 @@ PanelView = View.extend {
 	template: templatePanel
 
 	triggers:{
+		"click a.js-parent" : "navigate:parent"
 		"click a.js-add": "subItem:new"
 		"click button.js-type": "type:toggle"
 		"click button.js-images": "files:show"
 	}
+
+	templateContext: ->
+		{
+			titreEvenement: @options.evenement.get("titre")
+		}
 }
 
 ItemLayoutView = View.extend {
