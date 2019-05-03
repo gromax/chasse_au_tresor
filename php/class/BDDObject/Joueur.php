@@ -56,7 +56,7 @@ final class Joueur extends Item
 		require_once BDD_CONFIG;
 		try {
 			if (isset($options['root']))
-				return DB::query("SELECT j.id, j.nom, j.description, j.email, (SELECT COUNT(p.id) FROM ".PREFIX_BDD."parties p where p.idProprietaire = j.id) AS count_parties FROM ".PREFIX_BDD."joueurs j");
+				return DB::query("SELECT j.id, j.nom, j.email, (SELECT COUNT(p.id) FROM ".PREFIX_BDD."parties p where p.idProprietaire = j.id) AS count_parties FROM ".PREFIX_BDD."joueurs j");
 			else
 				return array();
 		} catch(MeekroDBException $e) {
