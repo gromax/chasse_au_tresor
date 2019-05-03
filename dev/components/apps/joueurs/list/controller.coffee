@@ -1,7 +1,6 @@
 import Marionette from 'backbone.marionette'
 import AlertView from 'apps/common/alert_view.coffee'
-import Layout from 'apps/common/list_layout.coffee'
-import Panel from 'apps/joueurs/list/panel.coffee'
+import { Layout, Panel } from 'apps/common/list.coffee'
 import ListView from 'apps/joueurs/list/view.coffee'
 import FormView from 'apps/joueurs/common/form_view.coffee'
 
@@ -15,8 +14,9 @@ Controller = Marionette.Object.extend {
 		app.trigger("header:loading", true)
 		listLayout = new Layout()
 		listPanel = new Panel {
+			title: "Joueurs"
 			filterCriterion:criterion
-			showAddButton:true
+			showAddButton:false
 		}
 
 		channel = @getChannel()

@@ -1,7 +1,7 @@
 import Marionette from 'backbone.marionette'
 import AlertView from 'apps/common/alert_view.coffee'
-import Layout from 'apps/common/list_layout.coffee'
-import { RedacteurListView, PanelView, JoueurListView } from 'apps/parties/list/view.coffee'
+import { Layout, Panel } from 'apps/common/list.coffee'
+import { RedacteurListView, JoueurListView } from 'apps/parties/list/view.coffee'
 
 app = require('app').app
 
@@ -12,8 +12,9 @@ Controller = Marionette.Object.extend {
     criterion = criterion ? ""
     app.trigger("header:loading", true)
     listLayout = new Layout()
-    listPanel = new PanelView {
-      filterCriterion:criterion
+    listPanel = new Panel {
+      filterCriterion: criterion
+      title: "Parties"
     }
 
     channel = @getChannel()
@@ -65,7 +66,8 @@ Controller = Marionette.Object.extend {
     criterion = criterion ? ""
     app.trigger("header:loading", true)
     listLayout = new Layout()
-    listPanel = new PanelView {
+    listPanel = new Panel {
+      title: "Mes parties"
       filterCriterion:criterion
     }
 
