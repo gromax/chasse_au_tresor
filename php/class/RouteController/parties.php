@@ -4,7 +4,7 @@ namespace RouteController;
 use ErrorController as EC;
 use AuthController as AC;
 use BDDObject\Partie;
-use BDDObject\ClePartie;
+use BDDObject\EssaiJoueur;
 
 class parties
 {
@@ -67,7 +67,7 @@ class parties
         }
 
         $values = $item->getValues();
-        $values['cles'] = ClePartie::getList(array('partie'=>$id));
+        $values['essais'] = EssaiJoueur::getList(array('partie'=>$id));
         return $values;
     }
 
