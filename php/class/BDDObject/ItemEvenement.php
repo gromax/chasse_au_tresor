@@ -7,7 +7,7 @@ use ErrorController as EC;
 use SessionController as SC;
 use MeekroDBException;
 use BDDObject\Evenement;
-use BDDObject\ClePartie;
+use BDDObject\EssaiJoueur;
 
 final class ItemEvenement extends Item
 {
@@ -25,7 +25,8 @@ final class ItemEvenement extends Item
       'subItemsData' => array( 'def' => "", 'type'=> 'string'), // données paramétrant cet item
       'tagCle' => array( 'def' => "", 'type'=> 'string'), // étiquette pour la clé
       'regexCle' => array( 'def' => "", 'type'=> 'string'), // regex pour la clé
-      'type' => array( 'def' => static::ITEM_NORMAL, 'type' => 'integer') // type d'item
+      'type' => array( 'def' => static::ITEM_NORMAL, 'type' => 'integer'), // type d'item
+      'pts' => array( 'def' => 0, 'type' => 'integer') // nombre de points
       );
   }
 
@@ -54,11 +55,11 @@ final class ItemEvenement extends Item
     try {
       if (isset($options['redacteur']))
         // rédacteur
-        return DB::query("SELECT i.id, i.idEvenement, i.subItemsData, i.tagCle, i.regexCle, i.type FROM (".PREFIX_BDD."itemsEvenement i JOIN ".PREFIX_BDD."evenements e ON e.id = i.idEvenement) WHERE e.idProprietaire=%i", $options['redacteur']);
+        return DB::query("SELECT i.id, i.idEvenement, i.subItemsData, i.tagCle, i.regexCle, i.type, i.pts FROM (".PREFIX_BDD."itemsEvenement i JOIN ".PREFIX_BDD."evenements e ON e.id = i.idEvenement) WHERE e.idProprietaire=%i", $options['redacteur']);
       elseif (isset($options['evenement']))
-        return DB::query("SELECT id, idEvenement, subItemsData, tagCle, regexCle, type FROM ".PREFIX_BDD."itemsEvenement WHERE idEvenement=%i", $options['evenement']);
+        return DB::query("SELECT id, idEvenement, subItemsData, tagCle, regexCle, type, pts FROM ".PREFIX_BDD."itemsEvenement WHERE idEvenement=%i", $options['evenement']);
       elseif (isset($options['root']))
-        return DB::query("SELECT id, idEvenement, subItemsData, tagCle, regexCle, type FROM ".PREFIX_BDD."itemsEvenement");
+        return DB::query("SELECT id, idEvenement, subItemsData, tagCle, regexCle, type, pts FROM ".PREFIX_BDD."itemsEvenement");
       elseif (isset($options['starting']))
       {
         // Cas où on veut les clés des points de départ d'un événement
@@ -124,7 +125,7 @@ final class ItemEvenement extends Item
   public function customDelete()
   {
     $options = array("evenement"=>$this->id);
-    return (ClePartie::deleteList($options));
+    return (EssaiJoueur::deleteList($options));
   }
 
 
