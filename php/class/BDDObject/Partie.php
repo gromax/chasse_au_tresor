@@ -7,7 +7,7 @@ use ErrorController as EC;
 use SessionController as SC;
 use MeekroDBException;
 
-use BDDObject\ClePartie;
+use BDDObject\EssaiJoueur;
 use BDDObject\Evenement;
 
 final class Partie extends Item
@@ -29,7 +29,7 @@ final class Partie extends Item
 
 	public static function deleteList($options = array())
 	{
-		if (!ClePartie::deleteList($options))
+		if (!EssaiJoueur::deleteList($options))
 		{
 			return false;
 		}
@@ -99,7 +99,7 @@ final class Partie extends Item
 	public function customDelete()
 	{
 		$options = array("partie"=>$this->id);
-		return ClePartie::deleteList($options);
+		return EssaiJoueur::deleteList($options);
 	}
 
 	public function insert_validation($data=array())
@@ -152,7 +152,8 @@ final class Partie extends Item
 		else
 		{
 			$modifs["dateDebut"] = date("Y-m-d H:i:s");
-			return array_intersect_key($modifs, array("idEvenement"=>true, "idProprietaire"=>true, "dateDebut"=>true));
+			$modifs["dateFin"] = $modifs["dateDebut"];
+			return array_intersect_key($modifs, array("idEvenement"=>true, "idProprietaire"=>true, "dateDebut"=>true, "dateFin"=>true));
 		}
 	}
 
