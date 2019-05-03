@@ -65,7 +65,7 @@ CleView = View.extend {
     href:"#"
   }
   className: ->
-    if @model.get("id") is @options.idSelected then "badge badge-warning"
+    if @model.get("idItem") is @options.idSelected then "badge badge-warning"
     else "badge badge-primary"
   template: _.template("<%-essai%>")
   triggers: {
