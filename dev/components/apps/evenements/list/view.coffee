@@ -2,7 +2,6 @@ import { View, CollectionView } from 'backbone.marionette'
 import templateList from 'templates/evenements/list/redacteur_list.tpl'
 import templateRedacteurItem from 'templates/evenements/list/redacteur_item.tpl'
 import templateRedacteurNone from 'templates/evenements/list/redacteur_none.tpl'
-import template from 'templates/evenements/list/panel.tpl'
 
 import templateJoueurItem from 'templates/evenements/list/joueur_item.tpl'
 import templateJoueurNone from 'templates/evenements/list/joueur_none.tpl'
@@ -43,36 +42,6 @@ RedacteurItemView = View.extend {
 			self.trigger("model:destroy", @model)
 			View.prototype.remove.call(self)
 		)
-}
-
-PanelView = View.extend {
-	template: template
-
-	triggers: {
-		"click button.js-new": "item:new"
-	}
-
-	events: {
-		"submit #filter-form": "applyFilter"
-	}
-
-	ui: {
-		criterion: "input.js-filter-criterion"
-	},
-
-	applyFilter: (e)->
-		e.preventDefault();
-		criterion = @ui.criterion.val()
-		@trigger("items:filter", criterion);
-
-	onSetFilterCriterion: (criterion)->
-		@ui.criterion.val(criterion)
-
-	templateContext: ->
-		{
-			filterCriterion: @options.filterCriterion or ""
-			showAddButton: @options.showAddButton is true
-		}
 }
 
 RedacteurListView = CollectionView.extend {
@@ -172,4 +141,4 @@ JoueurListView = CollectionView.extend {
 
 }
 
-export { RedacteurListView, JoueurListView, PanelView }
+export { RedacteurListView, JoueurListView }
