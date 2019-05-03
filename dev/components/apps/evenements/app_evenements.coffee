@@ -11,22 +11,18 @@ Router = Backbone.Router.extend {
   show: (id) ->
     rank = app.Auth.get("rank")
     if (rank is "redacteur") or (rank is "joueur")
-      app.Ariane.reset([{ text:"Événements", e:"evenements:list", link:"evenements"}])
       require("apps/evenements/edit/controller.coffee").controller.show(id)
 
   list: (criterion) ->
     rank = app.Auth.get("rank")
     if (rank is "root") or (rank is "redacteur")
-      app.Ariane.reset([{ text:"Événements", e:"evenements:list", link:"evenements"}])
       require("apps/evenements/list/controller.coffee").controller.listRedacteur(criterion)
     else if (rank is "joueur")
-      app.Ariane.reset([{ text:"Événements", e:"evenements:list", link:"Nouvelle partie"}])
       require("apps/evenements/list/controller.coffee").controller.listJoueur(criterion)
 
   showItemEvenement: (idE,id) ->
     rank = app.Auth.get("rank")
     if (rank is "root") or (rank is "redacteur")
-      app.Ariane.reset([{ text:"Événements", e:"evenements:list", link:"evenements"}])
       require("apps/evenements/edit/controller.coffee").controller.showItem(id)
 }
 
