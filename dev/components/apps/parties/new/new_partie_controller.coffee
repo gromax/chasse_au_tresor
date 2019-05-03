@@ -20,10 +20,6 @@ Controller = Marionette.Object.extend {
 		$.when(fetching).done( (items)->
 			evenement = items.get(id)
 			if evenement isnt  undefined
-				if typeof evenement.get("idPartie") is "number"
-					app.Ariane.add [{ text:"Continuer #{evenement.get("titre")}" }]
-				else
-					app.Ariane.add [{ text:"Démarrer #{evenement.get("titre")}" }]
 				view = new View { model:evenement }
 				view.on "partie:continue", (id)->
 					app.trigger "partie:show", id
@@ -49,7 +45,6 @@ Controller = Marionette.Object.extend {
 			else
 				view = new MissingView()
 				app.regions.getRegion('main').show(view)
-				app.Ariane.add([{ text:"Inconnu"}])
 		).fail( (response) ->
 			if response.status is 401
 				alert("Vous devez vous (re)connecter !")
