@@ -23,7 +23,6 @@ Controller = Marionette.Object.extend {
       panel.on "essai", (essai)->
         app.trigger("partie:show:cle", id, essai)
 
-      idEssaiSelected = -1
       if data.item?
         # on a trouvé un item à afficher
         subItemsData = data.item.get("subItemsData")
@@ -37,9 +36,6 @@ Controller = Marionette.Object.extend {
           subItemsCollection = new SubItemCollection()
           subItemsCollection.add(d, {parse:true})
         vuePrincipale = new SubItemCollectionView { collection: subItemsCollection }
-        itemSelected = data.essais.where({idItem:data.item.get("id")})[0]
-        if itemSelected
-          idEssaiSelected = itemSelected.get("id")
       else
         vuePrincipale = new AccueilView {
           model:partie
