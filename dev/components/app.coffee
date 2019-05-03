@@ -12,7 +12,6 @@ Manager = Marionette.Application.extend {
 			el: "#app-container",
 			regions: {
 				header: "#header-region"
-				ariane: "#ariane-region"
 				message: "#message-region"
 				main: "#main-region"
 				dialog: "#dialog-region"
@@ -39,7 +38,7 @@ Manager = Marionette.Application.extend {
 			}
 
 	onStart: (app, options) ->
-		@version = "1.0.0";
+		@version = VERSION
 		self = @
 		historyStart = () ->
 			require('apps/home/app_home.coffee')
@@ -47,22 +46,19 @@ Manager = Marionette.Application.extend {
 			require('apps/joueurs/app_joueurs.coffee')
 			require('apps/evenements/app_evenements.coffee')
 			require('apps/parties/app_parties.coffee')
-			require('apps/ariane/app_ariane.coffee')
 			require('apps/header/app_header.coffee')
 			# import des différentes app
-			self.trigger "ariane:show"
 			self.trigger "header:show"
 			if Backbone.history
 				Backbone.history.start()
 				if self.getCurrentRoute() is ""
 					self.trigger "home:show"
 
-		# import de l'appli ariane, entities, session
+		# import de l'appli entities, session
 		require('entities/session.coffee')
 		Radio = require('backbone.radio')
 
 		channel = Radio.channel('entities')
-		@Ariane = require("entities/ariane.coffee").ArianeController;
 		@Auth = channel.request("session:entity", historyStart)
 		@settings = {}
 }
