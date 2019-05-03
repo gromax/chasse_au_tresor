@@ -2,7 +2,6 @@ import Marionette from 'backbone.marionette'
 import templateList from 'templates/parties/list/redacteur_list.tpl'
 import templateItem from 'templates/parties/list/redacteur_item.tpl'
 import templateNone from 'templates/parties/list/redacteur_none.tpl'
-import templatePanel from 'templates/parties/list/panel.tpl'
 import templateJoueurItem from 'templates/parties/list/joueur_item.tpl'
 import templateJoueurNone from 'templates/parties/list/joueur_none.tpl'
 
@@ -92,31 +91,7 @@ RedacteurListView = Marionette.CollectionView.extend {
 
 }
 
-PanelView = Marionette.View.extend {
-	template: templatePanel
 
-	events: {
-		"submit #filter-form": "applyFilter"
-	}
-
-	ui: {
-		criterion: "input.js-filter-criterion"
-	},
-
-	templateContext: ->
-		{
-			filterCriterion: @options.filterCriterion or ""
-			showAddButton: @options.showAddButton is true
-		}
-
-	applyFilter: (e)->
-		e.preventDefault();
-		criterion = @ui.criterion.val()
-		@trigger("items:filter", criterion);
-
-	onSetFilterCriterion: (criterion)->
-		@ui.criterion.val(criterion)
-}
 
 JoueurNoView = Marionette.View.extend {
 	template:  templateJoueurNone
@@ -160,4 +135,4 @@ JoueurListView = Marionette.CollectionView.extend {
 
 }
 
-export { RedacteurListView, PanelView, JoueurListView }
+export { RedacteurListView, JoueurListView }
