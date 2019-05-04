@@ -60,7 +60,7 @@ final class EssaiJoueur extends Item
       elseif (isset($options['evenement']))
         return DB::query("SELECT c.id, c.idItem, c.essai, c.date FROM (".PREFIX_BDD."essaisJoueur c JOIN ".PREFIX_BDD."parties p ON p.id = c.idPartie) WHERE p.idEvenement=%i", $options['evenement']);
       elseif (isset($options['partie']))
-        return DB::query("SELECT id, idItem, essai, date FROM ".PREFIX_BDD."essaisJoueur WHERE idPartie=%i", $options['partie']);
+        return DB::query("SELECT c.id, c.idItem, c.essai, date, i.tagCle FROM (".PREFIX_BDD."essaisJoueur c JOIN ".PREFIX_BDD."itemsEvenement i ON i.id=c.idItem ) WHERE idPartie=%i", $options['partie']);
       elseif (isset($options['root']))
         return DB::query("SELECT id, essai, date FROM ".PREFIX_BDD."essaisJoueur");
       else
