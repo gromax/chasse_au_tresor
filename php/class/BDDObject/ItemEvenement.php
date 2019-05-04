@@ -82,16 +82,51 @@ final class ItemEvenement extends Item
     try
     {
       $list = DB::query("SELECT id, regexCle FROM ".PREFIX_BDD."itemsEvenement WHERE idEvenement=%i",$idEvenement);
-      foreach ($list as $value) {
-        $regexCleItem = "/".$value['regexCle']."/i";
+      // On teste si la proposition est de type gps
+      // attention la lattitude est donnée en premier
+      $regexGPS = "/^gps=[0-9]+\.[0-9]+,[0-9]+\.[0-9]+([0-9]+(.[0-9]+)?)?$/";
+      if (preg_match($regexGPS,$cleEssai)==1)
+      {
+        // Il faut récupérer les coordonnées
+        $arr1 = explode("=",$cleEssai);
+        $arrCoordsEssaiStr = explode(",",$arr1[1]);
+        $arrCoordsEssai = array("y"=>0+$arrCoordsEssaiStr[0] , "x"=> 0+$arrCoordsEssaiStr[1]);
+        foreach ($list as $value) {
+          if (preg_match($regexGPS,$value['regexCle'])==1)
+          {
+            // l'item est une localisation gps
+            // on va pouvoir faire une comparaison
+            $arr1 = explode("=",$value['regexCle']);
+            $arrCoordsItemStr = explode(",",$arr1[1]);
+            $arrCoordsItem = array("y"=>0+trim($arrCoordsItemStr[0]) , "x"=> 0+trim($arrCoordsItemStr[1]));
+            $ym = ($arrCoordsEssai["y"]+$arrCoordsItem["y"])/2;
+            $dx = 60*($arrCoordsEssai["x"]-$arrCoordsItem["x"])*cos($ym*0.01745329251994329577);
+            $dy = 60*($arrCoordsEssai["x"]-$arrCoordsItem["x"]);
+            $dist2 = ($dx*$dx + $dy*$dy); // en minutes
 
-        // Il faut vérifier si $value['cle'] match $cle
-        // debug: echo "$re ? ".$value['cle']." -> ".preg_match($re,$value['cle'])."<br>";
+            if ($dist2<=0.00018222084349882679) // (25m / 1852m)²
+            {
+              // à moins de 25m
+              // correspondance trouvée
+              return self::getObject($value['id']);
+            }
 
-        if (preg_match($regexCleItem,$cleEssai)==1)
-        {
-          // correspondance trouvée
-          return self::getObject($value['id']);
+          }
+        }
+      }
+      else
+      {
+        foreach ($list as $value) {
+          $regexCleItem = "/".$value['regexCle']."/i";
+
+          // Il faut vérifier si $value['cle'] match $cle
+          // debug: echo "$re ? ".$value['cle']." -> ".preg_match($re,$value['cle'])."<br>";
+
+          if (preg_match($regexCleItem,$cleEssai)==1)
+          {
+            // correspondance trouvée
+            return self::getObject($value['id']);
+          }
         }
       }
     }
