@@ -1,12 +1,28 @@
 <h2><%- evenement.titre %></h2>
 <p><%- evenement.description%></p>
 
-<% if (cle!=""){%>
-<div class="alert alert-danger" role="alert">
+<%
+if (cle!=""){
+  if (gps){
+%><div class="alert alert-danger" role="alert">
+  Vous avez essayé une localisation gps.<br>
+  <strong>Raté !</strong><br>
+<% if (accuracy>25) {%>
+  Votre géolocalisation n'est pas assez précise : <%- accuracy %> mètres.<br>
+  L'erreur maximum autorisée est de 25 mètres.<br>
+<% } else {%>
+  La précision est de 25 mètres.<br>
+  Essayez de vous rapprocher...
+<% } %>
+</div><%
+  } else {
+%><div class="alert alert-danger" role="alert">
   Vous avez essayé <b><%- cle %></b>.<br>
   <strong>Raté !</strong> Essayez encore...
-</div>
-<%}%>
+</div><%
+  }
+}
+%>
 
 <% if (fini) {%>
 <div class="alert alert-success" role="alert">
