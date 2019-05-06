@@ -101,13 +101,8 @@ ListeView = Marionette.CollectionView.extend {
 	viewFilter: (child, index, collection) ->
 		idE = @options.idEvenement
 		model = child.model
+		console.log(child.model.get("idEvenement") is idE)
 		return child.model.get("idEvenement") is idE
-
-	flash: (itemModel)->
-		itemView = @children.findByModel(itemModel)
-		# check whether the new user view is displayed (it could be
-		# invisible due to the current filter criterion)
-		if itemView then itemView.flash("success")
 
 }
 
