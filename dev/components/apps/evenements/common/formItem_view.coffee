@@ -1,6 +1,8 @@
 import FormView from 'apps/common/item_form_view.coffee'
 import template from 'templates/evenements/common/formItem.tpl'
 
+app = require('app').app
+
 export default FormView.extend {
 	template: template
 
@@ -9,10 +11,31 @@ export default FormView.extend {
 		regexCle: '#item-regexCle'
 	}
 
+	# attention events est déjà défini dans FormView
+
 	triggers: {
 		"input @ui.test": "test:reload"
 		"input @ui.regexCle": "test:reload"
+		"click button.js-gps": "set:gps"
 	}
+
+	onSetGps: ->
+		options = {
+			enableHighAccuracy: true
+			timeout: 5000
+			maximumAge: 0
+		}
+		self = @
+		errorFct = (err) ->
+			app.trigger("header:loading", false)
+			console.warn("ERREUR (#{err.code}): #{err.message}")
+
+		successFct = (pos) ->
+			app.trigger("header:loading", false)
+			crd = pos.coords;
+			self.ui.regexCle.val("gps=#{crd.latitude},#{crd.longitude}")
+		app.trigger("header:loading", true)
+		navigator.geolocation.getCurrentPosition(successFct, errorFct, options)
 
 	onTestReload: ->
 		test = @ui.test.val()
