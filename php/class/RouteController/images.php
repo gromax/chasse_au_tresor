@@ -101,10 +101,14 @@ class images
 
             if (isset($_FILES['image']) && isset($_POST['idEvenement']))
             {
+                $idEvenement = $_POST['idEvenement'];
                 $file = $_FILES['image']['tmp_name'];
                 $ext = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
-                $hash = md5_file($file);
-                $item = new Image(array("idEvenement"=>$_POST['idEvenement'], "hash"=>$hash, "ext"=>$ext));
+                // On ajoute le idEvenement en tête du nom
+                // ainsi deux fichiers identiques dans deux événements différents n'ont pas le même nom
+                // ce qui évite que la suppression de l'un n'entraîne la suppression de l'autre
+                $hash = $idEvenement."_".md5_file($file);
+                $item = new Image(array("idEvenement"=>$idEvenement, "hash"=>$hash, "ext"=>$ext));
                 $item->moveUploadedFile($file);
                 $id = $item->insertion();
                 if ($id!==null)
