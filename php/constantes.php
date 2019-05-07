@@ -11,17 +11,20 @@
   	require_once("../php/config/rootConfigDef.php");
   }
 
+  // GPS
+  define("GPS_LIMIT", 50);
+
   // Utilisateurs
   define("PSEUDO_MIN_SIZE", 6);
   define("PSEUDO_MAX_SIZE", 20);
 
   // mails
-  define("PSEUDO_FROM","Exercices de maths");
-  define("EMAIL_FROM","exercices@goupill.fr");
-  define("PATH_TO_SITE","http://tresor.goupill.fr");
+  define("PSEUDO_FROM","jeu.goupill.fr");
+  define("EMAIL_FROM","jeu@goupill.fr");
+  define("PATH_TO_SITE","https://jeu.goupill.fr");
   define("NOM_SITE","Chasse au trésor sur goupill.fr");
   define("SMTP_PASSWORD","zwdHpjudYfv3CbEbt8Aa");
-  define("SMTP_USER","exercices@goupill.fr");
+  define("SMTP_USER","jeu@goupill.fr");
   define("SMTP_HOST","mail.goupill.fr");
   define("SMTP_PORT",465);
 
