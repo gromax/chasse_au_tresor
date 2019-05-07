@@ -1,3 +1,6 @@
+<?php
+include "../php/constantes.php";
+?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,5 +18,10 @@
     </div>
     <div id="dialog-region"></div>
   </div>
+  <script type="text/javascript">
+  // Mon code Javascript
+  const GPS_LIMIT = <?php echo GPS_LIMIT;?>;
+  </script>
+
 </body>
 </html>
