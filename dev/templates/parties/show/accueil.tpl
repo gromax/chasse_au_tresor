@@ -7,9 +7,9 @@ if (cle!=""){
 %><div class="alert alert-danger" role="alert">
   Vous avez essayé une localisation gps.<br>
   <strong>Raté !</strong><br>
-<% if (accuracy>25) {%>
+<% if (accuracy>GPS_LIMIT) {%>
   Votre géolocalisation n'est pas assez précise : <%- accuracy %> mètres.<br>
-  L'erreur maximum autorisée est de 25 mètres.<br>
+  L'erreur maximum autorisée est de <%-GPS_LIMIT %> mètres.<br>
 <% } else {%>
   La précision est de 25 mètres.<br>
   Essayez de vous rapprocher...
