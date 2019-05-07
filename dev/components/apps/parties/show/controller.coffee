@@ -18,7 +18,6 @@ Controller = Marionette.Object.extend {
       partie = data.partie
       evenement = data.evenement
       layout = new Layout()
-
       panel = new PanelView { cle }
       panel.on "essai", (essai)->
         app.trigger("partie:show:cle", id, essai)
@@ -37,7 +36,7 @@ Controller = Marionette.Object.extend {
         successFct = (pos) ->
           app.trigger("header:loading", false)
           crd = pos.coords;
-          app.trigger("partie:show:cle", id, "gps=#{crd.latitude},#{crd.longitude},#{crd.accuracy}")
+          app.trigger("partie:show:cle", id, "gps=#{crd.latitude},#{crd.longitude},#{Math.round(crd.accuracy)}")
         app.trigger("header:loading", true)
         navigator.geolocation.getCurrentPosition(successFct, errorFct, options)
 
