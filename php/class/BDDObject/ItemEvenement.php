@@ -84,9 +84,10 @@ final class ItemEvenement extends Item
       $list = DB::query("SELECT id, regexCle FROM ".PREFIX_BDD."itemsEvenement WHERE idEvenement=%i",$idEvenement);
       // On teste si la proposition est de type gps
       // attention la lattitude est donnée en premier
-      $regexGPS = "/^gps=[0-9]+\.[0-9]+,[0-9]+\.[0-9]+([0-9]+(.[0-9]+)?)?$/";
+      $regexGPS = "/^gps=[0-9]+\.[0-9]+,[0-9]+\.[0-9]+(,[0-9]+)?$/";
       if (preg_match($regexGPS,$cleEssai)==1)
       {
+        $ecartMax2 = (GPS_LIMIT/1852)*(GPS_LIMIT/1852);
         // Il faut récupérer les coordonnées
         $arr1 = explode("=",$cleEssai);
         $arrCoordsEssaiStr = explode(",",$arr1[1]);
@@ -104,9 +105,9 @@ final class ItemEvenement extends Item
             $dy = 60*($arrCoordsEssai["x"]-$arrCoordsItem["x"]);
             $dist2 = ($dx*$dx + $dy*$dy); // en minutes
 
-            if ($dist2<=0.00018222084349882679) // (25m / 1852m)²
+            if ($dist2<=$ecartMax2) // (GPS_LIMIT / 1852m)²
             {
-              // à moins de 25m
+              // à moins de GPS_LIMIT
               // correspondance trouvée
               return self::getObject($value['id']);
             }
