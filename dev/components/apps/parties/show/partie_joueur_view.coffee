@@ -79,7 +79,7 @@ CleView = View.extend {
   }
   templateContext: ->
     {
-      gps:/^gps=[0-9]+\.[0-9]+,[0-9]+\.[0-9]+(,[0-9]+(.[0-9]+)?)?$/.test(@model.get("essai"))
+      gps:/^gps=[0-9]+\.[0-9]+,[0-9]+\.[0-9]+(,[0-9]+)?$/.test(@model.get("essai"))
     }
 }
 
@@ -125,7 +125,7 @@ AccueilView = View.extend {
 
   templateContext: ->
     essaiCle = @options.cle ? ""
-    gps = (essaiCle isnt "" and /^gps=[0-9]+\.[0-9]+,[0-9]+\.[0-9]+(,[0-9]+(.[0-9]+)?)?$/.test(essaiCle))
+    gps = (essaiCle isnt "" and /^gps=[0-9]+\.[0-9]+,[0-9]+\.[0-9]+(,[0-9]+)?$/.test(essaiCle))
     accuracy = -1
     if gps
       arr = essaiCle.split(",")
