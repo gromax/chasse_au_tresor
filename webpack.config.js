@@ -147,8 +147,8 @@ let config = {
     new DashboardPlugin(),
     new HtmlWebpackPlugin({
       title: 'Chasse au trésor',
-      filename: 'index.html',
-      template: 'dev/index.html'
+      filename: 'index.php',
+      template: 'dev/index.php'
     }),
     new webpack.DefinePlugin({
       VERSION: JSON.stringify(require("./package.json").version)
