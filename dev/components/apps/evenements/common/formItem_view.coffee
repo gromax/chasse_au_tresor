@@ -69,15 +69,8 @@ export default FormView.extend {
 						# ensuite calcul
 						dx = 60*(coordsTest.x - coordsCle.x)*Math.cos((coordsCle.y+coordsTest.y)/2*0.01745329251994329577)
 						dy = 60*(coordsTest.y - coordsCle.y)
-						dist2 = (dx*dx + dy*dy) # exprimé en minutes d'arc^2
-						result = (dist2 <= 0.00018222084349882679) # correspond à (25m/1852m)^2
-						console.log coordsTest
-						console.log coordsCle
-
-						console.log "dx:#{dx}"
-						console.log "dy:#{dy}"
-						console.log "d:#{dist2}"
-						console.log "extim:#{Math.sqrt(dist2)*1852} càd dx:#{dx*1852} et dy:#{dy*1852}"
+						dist = Math.sqrt(dx*dx + dy*dy)*1852 # exprimé en minutes d'arc^2
+						result = (dist <= GPS_LIMIT)
 					else
 						# le test n'est pas du gps
 						result = false
