@@ -101,7 +101,6 @@ ListeView = Marionette.CollectionView.extend {
 	viewFilter: (child, index, collection) ->
 		idE = @options.idEvenement
 		model = child.model
-		console.log(child.model.get("idEvenement") is idE)
 		return child.model.get("idEvenement") is idE
 
 }
