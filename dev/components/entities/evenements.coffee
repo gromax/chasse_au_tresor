@@ -6,6 +6,7 @@ Item = Backbone.Model.extend {
 		idProprietaire: false
 		description: ""
 		actif: false
+		hash: ""
 	},
 
 	parse: (data) ->
