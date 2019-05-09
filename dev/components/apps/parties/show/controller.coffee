@@ -7,15 +7,22 @@ app = require('app').app
 
 Controller = Marionette.Object.extend {
   channelName: "entities",
-  show: (id, cle) ->
+
+  show: (options) ->
     app.trigger("header:loading", true)
 
     require "entities/dataManager.coffee"
     channel = @getChannel()
 
-    fetchingData = channel.request("custom:partie", id, cle)
+    fetchingData = channel.request("custom:partie", options)
     $.when(fetchingData).done( (data)->
       partie = data.partie
+      id = partie.get("id")
+      if options.cle
+        cle = options.cle
+      else
+        cle = ""
+
       evenement = data.evenement
       layout = new Layout()
       panel = new PanelView { cle }
