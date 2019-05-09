@@ -64,6 +64,7 @@ if (file_exists("../php/config/bddConfig.php")) {
   // data
   $router->addRule('api/customData/:asks', 'data', 'customFetch', 'GET');
   $router->addRule('api/customData/partie/:id', 'data', 'partieFetch', 'GET');
+  $router->addRule('api/event/hash/:hash', 'data', 'getPartieWithHash', 'GET');
 
   $response = $router->load();
 } else {
