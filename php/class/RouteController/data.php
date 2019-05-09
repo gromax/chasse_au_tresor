@@ -79,6 +79,61 @@ class data
         return $output;
     }
 
+    private function helperPartieFetch($partie, $evenement, $idJoueur, $cle)
+    {
+        // Il faut voir si une clé est proposée
+        $itemEvenement = null;
+        if ($cle!==null)
+        {
+            // on doit chercher un itEvent avec cette clé
+            $itemEvenement = ItemEvenement::tryCle($evenement->getId(), $cle);
+            if ($itemEvenement!==null)
+            {
+                // on inserre la clé correspondante dans la liste des essaiJoueur
+                $dataNewEssai = array(
+                    "idPartie"=>$partie->getId(),
+                    "essai"=>$cle,
+                    "date"=> date("Y-m-d H:i:s"),
+                    "idItem"=>$itemEvenement->getId()
+                    );
+                $essaiJoueur = new EssaiJoueur();
+                $validation = $essaiJoueur->insert_validation($dataNewEssai);
+                if ($validation===true)
+                {
+                    $essaiJoueur->update($dataNewEssai);
+                }
+                // inutile de charger cette clé, elle sera automatiquement chargée
+                // si la clé n'est pas crée car existait déjà, c'est idem
+            }
+        }
+
+        $essais = EssaiJoueur::getList(array("partie"=>$partie->getId()));
+        if ($evenement !==null)
+        {
+            $startCles = ItemEvenement::getList(array("starting"=>$evenement->getId()));
+        }
+        else
+        {
+            $startCles = array();
+        }
+
+        $tagCleColumn = array_column($startCles,"tagCle");
+
+        $output = array(
+            "partie"=>$partie->getValues(),
+            "evenement"=>$evenement->getValues(),
+            "essais"=>$essais,
+            "startCles"=>$tagCleColumn
+            );
+
+        if ($itemEvenement!= null)
+        {
+            $output["item"] = $itemEvenement->getValues();
+        }
+
+        return $output;
+    }
+
     public function partieFetch()
     {
         $ac = new AC();
@@ -92,74 +147,30 @@ class data
         if ($ac->isJoueur())
         {
             $id = (integer) $this->params['id'];
+            $idJoueur = $ac->getLoggedUserId();
             $partie = Partie::getObject($id);
+            if (isset($_GET["cle"]) && ($_GET["cle"]!=""))
+            {
+                $cle = $_GET["cle"];
+            }
+            else
+            {
+                $cle = null;
+            }
+
             if ($partie===null)
             {
                 EC::set_error_code(404);
                 return false;
             }
-            if ($partie->getIdProprietaire() !== $ac->getLoggedUserId())
+            if ($partie->getIdProprietaire() !== $idJoueur)
             {
                 EC::set_error_code(403);
                 return false;
             }
             $evenement = $partie->getEvenement();
 
-            // Il faut voir si une clé est proposée
-            $itemEvenement = null;
-            if (isset($_GET["cle"]))
-            {
-                $cle = trim($_GET["cle"]);
-                if ($cle!="")
-                {
-                    // on doit chercher un itEvent avec cette clé
-                    $itemEvenement = ItemEvenement::tryCle($evenement->getId(), $cle);
-                    if ($itemEvenement!==null)
-                    {
-                        // on inserre la clé correspondante dans la liste des essaiJoueur
-                        $dataNewEssai = array(
-                            "idPartie"=>$id,
-                            "essai"=>$cle,
-                            "date"=> date("Y-m-d H:i:s"),
-                            "idItem"=>$itemEvenement->getId()
-                            );
-                        $essaiJoueur = new EssaiJoueur();
-                        $validation = $essaiJoueur->insert_validation($dataNewEssai);
-                        if ($validation===true)
-                        {
-                            $essaiJoueur->update($dataNewEssai);
-                        }
-                        // inutile de charger cette clé, elle sera automatiquement chargée
-                        // si la clé n'est pas crée car existait déjà, c'est idem
-                    }
-                }
-            }
-
-            $essais = EssaiJoueur::getList(array("partie"=>$id));
-            if ($evenement !==null)
-            {
-                $startCles = ItemEvenement::getList(array("starting"=>$evenement->getId()));
-            }
-            else
-            {
-                $startCles = array();
-            }
-
-            $tagCleColumn = array_column($startCles,"tagCle");
-
-            $output = array(
-                "partie"=>$partie->getValues(),
-                "evenement"=>$evenement->getValues(),
-                "essais"=>$essais,
-                "startCles"=>$tagCleColumn
-                );
-
-            if ($itemEvenement!= null)
-            {
-                $output["item"] = $itemEvenement->getValues();
-            }
-
-            return $output;
+            return $this->helperPartieFetch($partie,$evenement,$idJoueur,$cle);
         }
         else
         {
@@ -168,7 +179,50 @@ class data
         }
     }
 
+    public function getPartieWithHash()
+    {
+        $ac = new AC();
+        if (!$ac->connexionOk())
+        {
+            EC::addError("Déconnecté !");
+            EC::set_error_code(401);
+            return false;
+        }
 
+        if ($ac->isJoueur())
+        {
+            $hash = $this->params['hash'];
+            $idJoueur = $ac->getLoggedUserId();
+            // On vérifie l'existence de l'événement
+            $evenement = Evenement::getWithHash($hash);
+            if ($evenement===null)
+            {
+            // Le hash n'existe pas ou l'évent n'est pas actif
+                EC::set_error_code(404);
+                return false;
+            }
+            // On cherche la partie
+            $partie = Partie::getLinkedWithEvenementEtJoueur($evenement->getId(), $idJoueur);
+            if ($partie===null)
+            {
+                // il faut créer la partie
+                $data = array("idProprietaire"=>$idJoueur, "idEvenement"=>$evenement->getId());
+                $partie = new Partie();
+                $idPartie = $partie->update($data);
+                if ($idPartie===null){
+                    EC::set_error_code(501);
+                    return false;
+                }
+            }
+            // On peut poursuivre avec la partie et l'événement
+            return $this->helperPartieFetch($partie,$evenement,$idJoueur,null);
+        }
+        else
+        {
+            EC::set_error_code(403);
+            return false;
+        }
+    }
 
 }
 ?>
