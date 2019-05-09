@@ -84,6 +84,22 @@ final class Partie extends Item
 		}
 	}
 
+	public static function getLinkedWithEvenementEtJoueur($idEvenement, $idJoueur)
+	{
+		require_once BDD_CONFIG;
+		try {
+			$bdd_result = DB::queryFirstRow("SELECT * FROM ".PREFIX_BDD."parties WHERE idEvenement=%i AND idProprietaire=%i", $idEvenement, $idJoueur);
+			if ($bdd_result!==null){
+				return new Partie($bdd_result);
+			}
+		}
+		catch(MeekroDBException $e)
+		{
+			if (BDD_DEBUG_ON) return array('error'=>true, 'message'=>"#Partie/getLinkedWithEvenementEtJoueur : ".$e->getMessage());
+		}
+		return null;
+	}
+
 	##################################### METHODES #####################################
 
 	public function getIdProprietaire()
