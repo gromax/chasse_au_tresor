@@ -39,13 +39,17 @@ API = {
 			)
 		return promise = defer.promise()
 
-	getCustomPartie: (id, cle) ->
+	getItemPartie: (options) ->
 		defer = $.Deferred()
 
-		if cle then requestedData = { cle }
+		if options.cle then requestedData = { cle: options.cle }
 		else requestedData = { }
+		if options.hash
+			url = "api/event/hash/#{options.hash}"
+		else
+			url = "api/customData/partie/#{options.id}"
 
-		request = $.ajax("api/customData/partie/#{id}",{
+		request = $.ajax(url,{
 			method:'GET'
 			dataType:'json'
 			data: requestedData
@@ -68,6 +72,7 @@ API = {
 			defer.reject(response)
 		)
 		return defer.promise()
+
 	purge: ->
 		console.log("purge des données")
 		API.stored_data = {}
@@ -76,5 +81,5 @@ API = {
 
 channel = Radio.channel('entities')
 channel.reply('custom:entities', API.getCustomEntities )
-channel.reply('custom:partie', API.getCustomPartie )
+channel.reply('custom:partie', API.getItemPartie )
 channel.reply('data:purge', API.purge )
