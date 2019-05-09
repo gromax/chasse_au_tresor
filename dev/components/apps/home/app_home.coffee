@@ -4,24 +4,24 @@ Router = Backbone.Router.extend {
 	routes: {
 		"" : "showHome"
 		"home" : "showHome"
-		"login" : "showLogin"
+		"login" : "showSign"
 		"signup" : "showSignUp"
 	}
 
 	showHome: ->
 		require("./show/show_controller.coffee").controller.showHome()
 
-	showLogin: ->
+	showSign: ->
 		if app.Auth.get("logged_in")
 			require("./show/show_controller.coffee").controller.showHome()
 		else
-			require("./login/login_controller.coffee").controller.showLogin()
+			require("apps/common/sign/sign_controller.coffee").controller.show({signin:true, showRedacCheck:true})
 
 	showSignUp: ->
 		if app.Auth.get("logged_in")
 			require("./show/show_controller.coffee").controller.showHome()
 		else
-			require("./signup/signup_controller.coffee").controller.show()
+			require("apps/common/sign/sign_controller.coffee").controller.show({signin:false})
 
 
 	logout: ->
@@ -46,7 +46,7 @@ app.on "home:show", ()->
 
 app.on "home:login", ()->
 	app.navigate("login")
-	router.showLogin()
+	router.showSign()
 
 app.on "home:signup", ()->
 	app.navigate("signin")
