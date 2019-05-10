@@ -20,7 +20,7 @@ let config = {
   ],
   output: {
     path: path.resolve(__dirname, "public"),
-    filename: devMode ? "app.js" : "app.[contentHash].js"
+    filename: devMode ? "app.js" : "app.[contentHash].[VERSION].js"
   },
   resolve: {
     alias:{
