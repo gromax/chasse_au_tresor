@@ -27,7 +27,7 @@ Controller = Marionette.Object.extend {
       layout = new Layout()
       panel = new PanelView { cle }
       panel.on "essai", (essai)->
-        app.trigger("partie:show:cle", id, essai)
+        app.trigger("partie:show:cle", id, essai.normalize('NFD').replace(/[\u0300-\u036f]/g, ""))
 
       panel.on "essai:gps", ->
         options = {
