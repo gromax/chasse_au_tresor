@@ -151,7 +151,7 @@ class data
             $partie = Partie::getObject($id);
             if (isset($_GET["cle"]) && ($_GET["cle"]!=""))
             {
-                $cle = $_GET["cle"];
+                $cle = str_replace("__"," ", $_GET["cle"]);
             }
             else
             {
