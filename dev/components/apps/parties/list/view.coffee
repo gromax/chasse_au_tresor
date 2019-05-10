@@ -18,6 +18,7 @@ ItemView = Marionette.View.extend {
 	template: templateItem
 	triggers: {
 		"click": "show"
+		"click button.js-delete": "delete"
 	}
 
 	flash: (cssClass)->
