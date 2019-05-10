@@ -272,7 +272,6 @@ Controller = Marionette.Object.extend {
         subItemsView.on "subItem:form:submit", (childView, data)->
           model = childView.model
           validationResult = model.set(data, {validate:true})
-          console.log validationResult
           if validationResult
             #switch type
             # when "brut"
