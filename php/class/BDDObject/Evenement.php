@@ -8,7 +8,7 @@ use SessionController as SC;
 use MeekroDBException;
 use BDDObject\Partie;
 use BDDObject\ItemEvenement;
-use BDDObject\Images;
+use BDDObject\Image;
 
 final class Evenement extends Item
 {
@@ -49,7 +49,7 @@ final class Evenement extends Item
 
 	public static function deleteList($options = array())
 	{
-		if (!Partie::deleteList($options) || !ItemEvenement::deleteList($options) || !Images::deleteList($options))
+		if (!Partie::deleteList($options) || !ItemEvenement::deleteList($options) || !Image::deleteList($options))
 		{
 			return false;
 		}
@@ -97,7 +97,7 @@ final class Evenement extends Item
 	public function customDelete()
 	{
 		$options = array("evenement"=>$this->id);
-		return (Partie::deleteList($options) && ItemEvenement::deleteList($options) && Images::deleteList($options));
+		return (Partie::deleteList($options) && ItemEvenement::deleteList($options) && Image::deleteList($options));
 	}
 
 }
