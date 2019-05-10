@@ -20,7 +20,7 @@ final class Joueur extends Item
 	{
 		return array(
 			'nom' => array( 'def' => "", 'type' => 'string'),	// nom du joueur
-			'email' => array( 'def' => "", 'type'=> 'string'),	// email ou identifiant du joueur
+			'username' => array( 'def' => "", 'type'=> 'string'),	// username ou identifiant du joueur
 			'hash' => array( 'def' => "", 'type'=> 'string'),	// hash du mdp
 			);
 	}
@@ -35,15 +35,15 @@ final class Joueur extends Item
 		return preg_match("#^[a-zA-Z0-9_-]+(.[a-zA-Z0-9_-]+)*@[a-zA-Z0-9._-]{2,}\.[a-z]{2,4}$#", $email);
 	}
 
-	public static function emailExists($email)
+	public static function usernameExists($username)
 	{
-		if ($email==ROOT_USERNAME)
+		if ($username==ROOT_USERNAME)
 			return true;
 
 		require_once BDD_CONFIG;
 		try {
-			// Vérification que l'email
-			$results = DB::query("SELECT id FROM ".PREFIX_BDD."users WHERE email=%s",$email);
+			// Vérification que l'username
+			$results = DB::query("SELECT id FROM ".PREFIX_BDD."users WHERE username=%s",$username);
 			if (DB::count()>0) return $results[0]["id"];
 		} catch(MeekroDBException $e) {
 			EC::addBDDError($e->getMessage());
@@ -56,7 +56,7 @@ final class Joueur extends Item
 		require_once BDD_CONFIG;
 		try {
 			if (isset($options['root']))
-				return DB::query("SELECT j.id, j.nom, j.email, (SELECT COUNT(p.id) FROM ".PREFIX_BDD."parties p where p.idProprietaire = j.id) AS count_parties FROM ".PREFIX_BDD."joueurs j");
+				return DB::query("SELECT j.id, j.nom, j.username, (SELECT COUNT(p.id) FROM ".PREFIX_BDD."parties p where p.idProprietaire = j.id) AS count_parties FROM ".PREFIX_BDD."joueurs j");
 			else
 				return array();
 		} catch(MeekroDBException $e) {
@@ -69,15 +69,15 @@ final class Joueur extends Item
 
 	public function update_validation($modifs=array(), $full=false)
 	{
-		if(isset($modifs['email']))
-			$email = $modifs['email'];
+		if(isset($modifs['username']))
+			$username = $modifs['username'];
 		elseif ($full)
-			$email = $this->values['email'];
+			$username = $this->values['username'];
 		else
-			$email = false;
+			$username = false;
 		$errors = array();
-		if (($email!==false)&&(self::emailExists($email)!==false )) {
-			$errors['email'] = "L'identifiant (email) existe déjà.";
+		if (($username!==false)&&(self::usernameExists($username)!==false )) {
+			$errors['username'] = "L'identifiant / email existe déjà.";
 		}
 		if ($full && ($this->values['hash']==="") && !isset($modifs['pwd']))
 			$errors['pwd'] = "Mot de passe invalide";

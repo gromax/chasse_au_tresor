@@ -34,12 +34,12 @@ class AuthController
     }
   }
 
-  private static function createSession($id, $nom, $email, $rank)
+  private static function createSession($id, $nom, $username, $rank)
   {
     // $params est un tableau contenantms
     $loggedUserData = array(
       "nom" => $nom,
-      "email" => $email,
+      "username" => $username,
       "rank" => $rank,
     );
     if ($id!==false){
@@ -50,10 +50,10 @@ class AuthController
     // SC::get()->setParam('loggedUserIp', $_SERVER['REMOTE_ADDR']);
   }
 
-  public static function tryLogin($email, $pwd, $adm)
+  public static function tryLogin($username, $pwd, $adm)
   {
     // $adm true spécifie une connexion de rédac ou adm
-    if ($email !== ''){
+    if ($username !== ''){
       if ($pwd === "") {
         EC::addError("Vous avez envoyé un mot de passe vide !");
         EC::set_error_code(422);
@@ -62,7 +62,7 @@ class AuthController
 
       if ($adm){
         // connexion rédac ou adm
-        if ($email==ROOT_USERNAME){
+        if ($username==ROOT_USERNAME){
           if ($pwd == ROOT_PASSWORD) {
             // succès de la connexion root
             self::createSession(false,"Root",ROOT_USERNAME,self::RANK_ROOT);
@@ -72,7 +72,7 @@ class AuthController
           // sinon connexion rédacteur
           require_once BDD_CONFIG;
           try {
-            $bdd_result = DB::queryFirstRow("SELECT id, nom, email, hash FROM ".PREFIX_BDD."redacteurs WHERE email=%s", $email);
+            $bdd_result = DB::queryFirstRow("SELECT id, nom, username, hash FROM ".PREFIX_BDD."redacteurs WHERE username=%s", $username);
           } catch(MeekroDBException $e) {
             EC::set_error_code(501);
             EC::addBDDError($e->getMessage(), 'AuthController/tryConnexion');
@@ -84,7 +84,7 @@ class AuthController
             $hash = $bdd_result['hash'];
             if (($hash=="") || (password_verify($pwd, $hash))) {
               // Le hash correspond, connexion réussie
-              self::createSession($bdd_result['id'], $bdd_result['nom'], $bdd_result['email'], self::RANK_REDAC);
+              self::createSession($bdd_result['id'], $bdd_result['nom'], $bdd_result['username'], self::RANK_REDAC);
               return true;
             }
           }
@@ -92,7 +92,7 @@ class AuthController
       } else {
         require_once BDD_CONFIG;
         try {
-          $bdd_result = DB::queryFirstRow("SELECT id, nom, email, hash FROM ".PREFIX_BDD."joueurs WHERE email=%s", $email);
+          $bdd_result = DB::queryFirstRow("SELECT id, nom, username, hash FROM ".PREFIX_BDD."joueurs WHERE username=%s", $username);
         } catch(MeekroDBException $e) {
           EC::set_error_code(501);
           EC::addBDDError($e->getMessage(), 'AuthController/tryConnexion');
@@ -104,7 +104,7 @@ class AuthController
           $hash = $bdd_result['hash'];
           if (($hash=="") || (password_verify($pwd, $hash))) {
             // Le hash correspond, connexion réussie
-            self::createSession($bdd_result['id'], $bdd_result['nom'], $bdd_result['email'], self::RANK_JOUEUR);
+            self::createSession($bdd_result['id'], $bdd_result['nom'], $bdd_result['username'], self::RANK_JOUEUR);
             return true;
           }
         }

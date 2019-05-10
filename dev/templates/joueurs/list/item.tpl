@@ -1,5 +1,5 @@
 <td><span class="badge badge-pill badge-primary"><%- id %></span></td>
-<td><%- nom %><br/><small class="text-info"><i class="fa fa-envelope fa-1"></i><%- email %></small></td>
+<td><%- nom %><br/><small class="text-info"><i class="fa fa-envelope fa-1"></i><%- username %></small></td>
 <td><%- count_parties %></td>
 <td align="right">
 	<div class="btn-group" role="group">

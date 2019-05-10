@@ -48,10 +48,10 @@ Controller = Marionette.Object.extend {
 					$.when(creatingSession).done( (response)->
 						# toutes les infos pour l'ouverture de session devraient être là
 						view.options.signin = true
-						view.options.email = data.email
+						view.options.username = data.username
 						view.options.pwd = data.pwd
 						view.render()
-						signinCallback { email:data.email, pwd:data.pwd, adm:false }
+						signinCallback { username:data.username, pwd:data.pwd, adm:false }
 					).fail( (response)->
 						if response.status is 422
 							view.triggerMethod("form:data:invalid", response.responseJSON.errors);

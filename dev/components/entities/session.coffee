@@ -20,7 +20,7 @@ Session = Backbone.Model.extend {
 
 	validate: (attrs, options)->
 		errors = []
-		if not attrs.email
+		if not attrs.username
 			errors.push { success:false, message:"L'email/identifiant ne doit pas être vide" }
 		if not attrs.pwd
 			errors.push { success:false, message:"Le mot de passe ne doit pas être vide" }
@@ -29,7 +29,7 @@ Session = Backbone.Model.extend {
 
 	toJSON: ->
 		return {
-			email: @get("email")
+			username: @get("username")
 			pwd: @get("pwd")
 			adm: @get("adm")
 		}
@@ -45,7 +45,7 @@ Session = Backbone.Model.extend {
 				logged_in: false
 				rank:"off"
 				nom:"Déconnecté"
-				email: ""
+				username: ""
 				adm: false
 			}
 		return logged

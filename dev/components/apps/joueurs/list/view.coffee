@@ -72,7 +72,7 @@ export default Marionette.CollectionView.extend {
 	viewFilter: (child, index, collection) ->
 		criterion = @filterCriterion
 		model = child.model
-		if criterion is "" or criterion is null or model.get("nom").toLowerCase().indexOf(criterion) isnt -1 or model.get("email").toLowerCase().indexOf(criterion) isnt -1
+		if criterion is "" or criterion is null or model.get("nom").toLowerCase().indexOf(criterion) isnt -1 or model.get("username").toLowerCase().indexOf(criterion) isnt -1
 			return true
 		else
 			return false

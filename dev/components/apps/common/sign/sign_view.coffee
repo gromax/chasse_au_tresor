@@ -28,7 +28,7 @@ SignView = View.extend {
 		else
 			error = false
 			$form = @$el.find("form")
-			_.each ["nom", "email", "pwd"], (k)->
+			_.each ["nom", "username", "pwd"], (k)->
 				$form.find("#user-#{k}").removeClass("is-invalid").removeClass("is-valid")
 
 			$inp = $form.find("#user-pwd-2")
@@ -77,7 +77,7 @@ SignView = View.extend {
 			showForgotten: @options.showForgotten is true
 			signin: @options.signin is true
 			showRedacCheck: @options.showRedacCheck is true
-			email: @options.email ? ""
+			username: @options.username ? ""
 			pwd: @options.pwd ? ""
 			showToggleButton: @options.showToggleButton is true
 		}

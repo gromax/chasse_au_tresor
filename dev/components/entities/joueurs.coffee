@@ -3,7 +3,7 @@ Item = Backbone.Model.extend {
 
 	defaults: {
 		nom: ""
-		email: ""
+		username: ""
 	},
 
 	parse: (data) ->
@@ -16,15 +16,15 @@ Item = Backbone.Model.extend {
 		return data
 
 	toJSON: ->
-		return _.pick(this.attributes, 'id', 'nom', 'email', 'pwd');
+		return _.pick(this.attributes, 'id', 'nom', 'username', 'pwd');
 
 	validate: (attrs, options) ->
 		errors = {}
 		if (not attrs.nom) or (attrs.nom.length<4)
 			errors.nom = true
 
-		if (not attrs.email) or (attrs.email.length<4)
-			errors.email = true
+		if (not attrs.username) or (attrs.username.length<4)
+			errors.username = true
 
 		if (not attrs.pwd) or (attrs.pwd.length<4)
 			errors.pwd = true

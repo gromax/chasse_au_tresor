@@ -6,8 +6,8 @@
 	</div>
 
 	<div class="form-group">
-		<label for="item-email" class="control-label">identifiant ou email :</label>
-		<input class="form-control" id="item-email" name="email" type="text" value="<%- email %>" placeHolder="email"/>
+		<label for="item-username" class="control-label">identifiant ou email :</label>
+		<input class="form-control" id="item-username" name="username" type="text" value="<%- username %>" placeHolder="email / indentifiant"/>
 	</div>
 	<%}%>
 	<% if (showPWD){ %>

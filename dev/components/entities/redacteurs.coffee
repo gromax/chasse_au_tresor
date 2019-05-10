@@ -3,7 +3,7 @@ Item = Backbone.Model.extend {
 
 	defaults: {
 		nom: ""
-		email: ""
+		username: ""
 	},
 
 	parse: (data) ->
@@ -16,7 +16,7 @@ Item = Backbone.Model.extend {
 		return data
 
 	toJSON: ->
-		return _.pick(this.attributes, 'id', 'nom', 'email', 'pwd');
+		return _.pick(this.attributes, 'id', 'nom', 'username', 'pwd');
 
 	validate: (attrs, options) ->
 		errors = {}
@@ -26,7 +26,7 @@ Item = Backbone.Model.extend {
 			if attrs.nom.length<2
 				errors.nom = "Trop court"
 
-		if not attrs.email
+		if not attrs.username
 			errors.nom = "L'identifiant ne doit pas être vide"
 
 		if not _.isEmpty(errors)

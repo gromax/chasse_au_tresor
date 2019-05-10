@@ -5,9 +5,9 @@ Connexion
 <div class="card-body">
 	<form>
 		<div class="form-group row">
-			<label for="user-email" class="col-form-label col-sm-3">Email / Identifiant</label>
+			<label for="user-username" class="col-form-label col-sm-3">Email / Identifiant</label>
 			<div class="col-sm-9">
-				<input type="input" class="form-control" name="email" id="user-email" placeholder="Entrez un email" value="<%- email %>">
+				<input type="input" class="form-control" name="username" id="user-username" placeholder="Entrez un email / identifiant" value="<%- username %>">
 			</div>
 			<div class="invalid-feedback">
 				Ne doit pas être vide.
@@ -38,9 +38,9 @@ Créer un compte
 <div class="card-body">
 	<form>
 		<div class="form-group row">
-			<label for="user-email" class="col-form-label col-sm-3">Email / Identifiant</label>
+			<label for="user-username" class="col-form-label col-sm-3">Email / Identifiant</label>
 			<div class="col-sm-9">
-				<input type="input" class="form-control" name="email" id="user-email" placeholder="Entrez un email" value="">
+				<input type="input" class="form-control" name="username" id="user-username" placeholder="Entrez un email" value="">
 				<div class="invalid-feedback">
 					Déjà pris, trop court, trop nul...
 				</div>

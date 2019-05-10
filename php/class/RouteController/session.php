@@ -51,9 +51,9 @@ class session
     {
         $data = json_decode(file_get_contents("php://input"),true);
 
-        if (isset($data['email']) && isset($data['pwd']))
+        if (isset($data['username']) && isset($data['pwd']))
         {
-            $email=$data['email'];
+            $username=$data['username'];
             $pwd=$data['pwd'];
         }
         else
@@ -63,7 +63,7 @@ class session
         }
 
         $adm = (isset($data['adm'])&&($data['adm']));
-        $loginSuccess = AC::tryLogin($email, $pwd, $adm);
+        $loginSuccess = AC::tryLogin($username, $pwd, $adm);
 
         if ($loginSuccess)
         {
