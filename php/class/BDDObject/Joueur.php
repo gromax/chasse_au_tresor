@@ -7,7 +7,7 @@ use ErrorController as EC;
 use SessionController as SC;
 use MeekroDBException;
 
-use Partie;
+use BDDObject\Partie;
 
 final class Joueur extends Item
 {
