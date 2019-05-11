@@ -132,7 +132,7 @@ class redacteurs
         }
 
         $id = (integer) $this->params['id'];
-        if (!$ac->isRoot() && (!$ac->isRedacteur() || !($ac->getLoggedUserId() != $id)))
+        if (!$ac->isRoot() && (!$ac->isRedacteur() || ($ac->getLoggedUserId() != $id)))
         {
             // Seul root ou rédacteur soi même peut modifier
             EC::set_error_code(403);

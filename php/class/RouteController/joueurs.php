@@ -130,7 +130,7 @@ class joueurs
         }
 
         $id = (integer) $this->params['id'];
-        if (!$ac->isRoot()&& (!$ac->isJoueur() || !($ac->getLoggedUserId() == $id)))
+        if (!$ac->isRoot()&& (!$ac->isJoueur() || ($ac->getLoggedUserId() != $id)))
         {
             // Seul root ou joueur soi-même peut faire la modif
             EC::set_error_code(403);
