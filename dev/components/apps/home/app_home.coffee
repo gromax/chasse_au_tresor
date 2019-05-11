@@ -6,6 +6,7 @@ Router = Backbone.Router.extend {
 		"home" : "showHome"
 		"login" : "showSign"
 		"signup" : "showSignUp"
+		"edit-me" : "showEditMe"
 	}
 
 	showHome: ->
@@ -36,6 +37,13 @@ Router = Backbone.Router.extend {
 			).fail( (response)->
 				alert("Erreur inconnue. Essayez à nouveau ou prévenez l'administrateur [code #{response.status}/024]");
 			)
+
+	showEditMe: ->
+		if not app.Auth.get("logged_in") or (app.Auth.get("rank") is "root")
+			require("./show/show_controller.coffee").controller.showHome()
+		else
+			require("apps/home/editMe/controller.coffee").controller.show()
+
 }
 
 router = new Router()
@@ -55,3 +63,7 @@ app.on "home:signup", ()->
 app.on "home:logout", ()->
 	router.logout()
 	app.trigger("home:show")
+
+app.on "edit:me", ()->
+	app.navigate("edit-me")
+	router.showEditMe()
