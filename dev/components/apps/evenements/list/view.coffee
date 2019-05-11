@@ -20,7 +20,7 @@ RedacteurItemView = View.extend {
 	tagName: "tr"
 	template: templateRedacteurItem
 	triggers: {
-		"click td a.js-edit": "edit"
+		"click a.js-edit": "edit"
 		"click button.js-delete": "delete"
 		"click button.js-actif": "activation:toggle"
 		"click button.js-visible": "visible:toggle"
