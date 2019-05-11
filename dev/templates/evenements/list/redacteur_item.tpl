@@ -1,8 +1,10 @@
 <td><span class="badge badge-pill badge-primary"><%- id %></span></td>
-<td><%- titre %> <small class="text-danger"><i class="fa fa-user"></i>&nbsp;<%- nomProprietaire %> &nbsp; <i class="fa fa-key"></i>&nbsp;<%- hash %></small><br/><span class="text-info"><i class="fa fa-file-text"></i></i><%- description %></span></td>
+<td><%- titre %> <small class="text-danger"><i class="fa fa-user"></i>&nbsp;<%- nomProprietaire %> &nbsp; <i class="fa fa-key"></i>&nbsp;<%- hash %></small><br/><span class="text-info"><i class="fa fa-file-text"></i>&nbsp;</i><%- description %></span></td>
 <td><%- count_parties %></td>
 <td align="right">
 	<div class="btn-group" role="group">
+		<!-- Bouton d'édition -->
+		<a href="#" class="btn btn-secondary btn-sm js-edit" role="button"><i class="fa fa-pencil" title="Modifier"></i></a>
 		<!-- Bouton de visibilité -->
 		<% if (visible) { %>
 		<button type="button" class="btn btn-success btn-sm js-visible"><i class="fa fa-eye" title="Rendre invisible"></i></button>
