@@ -11,7 +11,23 @@ SignView = View.extend {
 	events: {
 		"click button.js-submit": "submitClicked"
 		"click a.js-toggle": "toggleInUp"
+		"click button.js-unsetAdm": "unsetAdm"
+		"click button.js-setAdm": "setAdm"
 	}
+
+	setAdm: (e) ->
+		e.preventDefault()
+		$('button.js-unsetAdm').removeClass('btn-success').addClass('btn-outline-success')
+		$('button.js-setAdm').removeClass('btn-outline-success').addClass('btn-success')
+		$("input[name='adm']").val("1")
+		$(".card-header",@$el).html("Connexion &nbsp; <span class='badge badge-warning'>mode rédacteur</span>")
+
+	unsetAdm: (e) ->
+		e.preventDefault()
+		$('button.js-setAdm').removeClass('btn-success').addClass('btn-outline-success')
+		$('button.js-unsetAdm').removeClass('btn-outline-success').addClass('btn-success')
+		$("input[name='adm']").val("0")
+		$(".card-header",@$el).html("Connexion")
 
 	toggleInUp: (e)->
 		e.preventDefault()
@@ -20,10 +36,9 @@ SignView = View.extend {
 
 	submitClicked: (e)->
 		e.preventDefault()
-
 		data = Syphon.serialize(@)
 		if @options.signin is true
-			data.adm = (@options.showRedacCheck is true) and ($("#admCheck").prop('checked'))
+			data.adm = (data.adm is "1")
 			@trigger("form:submit", data)
 		else
 			error = false
