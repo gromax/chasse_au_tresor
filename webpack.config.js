@@ -103,7 +103,8 @@ let config = {
         to: './index.html'
       },*/
       {
-        from: './dev/assets/.htaccess'
+        from: devMode ? './dev/assets/.htaccess.local' : './dev/assets/.htaccess.server'
+        to: './.htaccess'
       },
       {
         from: './dev/assets/favicon.ico',
