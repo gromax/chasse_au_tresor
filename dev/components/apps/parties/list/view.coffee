@@ -59,29 +59,44 @@ RedacteurListView = Marionette.CollectionView.extend {
 		"click a.js-sort-duree":"sortduree"
 	}
 
-	onSortid: (view)->
-		if @collection.comparatorAttr is "id"
-			@collection.comparatorAttr = "inv_id"
+	onSortid: ->
+		@sortFct("id")
+
+	onSortduree: ->
+		@sortFct("duree")
+
+	onSortdate: ->
+		@sortFct("dateDebut")
+
+	onSortnom: ->
+		@sortFct("nom")
+
+	sortFct: (tag)->
+		if @collection.comparatorAttr is tag
+			@collection.comparatorAttr = "inv_"+tag
 			@collection.comparator = (a,b)->
-				if a.get("id")>b.get("id")
+				if a.get(tag)>b.get(tag)
 					-1
 				else
 					1
 		else
-			@collection.comparatorAttr = "id"
-			@collection.comparator = "id"
+			@collection.comparatorAttr = tag
+			@collection.comparator = tag
 		@collection.sort()
 
 	viewFilter: (child, index, collection) ->
 		criterion = @filterCriterion
 		model = child.model
-		if criterion is "" or criterion is null or model.get("nom").toLowerCase().indexOf(criterion) isnt -1 or model.get("titreEvenement").toLowerCase().indexOf(criterion) isnt -1
+		if criterion is "" or criterion is null
+			return true
+		strModel = (model.get("nom") + ";" + model.get("titreEvenement")).normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()
+		if strModel.indexOf(criterion) isnt -1
 			return true
 		else
 			return false
 
 	onSetFilterCriterion: (criterion, options)->
-		@filterCriterion = criterion.toLowerCase()
+		@filterCriterion = criterion.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()
 		@render()
 
 	flash: (itemModel)->
