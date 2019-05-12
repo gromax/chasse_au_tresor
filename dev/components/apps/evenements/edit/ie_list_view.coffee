@@ -58,6 +58,10 @@ EnteteView = Marionette.View.extend {
 	triggers: {
 		"click a.js-parent": "navigate:parent"
 	}
+	templateContext: ->
+		{
+			baseUrl: window.location.href.split("#")[0]
+		}
 }
 
 ListeView = Marionette.CollectionView.extend {
