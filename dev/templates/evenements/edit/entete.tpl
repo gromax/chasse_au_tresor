@@ -10,5 +10,6 @@
 <% } else { %>
 <p class="card-text"><strong>Inactif</strong></p>
 <% } %>
+<p class="card-text"><i class="fa fa-link"></i>&nbsp;<span class="text-primary"><%- baseUrl %>partie/hash:<%- hash %></span></p>
 </div>
 </div>
