@@ -1,6 +1,7 @@
 # config
 bddConfig.php
-rootConfig.php
+php/config/rootConfig.php
+php/config/emailConfig.php
 composer.lock
 composer.phar
 
