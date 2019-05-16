@@ -108,6 +108,31 @@ abstract class Item
 		return null;
 	}
 
+	public static function getObjectWithKey($keyName, $keyValue)
+	{
+		$keys = array_keys(static::champs());
+		array_unshift($keys,"id");
+
+		require_once BDD_CONFIG;
+		try {
+			$bdd_result=DB::queryFirstRow("SELECT ".implode(",",$keys)." FROM ".PREFIX_BDD.static::$BDDName." WHERE ".$keyName."=%s", $keyValue);
+			if ($bdd_result === null)
+			{
+				return null;
+			}
+
+			$item = new static($bdd_result);
+			if (self::SAVE_IN_SESSION)
+			{
+				SC::get()->setParamInCollection(static::$BDDName, $item->id, $item);
+			}
+			return $item;
+		} catch(MeekroDBException $e) {
+			EC::addBDDError($e->getMessage(),static::$BDDName."/getObjectWithKey");
+		}
+		return null;
+	}
+
 	##################################### METHODES #####################################
 
 	public function __toString()
