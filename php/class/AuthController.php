@@ -3,6 +3,8 @@
 //use MeekroDBException; inutile
 use ErrorController as EC;
 use SessionController as SC;
+use BDDObject\Redacteur;
+use BDDObject\Joueur;
 
 class AuthController
 {
@@ -112,6 +114,54 @@ class AuthController
 
     }
     EC::addError("Mot de passe ou identifiant/email invalide.");
+    EC::set_error_code(422);
+    return false;
+  }
+
+  public static function tryLoginWithHash($hash, $adm)
+  {
+    if ($hash !== '')
+    {
+      if ($adm){
+        // connexion rédac ou adm
+        // sinon connexion rédacteur
+        require_once BDD_CONFIG;
+        try {
+          $bdd_result = DB::queryFirstRow("SELECT r.id, r.nom, r.username FROM (".PREFIX_BDD."redacteurs r JOIN ".PREFIX_BDD."hashs h ON h.idProprietaire=r.id) WHERE h.hash=%s AND h.type=".REDACTEUR_PWD_LOST, $hash);
+        } catch(MeekroDBException $e) {
+          EC::set_error_code(501);
+          EC::addBDDError($e->getMessage(), 'AuthController/tryConnexionWithHash');
+          return false;
+        }
+
+        if ($bdd_result !== null)
+        {
+          $redac = new Redacteur($bdd_result);
+          $redac->resetHashsForPasswordLost();
+          self::createSession($bdd_result['id'], $bdd_result['nom'], $bdd_result['username'], self::RANK_REDAC);
+          return true;
+        }
+      } else {
+        require_once BDD_CONFIG;
+        try {
+          $bdd_result = DB::queryFirstRow("SELECT j.id, j.nom, j.username FROM (".PREFIX_BDD."joueurs j JOIN ".PREFIX_BDD."hashs h ON j.id=h.idProprietaire) WHERE h.hash=%s AND h.type=".JOUEUR_PWD_LOST, $hash);
+        } catch(MeekroDBException $e) {
+          EC::set_error_code(501);
+          EC::addBDDError($e->getMessage(), 'AuthController/tryConnexionWithHash');
+          return false;
+        }
+
+        if ($bdd_result !== null)
+        {
+          $joueur = new Joueur($bdd_result);
+          $joueur->resetHashsForPasswordLost();
+          self::createSession($bdd_result['id'], $bdd_result['nom'], $bdd_result['username'], self::RANK_JOUEUR);
+          return true;
+        }
+      }
+
+    }
+    EC::addError("Connexion impossible.");
     EC::set_error_code(422);
     return false;
   }
