@@ -4,6 +4,9 @@ namespace RouteController;
 use ErrorController as EC;
 use AuthController as AC;
 use BDDObject\Redacteur as Item;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 
 class redacteurs
 {
@@ -169,9 +172,59 @@ class redacteurs
         }
     }
 
+    public function forgottenWithEmail()
+    {
+        if ((isset($_POST['email'])) && (Item::checkEMail($_POST['email'])))
+        {
+            $email = $_POST['email'];
+            $user = Item::getObjectWithKey("username",$email);
 
+            if ($user===null)
+            {
+                EC::set_error_code(404);
+                return false;
+            }
 
+            $hash = $user->addHashForPasswordLost();
+            if ($hash===false)
+            {
+                EC::set_error_code(501);
+                return false;
+            }
+            $mail = new PHPMailer(true);            // Passing `true` enables exceptions
+            try{
+                //Server settings
+                $mail->CharSet = 'UTF-8';
+                //$mail->SMTPDebug = 2;             // Enable verbose debug output
+                $mail->isSMTP();                    // Set mailer to use SMTP
+                $mail->Host = SMTP_HOST;            // Specify main and backup SMTP servers
+                $mail->SMTPAuth = true;             // Enable SMTP authentication
+                $mail->Username = SMTP_USER;        // SMTP username
+                $mail->Password = SMTP_PASSWORD;    // SMTP password
+                $mail->SMTPSecure = 'ssl';          // Enable TLS encryption, `ssl` also accepted
+                $mail->Port = SMTP_PORT;            // TCP port to connect to
 
+                //Recipients
+                $mail->setFrom(EMAIL_FROM, PSEUDO_FROM);
+                $arrUser = $user->getValues();
+                $mail->addAddress($email, $arrUser['nom']);     // Add a recipient
+
+                //Content
+                $mail->isHTML(true);                            // Set email format to HTML
+                $mail->Subject = "Mot de passe oublié";
+                $mail->Body    = "<b>".NOM_SITE.".</b> Vous avez oublié votre mot de passe. Suivez ce lien pour pour modifier votre mot de passe : <a href='".PATH_TO_SITE."/#forgotten:R$hash'>Réinitialisation du mot de passe</a>.";
+                $mail->AltBody = NOM_SITE." Vous avez oublié votre mot de passe. Copiez ce lien dans votre navigateur pour vous connecter et modifier votre mot de passe : ".PATH_TO_SITE."/#redacteur/forgotten/$hash";
+                $mail->send();
+            }   catch (Exception $e) {
+                EC::addError("Le message n'a pu être envoyé. Erreur :".$mail->ErrorInfo);
+                EC::set_error_code(501);
+                return false;
+            }
+            return array("message"=>"Email envoyé.");
+        }
+        EC::set_error_code(501);
+        return false;
+    }
 
 }
 ?>
