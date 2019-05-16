@@ -13,6 +13,7 @@ SignView = View.extend {
 		"click a.js-toggle": "toggleInUp"
 		"click button.js-unsetAdm": "unsetAdm"
 		"click button.js-setAdm": "setAdm"
+		"click button.js-forgotten": "forgottenClicked"
 	}
 
 	setAdm: (e) ->
@@ -61,6 +62,15 @@ SignView = View.extend {
 			if not error
 				@trigger("form:submit", data)
 
+	forgottenClicked: (e)->
+		e.preventDefault()
+		email = $("input[name='username']",@$el).val()
+		adm = $("input[name='adm']",@$el).val() is "1"
+		emailRegex = /^[a-zA-Z0-9_-]+(.[a-zA-Z0-9_-]+)*@[a-zA-Z0-9._-]{2,}\.[a-z]{2,4}$/
+		if emailRegex.test(email)
+			@trigger("forgottenButton:click", email, adm)
+		else
+			@onFormDataInvalid [{ success:false, message:"L'adresse e-mail n'est pas valide !" }]
 
 	onFormDataInvalid: (errors)->
 		$("input",@$el).each ()->
@@ -89,9 +99,10 @@ SignView = View.extend {
 
 	templateContext: ->
 		{
+			adm: @options.adm ? 0
 			showForgotten: @options.showForgotten is true
 			signin: @options.signin is true
-			showRedacCheck: @options.showRedacCheck is true
+			desactiveModeChoiceButton: @options.desactiveModeChoiceButton is true
 			username: @options.username ? ""
 			pwd: @options.pwd ? ""
 			showToggleButton: @options.showToggleButton is true
