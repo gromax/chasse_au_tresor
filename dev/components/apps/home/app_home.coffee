@@ -7,6 +7,8 @@ Router = Backbone.Router.extend {
 		"login" : "showSign"
 		"signup" : "showSignUp"
 		"edit-me" : "showEditMe"
+		"redacteur/forgotten/:hash": "redacteurLoginWithHash"
+		"joueur/forgotten/:hash": "joueurLoginWithHash"
 	}
 
 	showHome: ->
@@ -16,13 +18,25 @@ Router = Backbone.Router.extend {
 		if app.Auth.get("logged_in")
 			require("./show/show_controller.coffee").controller.showHome()
 		else
-			require("apps/common/sign/sign_controller.coffee").controller.show({signin:true, showRedacCheck:true})
+			require("apps/common/sign/sign_controller.coffee").controller.show({ signin:true, showForgotten:true })
 
 	showSignUp: ->
 		if app.Auth.get("logged_in")
 			require("./show/show_controller.coffee").controller.showHome()
 		else
-			require("apps/common/sign/sign_controller.coffee").controller.show({signin:false})
+			require("apps/common/sign/sign_controller.coffee").controller.show({ signin:false })
+
+	redacteurLoginWithHash: (hash) ->
+		if app.Auth.get("logged_in")
+			require("./show/show_controller.coffee").controller.showHome()
+		else
+			require("apps/common/sign/sign_controller.coffee").controller.loginWithHash(hash, true)
+
+	joueurLoginWithHash: (hash) ->
+		if app.Auth.get("logged_in")
+			require("./show/show_controller.coffee").controller.showHome()
+		else
+			require("apps/common/sign/sign_controller.coffee").controller.loginWithHash(hash, false)
 
 
 	logout: ->
