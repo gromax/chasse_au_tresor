@@ -1,6 +1,6 @@
 <% if (signin) {
 %><div class="card-header">
-Connexion
+Connexion<% if (adm==1) { %> &nbsp; <span class='badge badge-warning'>mode rédacteur</span><% } %>
 </div>
 <div class="card-body">
   <form>
@@ -8,17 +8,19 @@ Connexion
       <label for="user-username" class="col-form-label col-sm-3">Email / Identifiant</label>
       <div class="col-sm-9 input-group">
         <input type="input" class="form-control" name="username" id="user-username" placeholder="Entrez un email / identifiant" value="<%- username %>">
-        <% if (showRedacCheck) {
-        %><div class="input-group-append">
-          <button class="btn btn-outline-success btn-sm js-setAdm" title="Je suis un rédacteur" type="button"><i class="fa fa-pencil"></i></button>
+        <% if (adm==1) { %>
+        <div class="input-group-append">
+          <button class="btn btn-success btn-sm js-setAdm" title="Je suis un rédacteur" type="button"><i class="fa fa-pencil"></i></button>
+          <button class="btn btn-outline-success btn-sm js-unsetAdm" title="Je suis un joueur" type="button" <% if (desactiveModeChoiceButton) { %>disabled<% } %> ><i class="fa fa-gamepad"></i></button>
+        </div>
+        <% } else { %>
+        <div class="input-group-append">
+          <button class="btn btn-outline-success btn-sm js-setAdm" title="Je suis un rédacteur" type="button" <% if (desactiveModeChoiceButton) { %>disabled<% } %> ><i class="fa fa-pencil"></i></button>
           <button class="btn btn-success btn-sm js-unsetAdm" title="Je suis un joueur" type="button"><i class="fa fa-gamepad"></i></button>
         </div>
+        <% } %>
       </div>
-      <input type="hidden" name="adm" value="0">
-      <% } %>
-      <div class="invalid-feedback">
-        Ne doit pas être vide.
-      </div>
+      <input type="hidden" name="adm" value="<%- adm %>">
     </div>
 
     <div class="form-group row">
@@ -28,8 +30,9 @@ Connexion
       </div>
     </div>
 
-    <% if (showForgotten) { %><button type="button" class="btn btn-primary js-forgotten">Mot de passe oublié</button> <% } %> <button type="submit" class="btn btn-primary js-submit">Valider</button>
-    <% if (showToggleButton){%><a href="#" class="btn btn-outline-primary js-toggle" role="button"><i class="fa fa-star-o"></i> Créer un compte</a><% } %>
+    <button type="submit" class="btn btn-primary js-submit">Valider</button>
+    <% if (showForgotten) { %><button type="button" class="btn btn-outline-primary js-forgotten"><i class="fa fa-ambulance"></i>&nbsp;Mot de passe oublié</button> <% } %>
+    <% if (showToggleButton){%><a href="#" class="btn btn-outline-primary js-toggle" role="button"><i class="fa fa-star-o"></i>&nbsp;Créer un compte</a><% } %>
 
     <div id="messages"></div>
   </form>
