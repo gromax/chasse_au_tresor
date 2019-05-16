@@ -76,5 +76,35 @@ class session
         }
     }
 
+    public function getRedacteurSessionWithHash()
+    {
+        $hash = $this->params['hash'];
+        $loginSuccess = AC::tryLoginWithHash($hash, true);
+        if ($loginSuccess)
+        {
+            $ac = new AC();
+            return $ac->getloggedUserData();
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public function getJoueurSessionWithHash()
+    {
+        $hash = $this->params['hash'];
+        $loginSuccess = AC::tryLoginWithHash($hash, false);
+        if ($loginSuccess)
+        {
+            $ac = new AC();
+            return $ac->getloggedUserData();
+        }
+        else
+        {
+            return false;
+        }
+    }
+
 }
 ?>
