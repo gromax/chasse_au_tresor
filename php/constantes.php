@@ -8,7 +8,16 @@
   if (file_exists("../php/config/rootConfig.php")) {
   	require_once("../php/config/rootConfig.php");
   } else {
-  	require_once("../php/config/rootConfigDef.php");
+  	require_once("../php/configDef/rootConfig.php");
+  }
+
+  if (file_exists("../php/config/emailConfig.php"))
+  {
+    require_once("../php/config/emailConfig.php");
+  }
+  else
+  {
+    require_once("../php/configDef/emailConfig.php");
   }
 
   // GPS
@@ -18,21 +27,14 @@
   define("PSEUDO_MIN_SIZE", 6);
   define("PSEUDO_MAX_SIZE", 20);
 
-  // mails
-  define("PSEUDO_FROM","jeu.goupill.fr");
-  define("EMAIL_FROM","jeu@goupill.fr");
-  define("PATH_TO_SITE","https://jeu.goupill.fr");
-  define("NOM_SITE","Chasse au trésor sur goupill.fr");
-  define("SMTP_PASSWORD","zwdHpjudYfv3CbEbt8Aa");
-  define("SMTP_USER","jeu@goupill.fr");
-  define("SMTP_HOST","mail.goupill.fr");
-  define("SMTP_PORT",465);
-
   // debug
   define("DEBUG",true);
   define("DEBUG_TEMPLATES",true);
   define("BDD_DEBUG_ON",true);
 
+  // hashs
+  define("REDACTEUR_PWD_LOST",1);
+  define("JOUEUR_PWD_LOST",1);
 
 
 ?>
