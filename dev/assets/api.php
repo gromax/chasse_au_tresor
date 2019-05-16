@@ -30,7 +30,6 @@ if (file_exists("../php/config/bddConfig.php")) {
   $router->addRule('api/redacteurs/:id', 'redacteurs', 'delete', 'DELETE');
   $router->addRule('api/redacteurs/:id', 'redacteurs', 'update', 'PUT');
   $router->addRule('api/redacteurs', 'redacteurs', 'insert', 'POST');
-  //$router->addRule('api/redacteur/:id/init', 'users', 'forgottenWithId', 'POST');
 
   // redacteurs
   $router->addRule('api/joueurs/:id', 'joueurs', 'fetch', 'GET');
@@ -65,6 +64,13 @@ if (file_exists("../php/config/bddConfig.php")) {
   $router->addRule('api/customData/:asks', 'data', 'customFetch', 'GET');
   $router->addRule('api/customData/partie/:id', 'data', 'partieFetch', 'GET');
   $router->addRule('api/event/hash/:hash', 'data', 'getPartieWithHash', 'GET');
+
+  // forgotten
+  $router->addRule('api/redacteur/forgotten', 'redacteurs', 'forgottenWithEmail', 'POST');
+  $router->addRule('api/redacteur/forgotten/:hash', 'session', 'getRedacteurSessionWithHash', 'GET');
+  $router->addRule('api/joueur/forgotten', 'joueurs', 'forgottenWithEmail', 'POST');
+  $router->addRule('api/joueur/forgotten/:hash', 'session', 'getRedacteurSessionWithHash', 'GET');
+
 
   $response = $router->load();
 } else {
