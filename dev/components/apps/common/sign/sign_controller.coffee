@@ -1,5 +1,7 @@
 import Marionette from "backbone.marionette"
 import { SignView } from "apps/common/sign/sign_view.coffee"
+import MissingView from "apps/common/missing.coffee"
+
 
 app = require("app").app
 
@@ -14,7 +16,8 @@ Controller = Marionette.Object.extend {
 		else
 			view = new SignView {
 				signin: options?.signin
-				showRedacCheck: options?.showRedacCheck
+				desactiveModeChoiceButton: options?.desactiveModeChoiceButton
+				showForgotten: options?.showForgotten
 				showToggleButton: options?.showToggleButton
 			}
 
@@ -61,8 +64,18 @@ Controller = Marionette.Object.extend {
 						app.trigger("header:loading", false)
 					)
 				else
-					view.triggerMethod("form:data:invalid", nJoueur.validationError)
+					view.triggerMethod "form:data:invalid", nJoueur.validationError
 
+			view.on "forgottenButton:click", (email, adm) ->
+				app.trigger("header:loading", true)
+				sendingEmail = app.Auth.sendReinitEmail(email,adm)
+				$.when(sendingEmail).done( (response)->
+					view.triggerMethod "form:data:invalid", [{ success:true, message:"Un email a été envoyé." }]
+				).fail( (response)->
+					view.triggerMethod "form:data:invalid", [{ success:false, message:"Échec de l'envoi d'email." }]
+				).always( ()->
+					app.trigger("header:loading", false)
+				)
 
 			view.on "form:submit", (data) ->
 				if view.options.signin is true
@@ -70,7 +83,21 @@ Controller = Marionette.Object.extend {
 				else
 					signupCallback(data)
 
-			app.regions.getRegion('main').show(view);
+			app.regions.getRegion('main').show(view)
+
+
+	loginWithHash:(hash, adm) ->
+		openingSession = app.Auth.getSessionWithHash(hash,adm)
+		app.trigger("header:loading", true)
+		$.when(openingSession).done( (response)->
+			app.Auth.set _.extend(response, {adm:true, logged_in:true})
+			app.trigger "edit:me"
+		).fail( (response)->
+			view = new MissingView { message: "Clé introuvable." }
+			app.regions.getRegion('main').show(view)
+		).always( ()->
+			app.trigger("header:loading", false)
+		)
 
 }
 
