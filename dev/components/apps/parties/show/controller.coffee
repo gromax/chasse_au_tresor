@@ -1,7 +1,8 @@
 import Marionette from 'backbone.marionette'
 import AlertView from 'apps/common/alert_view.coffee'
 import MissingView from 'apps/common/missing.coffee'
-import { AccueilView, PanelView, SubItemCollectionView, Layout, CleCollectionView } from 'apps/parties/show/partie_joueur_view.coffee'
+import { AccueilView, PanelView, Layout, CleCollectionView } from 'apps/parties/show/partie_joueur_view.coffee'
+import { SubItemCollectionView } from 'apps/evenements/common/sub_items_view.coffee'
 
 app = require('app').app
 
@@ -60,6 +61,8 @@ Controller = Marionette.Object.extend {
           subItemsCollection = new SubItemCollection()
           subItemsCollection.add(d, {parse:true})
         vuePrincipale = new SubItemCollectionView { collection: subItemsCollection }
+        vuePrincipale.on "subItem:click:cle", (cible)->
+          app.trigger "partie:show:cle", id, cible.normalize('NFD').replace(/[\u0300-\u036f]/g, "")
       else
         vuePrincipale = new AccueilView {
           model:partie
