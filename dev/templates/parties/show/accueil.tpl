@@ -11,7 +11,7 @@ if (cle!=""){
   Votre géolocalisation n'est pas assez précise : <%- accuracy %> mètres.<br>
   L'erreur maximum autorisée est de <%-GPS_LIMIT %> mètres.<br>
 <% } else {%>
-  La précision est de 25 mètres.<br>
+  La précision est de <%-GPS_LIMIT %> mètres.<br>
   Essayez de vous rapprocher...
 <% } %>
 </div><%
