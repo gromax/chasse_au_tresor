@@ -21,7 +21,7 @@
   }
 
   // GPS
-  define("GPS_LIMIT", 50);
+  define("GPS_LIMIT", 40);
 
   // Utilisateurs
   define("PSEUDO_MIN_SIZE", 6);
