@@ -212,7 +212,7 @@ class redacteurs
                 //Content
                 $mail->isHTML(true);                            // Set email format to HTML
                 $mail->Subject = "Mot de passe oublié";
-                $mail->Body    = "<b>".NOM_SITE.".</b> Vous avez oublié votre mot de passe. Suivez ce lien pour pour modifier votre mot de passe : <a href='".PATH_TO_SITE."/#forgotten:R$hash'>Réinitialisation du mot de passe</a>.";
+                $mail->Body    = "<b>".NOM_SITE.".</b> Vous avez oublié votre mot de passe. Suivez ce lien pour pour modifier votre mot de passe : <a href='".PATH_TO_SITE."/#redacteur/forgotten/$hash'>Réinitialisation du mot de passe</a>.";
                 $mail->AltBody = NOM_SITE." Vous avez oublié votre mot de passe. Copiez ce lien dans votre navigateur pour vous connecter et modifier votre mot de passe : ".PATH_TO_SITE."/#redacteur/forgotten/$hash";
                 $mail->send();
             }   catch (Exception $e) {
