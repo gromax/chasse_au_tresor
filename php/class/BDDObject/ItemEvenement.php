@@ -92,6 +92,8 @@ final class ItemEvenement extends Item
         $arr1 = explode("=",$cleEssai);
         $arrCoordsEssaiStr = explode(",",$arr1[1]);
         $arrCoordsEssai = array("y"=>0+$arrCoordsEssaiStr[0] , "x"=> 0+$arrCoordsEssaiStr[1]);
+        $distMin2 = 360000; // correspond à 10°²
+        $idFound = null;
         foreach ($list as $value) {
           if (preg_match($regexGPS,$value['regexCle'])==1)
           {
@@ -102,17 +104,20 @@ final class ItemEvenement extends Item
             $arrCoordsItem = array("y"=>0+trim($arrCoordsItemStr[0]) , "x"=> 0+trim($arrCoordsItemStr[1]));
             $ym = ($arrCoordsEssai["y"]+$arrCoordsItem["y"])/2;
             $dx = 60*($arrCoordsEssai["x"]-$arrCoordsItem["x"])*cos($ym*0.01745329251994329577);
-            $dy = 60*($arrCoordsEssai["x"]-$arrCoordsItem["x"]);
-            $dist2 = ($dx*$dx + $dy*$dy); // en minutes
-
-            if ($dist2<=$ecartMax2) // (GPS_LIMIT / 1852m)²
+            $dy = 60*($arrCoordsEssai["y"]-$arrCoordsItem["y"]);
+            $dist2 = ($dx*$dx + $dy*$dy); // en minutes²
+            if (($dist2<=$ecartMax2)&&($dist2<$distMin2)) // (GPS_LIMIT / 1852m)²
             {
               // à moins de GPS_LIMIT
-              // correspondance trouvée
-              return self::getObject($value['id']);
+              // correspondance plus proche trouvée
+              $distMin2 = $dist2;
+              $idFound = $value['id'];
             }
-
           }
+        }
+        if ($idFound!==null)
+        {
+          return self::getObject($idFound);
         }
       }
       else
