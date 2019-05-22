@@ -3,7 +3,8 @@ import AlertView from 'apps/common/alert_view.coffee'
 import MissingView from 'apps/common/missing.coffee'
 import { ListeView, Layout, EnteteView } from 'apps/evenements/edit/ie_list_view.coffee'
 import FormView from 'apps/evenements/common/formItem_view.coffee'
-import { PanelView, SubItemCollectionView, ItemLayoutView } from 'apps/evenements/edit/ie_edit_view.coffee'
+import { PanelView, ItemLayoutView } from 'apps/evenements/edit/ie_edit_view.coffee'
+import { SubItemCollectionView } from 'apps/evenements/common/sub_items_view.coffee'
 import { FilesView } from 'apps/common/files_loader.coffee'
 
 app = require('app').app
@@ -190,7 +191,7 @@ Controller = Marionette.Object.extend {
           SubItemCollection = require("entities/itemsEvenement.coffee").SubItemCollection
           subItemsCollection = new SubItemCollection()
           subItemsCollection.add(d, {parse:true})
-        subItemsView = new SubItemCollectionView({ collection: subItemsCollection })
+        subItemsView = new SubItemCollectionView({ collection: subItemsCollection, redacteurMode:true })
 
         panel.on "navigate:parent", ->
           app.trigger "evenement:show", idEvenement
