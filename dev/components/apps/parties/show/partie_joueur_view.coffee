@@ -1,14 +1,8 @@
 import { View, CollectionView } from 'backbone.marionette'
-import Syphon from 'backbone.syphon'
 import templateAccueil from "templates/parties/show/accueil.tpl"
 import templatePanel from "templates/parties/show/panel.tpl"
 import templateLayout from "templates/parties/show/layout.tpl"
 import templateCleItem from "templates/parties/show/cleItem.tpl"
-
-import templateNoSub from "templates/evenements/common/noSubItem.tpl"
-import templateImageSub from "templates/evenements/common/image-subItem.tpl"
-import templateBrutSub from "templates/evenements/common/brut-subItem.tpl"
-import templateSvgSub from "templates/evenements/common/svg-subItem.tpl"
 
 import templateCles from "templates/parties/show/cles.tpl"
 
@@ -42,26 +36,9 @@ PanelView = View.extend {
     }
 }
 
-SubItemView = View.extend {
-  className: "card"
-  attributes: ->
-    if @model.get("type") is "image" and @model.get("width") isnt "100%"
-      { style:"width:#{@model.get("width")};"}
-    else
-      {}
-  getTemplate: ->
-    type = @model.get("type")
-    switch type
-      when "image" then templateImageSub
-      when "svg" then templateSvgSub
-      else templateBrutSub
 
-  templateContext: ->
-    {
-      editMode: false
-      redacteurMode: false
-    }
-}
+
+
 
 # Clés
 CleView = View.extend {
@@ -96,21 +73,6 @@ CleCollectionView = CollectionView.extend {
       idSelected: @options.idSelected
     }
 }
-
-# Les items
-
-EmptyView = View.extend {
-  className: "card text-white bg-secondary"
-  template: templateNoSub
-}
-
-SubItemCollectionView = CollectionView.extend {
-  childView:  SubItemView
-  emptyView: EmptyView
-  childViewEventPrefix: 'subItem'
-}
-
-
 
 AccueilView = View.extend {
   template: templateAccueil
@@ -148,5 +110,5 @@ Layout = View.extend {
   }
 }
 
-export { AccueilView, PanelView, SubItemCollectionView, Layout, CleCollectionView }
+export { AccueilView, PanelView, Layout, CleCollectionView }
 
