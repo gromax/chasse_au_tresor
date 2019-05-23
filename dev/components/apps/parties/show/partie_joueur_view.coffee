@@ -36,21 +36,18 @@ PanelView = View.extend {
     }
 }
 
-
-
-
-
 # Clés
 CleView = View.extend {
   template: templateCleItem
   tagName: "a"
   attributes: {
     href:"#"
+    style:"font-size:15px"
   }
   className: ->
-    if @model.get("idItem") is -1 then "badge badge-danger"
-    else if @model.get("idItem") is @options.idSelected then "badge badge-warning"
-    else "badge badge-primary"
+    if @model.get("idItem") is -1 then "list-group-item list-group-item-action list-group-item-danger"
+    else if @model.get("idItem") is @options.idSelected then "list-group-item list-group-item-action list-group-item-warning"
+    else "list-group-item list-group-item-action list-group-item-primary"
   triggers: {
     "click":"select"
   }
@@ -61,13 +58,11 @@ CleView = View.extend {
 }
 
 CleCollectionView = CollectionView.extend {
-  template: templateCles
+  #template: templateCles
+  className: "list-group"
   childView: CleView
   childViewEventPrefix: 'cle'
-  childViewContainer: "#content"
-  triggers:{
-    "click a.js-home-cle":"home"
-  }
+  #childViewContainer: "#content"
   childViewOptions: ->
     {
       idSelected: @options.idSelected
@@ -76,14 +71,6 @@ CleCollectionView = CollectionView.extend {
 
 AccueilView = View.extend {
   template: templateAccueil
-  events:{
-    "click a.js-startCle": "clickStartCle"
-  }
-
-  clickStartCle: (e)->
-    e.preventDefault()
-    $el = $(e.currentTarget)
-    @trigger("startCle:select",$el.text())
 
   templateContext: ->
     essaiCle = @options.cle ? ""
@@ -94,7 +81,6 @@ AccueilView = View.extend {
       if arr.length is 3 then accuracy = Number(arr[2])
     {
       evenement: _.clone(@options.evenement.attributes)
-      startCles: @options.startCles
       cle: essaiCle
       gps
       accuracy
