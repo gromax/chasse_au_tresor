@@ -23,6 +23,8 @@ Item = Backbone.Model.extend {
 		if (data.dateDebut)
 			data.dateDebutTime = Date.parse(data.dateDebut)
 			data.dateDebut_fr = data.dateDebut.replace(/([0-9]{4})-([0-9]{2})-([0-9]{2})\s*([0-9]{2}:[0-9]{2}:[0-9]{2})/,"$3/$2/$1 $4")
+		data.actif = (data.actif is "1") or (data.actif is 1) or (data.actif is true)
+
 		data.fini = (data.fini is "1") or (data.fini is 1) or (data.fini is true)
 		if (data.dateFin)
 			data.dateFinTime = Date.parse(data.dateFin)
