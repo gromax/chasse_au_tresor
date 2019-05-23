@@ -34,10 +34,3 @@ if (cle!=""){
 <p class="text-warning">Vous n'avez pas encore terminé cette partie. <b>Début :</b> <%-dateDebut %></p>
 <p class="text-info"><b>Aide :</b> Essayez des mots dans le champ de saisie ; cliquez sur les clés données ci-dessous pour démarrer ; retrouvez les clés que vous avez déjà proposées dans la liste en haut.</p>
 <% } %>
-
-<div>
-<h5>Clés pour démarrer</h5>
-<% _.each(startCles, function(item){%>
-<a href="#" class="badge badge-success js-startCle"><%-item%></a>
-<%});%>
-</div>
