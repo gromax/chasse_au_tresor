@@ -102,6 +102,13 @@ SubItemImageView = SubItemView.extend {
       {}
 }
 
+# En version redac
+RedacSubItemImageView = SubItemImageView.extend({
+  triggers: {
+    "click button.js-image": "image:select"
+  }
+}).extend(redacteurExtension)
+
 # Item SVG
 SubItemSVGView = SubItemView.extend {
   template: templateSvgSub
@@ -132,7 +139,8 @@ SubItemBrutView = SubItemView.extend {
 }
 
 # on ajoute les événements utiles
-RedacSubItemImageView = SubItemImageView.extend redacteurExtension
+
+
 RedacSubItemSVGView = SubItemSVGView.extend redacteurExtension
 RedacSubItemBrutView = SubItemBrutView.extend redacteurExtension
 RedacSubItemView = SubItemView.extend redacteurExtension
