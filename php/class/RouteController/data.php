@@ -83,47 +83,42 @@ class data
     {
         // Il faut voir si une clé est proposée
         $itemEvenement = null;
-        if ($cle!==null)
+
+        // on doit chercher un itEvent avec cette clé
+        $itemEvenement = ItemEvenement::tryCle($evenement->getId(), $cle);
+        if ($itemEvenement!==null)
         {
-            // on doit chercher un itEvent avec cette clé
-            $itemEvenement = ItemEvenement::tryCle($evenement->getId(), $cle);
-            if ($itemEvenement!==null)
+            // on inserre la clé correspondante dans la liste des essaiJoueur
+            if ($cle===null)
             {
-                // on inserre la clé correspondante dans la liste des essaiJoueur
-                $dataNewEssai = array(
-                    "idPartie"=>$partie->getId(),
-                    "essai"=>$cle,
-                    "date"=> date("Y-m-d H:i:s"),
-                    "idItem"=>$itemEvenement->getId()
-                    );
-                $essaiJoueur = new EssaiJoueur();
-                $validation = $essaiJoueur->insert_validation($dataNewEssai);
-                if ($validation===true)
-                {
-                    $essaiJoueur->update($dataNewEssai);
-                }
-                // inutile de charger cette clé, elle sera automatiquement chargée
-                // si la clé n'est pas crée car existait déjà, c'est idem
+                $essai = "Accueil";
             }
+            else
+            {
+                $essai = $cle;
+            }
+            $dataNewEssai = array(
+                "idPartie"=>$partie->getId(),
+                "essai"=>$essai,
+                "date"=> date("Y-m-d H:i:s"),
+                "idItem"=>$itemEvenement->getId()
+                );
+            $essaiJoueur = new EssaiJoueur();
+            $validation = $essaiJoueur->insert_validation($dataNewEssai);
+            if ($validation===true)
+            {
+                $essaiJoueur->update($dataNewEssai);
+            }
+            // inutile de charger cette clé, elle sera automatiquement chargée
+            // si la clé n'est pas crée car existait déjà, c'est idem
         }
 
         $essais = EssaiJoueur::getList(array("partie"=>$partie->getId()));
-        if ($evenement !==null)
-        {
-            $startCles = ItemEvenement::getList(array("starting"=>$evenement->getId()));
-        }
-        else
-        {
-            $startCles = array();
-        }
-
-        $tagCleColumn = array_column($startCles,"tagCle");
 
         $output = array(
             "partie"=>$partie->getValues(),
             "evenement"=>$evenement->getValues(),
             "essais"=>$essais,
-            "startCles"=>$tagCleColumn
             );
 
         if ($itemEvenement!= null)
