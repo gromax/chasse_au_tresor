@@ -118,7 +118,11 @@ JoueurNoView = Marionette.View.extend {
 JoueurItemView = Marionette.View.extend {
 	tagName: "a"
 	attributes: { href: '#' }
-	className:"list-group-item list-group-item-action"
+	className: ->
+		if @model.get("actif")
+			"list-group-item list-group-item-action"
+		else
+			"list-group-item list-group-item-danger list-group-item-action"
 	template: templateJoueurItem
 	triggers: {
 		"click": "select"
