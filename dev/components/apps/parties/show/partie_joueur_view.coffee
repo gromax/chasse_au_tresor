@@ -4,8 +4,6 @@ import templatePanel from "templates/parties/show/panel.tpl"
 import templateLayout from "templates/parties/show/layout.tpl"
 import templateCleItem from "templates/parties/show/cleItem.tpl"
 
-import templateCles from "templates/parties/show/cles.tpl"
-
 
 PanelView = View.extend {
   template: templatePanel
@@ -58,7 +56,6 @@ CleView = View.extend {
 }
 
 CleCollectionView = CollectionView.extend {
-  #template: templateCles
   className: "list-group"
   childView: CleView
   childViewEventPrefix: 'cle'
