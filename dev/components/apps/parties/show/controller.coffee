@@ -48,6 +48,7 @@ Controller = Marionette.Object.extend {
         app.trigger("header:loading", true)
         navigator.geolocation.getCurrentPosition(successFct, errorFct, options)
 
+
       if data.item?
         # on a trouvé un item à afficher
         subItemsData = data.item.get("subItemsData")
@@ -67,19 +68,12 @@ Controller = Marionette.Object.extend {
         vuePrincipale = new AccueilView {
           model:partie
           evenement:evenement
-          startCles:data.startCles
           cle
         }
-
-        vuePrincipale.on "startCle:select", (startCle)->
-          app.trigger "partie:show:cle", id, startCle.normalize('NFD').replace(/[\u0300-\u036f]/g, "")
 
       vueCles = new CleCollectionView { collection: data.essais, idSelected: data.item?.get("id") ? -1 }
       vueCles.on "cle:select", (v)->
         app.trigger "partie:show:cle", id, v.model.get("essai").normalize('NFD').replace(/[\u0300-\u036f]/g, "")
-
-      vueCles.on "home", (v)->
-        app.trigger "partie:show", id
 
       layout.on "render", ()->
         layout.getRegion('panelRegion').show(panel)
