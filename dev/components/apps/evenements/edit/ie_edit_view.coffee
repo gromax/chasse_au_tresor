@@ -8,7 +8,6 @@ PanelView = View.extend {
 	triggers:{
 		"click a.js-parent" : "navigate:parent"
 		"click a.js-add": "subItem:new"
-		"click button.js-type": "type:toggle"
 		"click button.js-images": "files:show"
 	}
 

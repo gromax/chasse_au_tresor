@@ -22,7 +22,6 @@ ItemView = Marionette.View.extend {
 	template: templateItem
 	triggers: {
 		"click a.js-edit": "edit"
-		"click button.js-type": "type:toggle"
 		"click button.js-delete": "delete"
 		"click": "show"
 	}
