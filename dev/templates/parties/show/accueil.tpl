@@ -24,13 +24,6 @@ if (cle!=""){
 }
 %>
 
-<% if (fini) {%>
-<div class="alert alert-success" role="alert">
-  Vous avez commencé terminé cette partie !<br>
-  <b>Début :</b> <%-dateDebut %><br>
-  <b>Fin :</b> <%-dateFin %><br>
-</div>
-<% } else { %>
 <p class="text-warning">Vous n'avez pas encore terminé cette partie. <b>Début :</b> <%-dateDebut %></p>
 <p class="text-info"><b>Aide :</b> Essayez des mots dans le champ de saisie ; cliquez sur les clés données ci-dessous pour démarrer ; retrouvez les clés que vous avez déjà proposées dans la liste en haut.</p>
-<% } %>
+
