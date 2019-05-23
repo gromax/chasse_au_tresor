@@ -22,8 +22,6 @@ final class Partie extends Item
 			'idEvenement' => array( 'def' => 0, 'type' => 'integer'),	// id de l'événement lié
 			'idProprietaire' => array( 'def' => 0, 'type'=> 'integer'),	// id du Joueur propriétaire
 			'dateDebut' => array( 'def' => "", 'type'=> 'dateHeure'),	// date de création de la partie
-			'fini' => array( 'def'=> false, 'type'=> 'boolean'),	// partie finie
-			'dateFin' => array( 'def' => "", 'type'=> 'dateHeure'),	// date d'arrivée à l'item final
 			);
 	}
 
@@ -59,11 +57,11 @@ final class Partie extends Item
 		try {
 			if (isset($options['joueur']))
 			{
-				return DB::query("SELECT p.id, p.idEvenement, e.titre AS titreEvenement, e.description AS descriptionEvenement, p.idProprietaire, p.dateDebut, p.dateFin, p.fini, e.actif FROM (".PREFIX_BDD."parties p JOIN ".PREFIX_BDD."evenements e ON e.id=p.idEvenement) WHERE p.idProprietaire=%i", $options['joueur']);
+				return DB::query("SELECT p.id, p.idEvenement, e.titre AS titreEvenement, e.description AS descriptionEvenement, p.idProprietaire, p.dateDebut, e.actif FROM (".PREFIX_BDD."parties p JOIN ".PREFIX_BDD."evenements e ON e.id=p.idEvenement) WHERE p.idProprietaire=%i", $options['joueur']);
 			}
 			elseif (isset($options['redacteur']))
 			{
-				return DB::query("SELECT p.id, p.idEvenement, e.titre AS titreEvenement, p.idProprietaire, j.nom AS nomProprietaire, p.dateDebut, p.dateFin, p.fini, e.actif FROM ((".PREFIX_BDD."parties p JOIN ".PREFIX_BDD."joueurs j ON j.id=p.idProprietaire) JOIN ".PREFIX_BDD."evenements e ON e.id=p.idEvenement) WHERE e.idProprietaire=%i", $options['redacteur']);
+				return DB::query("SELECT p.id, p.idEvenement, e.titre AS titreEvenement, p.idProprietaire, j.nom AS nomProprietaire, p.dateDebut, MAX(essai.date) AS dateFin, SUM(ie.pts) AS score, e.actif FROM ((((".PREFIX_BDD."parties p JOIN ".PREFIX_BDD."joueurs j ON j.id=p.idProprietaire) JOIN ".PREFIX_BDD."evenements e ON e.id=p.idEvenement) LEFT JOIN ".PREFIX_BDD."essaisJoueur essai ON essai.idPartie=p.id) LEFT JOIN ".PREFIX_BDD."itemsEvenement ie ON ie.id=essai.idItem) WHERE e.idProprietaire=%i GROUP BY p.id", $options['redacteur']);
 			}
 			elseif (isset($options['evenement']))
 			{
@@ -71,7 +69,7 @@ final class Partie extends Item
 			}
 			elseif (isset($options['root']))
 			{
-				return DB::query("SELECT p.id, p.idEvenement, e.titre AS titreEvenement, p.idProprietaire, j.nom AS nomProprietaire, p.dateDebut, p.dateFin, p.fini, e.actif FROM ((".PREFIX_BDD."parties p JOIN ".PREFIX_BDD."joueurs j ON j.id=p.idProprietaire) JOIN ".PREFIX_BDD."evenements e ON e.id=p.idEvenement)");
+				return DB::query("SELECT p.id, p.idEvenement, e.titre AS titreEvenement, p.idProprietaire, j.nom AS nomProprietaire, p.dateDebut, e.actif FROM ((".PREFIX_BDD."parties p JOIN ".PREFIX_BDD."joueurs j ON j.id=p.idProprietaire) JOIN ".PREFIX_BDD."evenements e ON e.id=p.idEvenement)");
 			}
 			else
 			{
@@ -155,21 +153,12 @@ final class Partie extends Item
 	{
 		if ($this->id!==null)
 		{
-			if (($this->values["fini"]===false) && (isset($modifs['fini'])) && (((boolean)$modifs['fini'])===true))
-			{
-				$today = date("Y-m-d H:i:s");
-				return array("fini"=>true, "dateFin"=>$today);
-			}
-			else
-			{
-				return array();
-			}
+			return array();
 		}
 		else
 		{
 			$modifs["dateDebut"] = date("Y-m-d H:i:s");
-			$modifs["dateFin"] = $modifs["dateDebut"];
-			return array_intersect_key($modifs, array("idEvenement"=>true, "idProprietaire"=>true, "dateDebut"=>true, "dateFin"=>true));
+			return array_intersect_key($modifs, array("idEvenement"=>true, "idProprietaire"=>true, "dateDebut"=>true));
 		}
 	}
 
