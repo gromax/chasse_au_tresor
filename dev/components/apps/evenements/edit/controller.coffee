@@ -67,30 +67,6 @@ Controller = Marionette.Object.extend {
 
           app.regions.getRegion('dialog').show(view)
 
-
-        liste.on "item:type:toggle", (childView) ->
-          model = childView.model
-          mtype = model.get("type")
-          model.set("type", (mtype+1) % 3)
-          savingItem = model.save()
-          app.trigger("header:loading", true)
-          $.when(savingItem).done( ()->
-            childView.render()
-            childView.flash("success")
-          ).fail( (response)->
-            switch response.status
-              when 422
-                view.triggerMethod("form:data:invalid", response.responseJSON.errors)
-              when 401
-                alert("Vous devez vous (re)connecter !")
-                view.trigger("dialog:close")
-                app.trigger("home:logout")
-              else
-                alert("Erreur inconnue. Essayez à nouveau ou prévenez l'administrateur [code #{response.status}/030]")
-          ).always(()->
-            app.trigger("header:loading", false)
-          )
-
         liste.on "item:edit", (childView) ->
           model = childView.model
           view = new FormView {
@@ -195,25 +171,6 @@ Controller = Marionette.Object.extend {
 
         panel.on "navigate:parent", ->
           app.trigger "evenement:show", idEvenement
-
-        panel.on "type:toggle", () ->
-          mtype = item.get("type")
-          item.set("type", (mtype+1) % 3)
-          savingItem = item.save()
-          app.trigger("header:loading", true)
-          $.when(savingItem).done( ()->
-            panel.render()
-          ).fail( (response)->
-            switch response.status
-              when 401
-                alert("Vous devez vous (re)connecter !")
-                panel.trigger("dialog:close")
-                app.trigger("home:logout")
-              else
-                alert("Erreur inconnue. Essayez à nouveau ou prévenez l'administrateur [code #{response.status}/030]")
-          ).always(()->
-            app.trigger("header:loading", false)
-          )
 
         subItemsView.on "subItem:up", (childView)->
           current = childView.model
