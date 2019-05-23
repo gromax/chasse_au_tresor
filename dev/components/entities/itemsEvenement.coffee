@@ -35,7 +35,6 @@ Item = Backbone.Model.extend {
 
 	defaults: {
 		idEvenement: false
-		type: 0
 		subItemsData:"[]"
 		tagCle:""
 		regexCle:""
@@ -47,8 +46,6 @@ Item = Backbone.Model.extend {
 			data.id = Number(data.id)
 		if (data.idEvenement)
 			data.idEvenement = Number(data.idEvenement)
-		if (data.type)
-			data.type = Number(data.type)
 		if (data.pts)
 			data.pts = Number(data.pts)
 		return data
