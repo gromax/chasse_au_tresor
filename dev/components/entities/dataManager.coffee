@@ -65,9 +65,32 @@ API = {
 			if data.item?
 				OItemEvenement = require("entities/itemsEvenement.coffee").Item
 				item = new OItemEvenement(data.item, {parse:true})
-				defer.resolve { evenement, partie, essais, startCles:data.startCles, item }
+				defer.resolve { evenement, partie, essais, item }
 			else
-				defer.resolve { evenement, partie, essais, startCles:data.startCles }
+				defer.resolve { evenement, partie, essais }
+		).fail( (response)->
+			defer.reject(response)
+		)
+		return defer.promise()
+
+	getEssais: (idPartie) ->
+		defer = $.Deferred()
+
+		url = "api/customData/essais/#{idPartie}"
+
+		request = $.ajax(url,{
+			method:'GET'
+			dataType:'json'
+		})
+
+		request.done( (data)->
+			OPartie = require("entities/parties.coffee").Item
+			partie = new OPartie(data.partie)
+			OEvenement = require("entities/evenements.coffee").Item
+			evenement = new OEvenement(data.evenement)
+			ColEssaisJoueur = require("entities/essaisJoueur.coffee").Collection
+			essais = new ColEssaisJoueur(data.essais, {parse:true})
+			defer.resolve(partie, evenement, essais)
 		).fail( (response)->
 			defer.reject(response)
 		)
@@ -82,4 +105,5 @@ API = {
 channel = Radio.channel('entities')
 channel.reply('custom:entities', API.getCustomEntities )
 channel.reply('custom:partie', API.getItemPartie )
+channel.reply('custom:essais', API.getEssais )
 channel.reply('data:purge', API.purge )
