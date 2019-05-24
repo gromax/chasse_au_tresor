@@ -1,21 +1,21 @@
 import { View, CollectionView } from 'backbone.marionette'
-import templateList from 'templates/parties/list/redacteur_list.tpl'
-import templateItem from 'templates/parties/list/redacteur_item.tpl'
-import templateNone from 'templates/parties/list/redacteur_none.tpl'
-import templateJoueurItem from 'templates/parties/list/joueur_item.tpl'
-import templateJoueurNone from 'templates/parties/list/joueur_none.tpl'
+import templateRedacteurList from 'templates/parties/list/redacteur_parties_list.tpl'
+import templateRedacteurItem from 'templates/parties/list/redacteur_partie_item.tpl'
+import templateRedacteurNone from 'templates/parties/list/redacteur_parties_none.tpl'
+import templateJoueurItem from 'templates/parties/list/joueur_partie_item.tpl'
+import templateJoueurNone from 'templates/parties/list/joueur_parties_none.tpl'
 
 app = require('app').app
 
-noView = View.extend {
-	template:  templateNone
+RedacteurNoView = View.extend {
+	template:  templateRedacteurNone
 	tagName: "tr"
 	className: "alert"
 }
 
-ItemView = View.extend {
+RedacteurItemView = View.extend {
 	tagName: "tr"
-	template: templateItem
+	template: templateRedacteurItem
 	triggers: {
 		"click": "show"
 		"click button.js-delete": "delete"
@@ -41,11 +41,11 @@ ItemView = View.extend {
 RedacteurListView = CollectionView.extend {
 	tagName: "table"
 	className:"table table-hover"
-	template: templateList
+	template: templateRedacteurList
 	childViewContainer: "tbody"
-	childView:ItemView
+	childView:RedacteurItemView
 	childViewEventPrefix: 'item'
-	emptyView:noView
+	emptyView:RedacteurNoView
 	filterCriterion:null
 
 	initialize: ()->
