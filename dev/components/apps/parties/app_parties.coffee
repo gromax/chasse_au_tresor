@@ -5,6 +5,7 @@ Router = Backbone.Router.extend {
     "partie::id(/cle::cle)": "show"
     "partie/hash::hash": "showHash"
     "partie/start::id": "start"
+    "partie::id/essais": "showEssaisPartie"
   }
 
   list: (criterion) ->
@@ -13,6 +14,11 @@ Router = Backbone.Router.extend {
       require("apps/parties/list/controller.coffee").controller.listRedacteur(criterion)
     else if (rank is "joueur")
       require("apps/parties/list/controller.coffee").controller.listJoueur(criterion)
+
+  showEssaisPartie: (idPartie)->
+    rank = app.Auth.get("rank")
+    if (rank is "redacteur")
+      require("apps/parties/list/controller.coffee").controller.listEssais(idPartie)
 
   show: (id, cle) ->
     rank = app.Auth.get("rank")
@@ -62,3 +68,7 @@ app.on "partie:show:cle", (id,cle) ->
 app.on "partie:show:hash", (hash) ->
   app.navigate "partie/hash:#{hash}"
   router.showHash(hash)
+
+app.on "partie:essais:list", (id) ->
+  app.navigate "partie:#{id}/essais"
+  router.showEssaisPartie(id)
