@@ -219,5 +219,53 @@ class data
         }
     }
 
+    public function getEssaisFromPartie()
+    {
+        $ac = new AC();
+        if (!$ac->connexionOk())
+        {
+            EC::addError("Déconnecté !");
+            EC::set_error_code(401);
+            return false;
+        }
+
+        if (!$ac->isRedacteur())
+        {
+            EC::set_error_code(403);
+            return false;
+        }
+        $id = (integer) $this->params['id'];
+        $idRedacteur = $ac->getLoggedUserId();
+
+        $partie = Partie::getObject($id);
+        if ($partie===null)
+        {
+            EC::set_error_code(404);
+            return false;
+        }
+
+        $evenement = $partie->getEvenement();
+        if ($evenement===null)
+        {
+            EC::set_error_code(501);
+            return false;
+        }
+
+        if ($evenement->getIdProprietaire()!=$idRedacteur)
+        {
+            EC::set_error_code(403);
+            return false;
+        }
+
+        $essais = EssaiJoueur::getList(array("partie"=>$id));
+        return array(
+            "partie"=>$partie->getValues(),
+            "evenement"=>$evenement->getValues(),
+            "essais"=>$essais,
+        );
+
+
+    }
+
 }
 ?>
