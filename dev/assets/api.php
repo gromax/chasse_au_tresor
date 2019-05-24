@@ -64,6 +64,7 @@ if (file_exists("../php/config/bddConfig.php")) {
   $router->addRule('api/customData/:asks', 'data', 'customFetch', 'GET');
   $router->addRule('api/customData/partie/:id', 'data', 'partieFetch', 'GET');
   $router->addRule('api/event/hash/:hash', 'data', 'getPartieWithHash', 'GET');
+  $router->addRule('api/customData/essais/:id', 'data', 'getEssaisFromPartie', 'GET');
 
   // forgotten
   $router->addRule('api/redacteur/forgotten', 'redacteurs', 'forgottenWithEmail', 'POST');
