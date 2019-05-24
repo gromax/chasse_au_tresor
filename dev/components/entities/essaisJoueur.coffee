@@ -6,6 +6,7 @@ Item = Backbone.Model.extend {
     idItem: false
     essai: ""
     tagCle: ""
+    pts: 0
   },
 
   toJSON: ->
@@ -16,12 +17,21 @@ Item = Backbone.Model.extend {
   parse: (data) ->
     if (data.id)
       data.id = Number(data.id)
+    if data.pts
+      data.pts = Number(data.pts)
     if (data.idPartie)
       data.idPartie = Number(data.idPartie)
     if (data.idItem)
       data.idItem = Number(data.idItem)
     if data.data then data.data = JSON.parse(data.data)
     else data.data = {}
+
+    if (data.date)
+      data.date_fr = data.date.replace(/([0-9]{4})-([0-9]{2})-([0-9]{2})\s*([0-9]{2}:[0-9]{2}:[0-9]{2})/,"$3/$2/$1 $4")
+    else
+      data.date_fr = ""
+      data.date = ""
+
     return data
 
   validate: (attrs, options) ->
