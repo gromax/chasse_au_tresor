@@ -3,7 +3,7 @@ import AlertView from 'apps/common/alert_view.coffee'
 import MissingView from 'apps/common/missing.coffee'
 import { Layout, Panel } from 'apps/common/list.coffee'
 import { RedacteurListView, JoueurListView } from 'apps/parties/list/view_parties.coffee'
-import { EssaisListView } from 'apps/parties/list/view_essais.coffee'
+import { EssaisListView, EssaisEntetePanel } from 'apps/parties/list/view_essais.coffee'
 
 app = require('app').app
 
@@ -72,29 +72,28 @@ Controller = Marionette.Object.extend {
   listEssais: (idPartie) ->
     app.trigger("header:loading", true)
     listLayout = new Layout()
-    # listPanel = new Panel {
-    #   filterCriterion: criterion
-    #   title: "Parties"
-    # }
 
     channel = @getChannel()
 
     require "entities/dataManager.coffee"
-    #Item = require("entities/parties.coffee").Item
 
     fetching = channel.request("custom:essais", idPartie)
-    $.when(fetching).done( (partie, evenement, essais)->
+    $.when(fetching).done( (partie, evenement, essais, nomJoueur)->
+      listPanel = new EssaisEntetePanel {
+        partie
+        evenement
+        essais
+        nomJoueur
+      }
       listView = new EssaisListView {
         collection: essais
-        #filterCriterion: criterion
       }
 
-      # listPanel.on "items:filter", (filterCriterion)->
-      #   listView.triggerMethod("set:filter:criterion", filterCriterion, { preventRender:false })
-      #   app.trigger("evenements:filter", filterCriterion)
+      listPanel.on "navigate:parent", ->
+        app.trigger "parties:filter", evenement.get("titre")
 
       listLayout.on "render", ()->
-        # listLayout.getRegion('panelRegion').show(listPanel)
+        listLayout.getRegion('panelRegion').show(listPanel)
         listLayout.getRegion('itemsRegion').show(listView)
 
       # listView.on "item:delete", (childView,e)->
