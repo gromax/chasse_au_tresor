@@ -244,6 +244,16 @@ class data
             return false;
         }
 
+        $joueur = Joueur::getObject($partie->getIdProprietaire());
+        if ($joueur!==null)
+        {
+            $nomJoueur = $joueur->getValues()["nom"];
+        }
+        else
+        {
+            $nomJoueur = "?";
+        }
+
         $evenement = $partie->getEvenement();
         if ($evenement===null)
         {
@@ -262,6 +272,7 @@ class data
             "partie"=>$partie->getValues(),
             "evenement"=>$evenement->getValues(),
             "essais"=>$essais,
+            "nomJoueur"=>$nomJoueur
         );
 
 
