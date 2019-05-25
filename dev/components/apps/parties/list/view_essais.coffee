@@ -1,9 +1,30 @@
 import { View, CollectionView } from 'backbone.marionette'
+import { SortList } from 'apps/common/list_behavior.coffee'
 import templateNone from 'templates/parties/list/essais_none.tpl'
 import templateItem from 'templates/parties/list/essai_item.tpl'
 import templateList from 'templates/parties/list/essais_list.tpl'
+import templatePanel from 'templates/parties/list/entete_essais.tpl'
 
 app = require('app').app
+
+EssaisEntetePanel = View.extend {
+	className: "card"
+	template: templatePanel
+	triggers: {
+		"click a.js-parent": "navigate:parent"
+	}
+	templateContext: ->
+		reduceFct = (s,it) -> s+it.get("pts")
+		{
+			idPartie: @options.partie.get("id")
+			titreEvenement: @options.evenement.get("titre")
+			descriptionEvenement: @options.evenement.get("description")
+			actif: @options.evenement.get("actif")
+			score: @options.essais.reduce( reduceFct,0 )
+			nomJoueur: @options.nomJoueur
+		}
+}
+
 
 NoView = View.extend {
 	template:  templateNone
@@ -46,51 +67,13 @@ EssaisListView = CollectionView.extend {
 	emptyView: NoView
 	filterCriterion:null
 
+	behaviors: [SortList]
+
 	initialize: ()->
 		if @options.filterCriterion
 			@filterCriterion = @options.filterCriterion
 
-	events: {
-		"click a.js-sort":"sortFct"
-	}
-
-	sortFct: (e)->
-		e.preventDefault()
-		tag = $(e.currentTarget).attr("sort")
-		if @collection.comparatorAttr is tag
-			@collection.comparatorAttr = "inv_"+tag
-			@collection.comparator = (a,b)->
-				if a.get(tag)>b.get(tag)
-					-1
-				else
-					1
-		else
-			@collection.comparatorAttr = tag
-			@collection.comparator = tag
-		@collection.sort()
-
-	viewFilter: (child, index, collection) ->
-		criterion = @filterCriterion
-		model = child.model
-		if criterion is "" or criterion is null
-			return true
-		strModel = (model.get("nom") + ";" + model.get("titreEvenement")).normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()
-		if strModel.indexOf(criterion) isnt -1
-			return true
-		else
-			return false
-
-	onSetFilterCriterion: (criterion, options)->
-		@filterCriterion = criterion.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()
-		@render()
-
-	flash: (itemModel)->
-		itemView = @children.findByModel(itemModel)
-		# check whether the new user view is displayed (it could be
-		# invisible due to the current filter criterion)
-		if itemView then itemView.flash("success")
-
 }
 
 
-export { EssaisListView }
+export { EssaisListView, EssaisEntetePanel }
