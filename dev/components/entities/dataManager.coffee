@@ -90,7 +90,7 @@ API = {
 			evenement = new OEvenement(data.evenement)
 			ColEssaisJoueur = require("entities/essaisJoueur.coffee").Collection
 			essais = new ColEssaisJoueur(data.essais, {parse:true})
-			defer.resolve(partie, evenement, essais)
+			defer.resolve(partie, evenement, essais, data.nomJoueur)
 		).fail( (response)->
 			defer.reject(response)
 		)
