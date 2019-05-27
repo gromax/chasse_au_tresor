@@ -1,4 +1,5 @@
-import Marionette from 'backbone.marionette'
+import { View, CollectionView } from 'backbone.marionette'
+import { SortList, FilterList } from 'apps/common/list_behavior.coffee'
 import templateList from 'templates/evenements/edit/list.tpl'
 import templateItem from 'templates/evenements/edit/item.tpl'
 import templateNone from 'templates/evenements/edit/none.tpl'
@@ -7,7 +8,7 @@ import templateEntete from "templates/evenements/edit/entete.tpl"
 
 app = require('app').app
 
-noView = Marionette.View.extend {
+noView = View.extend {
 	template:  templateNone
 	tagName: "table"
 	className:"table table-hover"
@@ -17,7 +18,7 @@ noView = Marionette.View.extend {
 		}
 }
 
-ItemView = Marionette.View.extend {
+ItemView = View.extend {
 	tagName: "tr"
 	template: templateItem
 	triggers: {
@@ -43,7 +44,7 @@ ItemView = Marionette.View.extend {
 		)
 }
 
-Layout = Marionette.View.extend {
+Layout = View.extend {
 	template: templateLayout
 	regions: {
 		enteteRegion: "#entete-region"
@@ -52,7 +53,7 @@ Layout = Marionette.View.extend {
 	}
 }
 
-EnteteView = Marionette.View.extend {
+EnteteView = View.extend {
 	template: templateEntete
 	triggers: {
 		"click a.js-parent": "navigate:parent"
@@ -63,7 +64,7 @@ EnteteView = Marionette.View.extend {
 		}
 }
 
-ListeView = Marionette.CollectionView.extend {
+ListeView = CollectionView.extend {
 	tagName: "table"
 	className:"table table-hover"
 	template: templateList
@@ -71,35 +72,21 @@ ListeView = Marionette.CollectionView.extend {
 	childView:ItemView
 	childViewEventPrefix: 'item'
 	emptyView: noView
+
 	emptyViewOptions: ->
 		{
 			addButton: @options.addButton is true
 		}
-	filterCriterion:null
 	templateContext: ->
 		{
 			addButton: @options.addButton is true
 		}
 
+	behaviors: [SortList]
+
 	triggers:{
-		"click a.js-sort-id":"sortid"
-		"click a.js-sort-type":"sorttype"
-		"click a.js-sort-cle":"sortcle"
 		"click button.js-new": "item:new"
 	}
-
-	onSortid: (view)->
-		if @collection.comparatorAttr is "id"
-			@collection.comparatorAttr = "inv_id"
-			@collection.comparator = (a,b)->
-				if a.get("id")>b.get("id")
-					-1
-				else
-					1
-		else
-			@collection.comparatorAttr = "id"
-			@collection.comparator = "id"
-		@collection.sort()
 
 	viewFilter: (child, index, collection) ->
 		idE = @options.idEvenement
