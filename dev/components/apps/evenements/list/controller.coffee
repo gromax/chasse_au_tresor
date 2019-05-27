@@ -1,5 +1,5 @@
 import Marionette from 'backbone.marionette'
-import AlertView from 'apps/common/alert_view.coffee'
+import { AlertView } from 'apps/common/commons_view.coffee'
 import { Layout, Panel } from 'apps/common/list.coffee'
 import { RedacteurListView, JoueurListView } from 'apps/evenements/list/view.coffee'
 import FormView from 'apps/evenements/common/form_view.coffee'

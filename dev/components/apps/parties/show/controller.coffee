@@ -1,6 +1,5 @@
 import Marionette from 'backbone.marionette'
-import AlertView from 'apps/common/alert_view.coffee'
-import MissingView from 'apps/common/missing.coffee'
+import { MissingView, AlertView } from 'apps/common/commons_view.coffee'
 import { AccueilView, PanelView, Layout, CleCollectionView } from 'apps/parties/show/partie_joueur_view.coffee'
 import { SubItemCollectionView } from 'apps/evenements/common/sub_items_view.coffee'
 

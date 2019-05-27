@@ -1,5 +1,5 @@
 import Marionette from 'backbone.marionette'
-import AlertView from 'apps/common/alert_view.coffee'
+import { AlertView } from 'apps/common/commons_view.coffee'
 import OffView from 'apps/home/show/off_view.coffee'
 import RootView from 'apps/home/show/root_view.coffee'
 import RedacteurView from 'apps/home/show/redacteur_view.coffee'

@@ -1,6 +1,5 @@
 import Marionette from 'backbone.marionette'
-import AlertView from 'apps/common/alert_view.coffee'
-import MissingView from 'apps/common/missing.coffee'
+import { MissingView, AlertView } from 'apps/common/commons_view.coffee'
 import { ListeView, Layout, EnteteView } from 'apps/evenements/edit/ie_list_view.coffee'
 import FormView from 'apps/evenements/common/formItem_view.coffee'
 import { PanelView, ItemLayoutView } from 'apps/evenements/edit/ie_edit_view.coffee'

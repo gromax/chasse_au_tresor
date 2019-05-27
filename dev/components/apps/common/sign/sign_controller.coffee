@@ -1,6 +1,6 @@
 import Marionette from "backbone.marionette"
 import { SignView } from "apps/common/sign/sign_view.coffee"
-import MissingView from "apps/common/missing.coffee"
+import { MissingView } from "apps/common/commons_view.coffee"
 
 
 app = require("app").app
