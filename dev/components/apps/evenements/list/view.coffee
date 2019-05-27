@@ -1,5 +1,6 @@
 import { View, CollectionView } from 'backbone.marionette'
-import templateList from 'templates/evenements/list/redacteur_list.tpl'
+import { SortList, FilterList } from 'apps/common/list_behavior.coffee'
+import RedacteurList_tpl from 'templates/evenements/list/redacteur_list.tpl'
 import templateRedacteurItem from 'templates/evenements/list/redacteur_item.tpl'
 import templateRedacteurNone from 'templates/evenements/list/redacteur_none.tpl'
 
@@ -47,52 +48,13 @@ RedacteurItemView = View.extend {
 RedacteurListView = CollectionView.extend {
 	tagName: "table"
 	className:"table table-hover"
-	template: templateList
+	template: RedacteurList_tpl
 	childViewContainer: "tbody"
 	childView:RedacteurItemView
 	childViewEventPrefix: 'item'
 	emptyView:RedacteurNoView
-	filterCriterion:null
-
-	initialize: ()->
-		if @options.filterCriterion
-			@filterCriterion = @options.filterCriterion
-
-	triggers:{
-		"click a.js-sort-id":"sortid"
-		"click a.js-sort-titre":"sorttitre"
-	}
-
-	onSortid: (view)->
-		if @collection.comparatorAttr is "id"
-			@collection.comparatorAttr = "inv_id"
-			@collection.comparator = (a,b)->
-				if a.get("id")>b.get("id")
-					-1
-				else
-					1
-		else
-			@collection.comparatorAttr = "id"
-			@collection.comparator = "id"
-		@collection.sort()
-
-	viewFilter: (child, index, collection) ->
-		criterion = @filterCriterion
-		model = child.model
-		if criterion is "" or criterion is null or model.get("titre").toLowerCase().indexOf(criterion) isnt -1 or model.get("description").toLowerCase().indexOf(criterion) isnt -1
-			return true
-		else
-			return false
-
-	onSetFilterCriterion: (criterion, options)->
-		@filterCriterion = criterion.toLowerCase()
-		@render()
-
-	flash: (itemModel)->
-		itemView = @children.findByModel(itemModel)
-		# check whether the new user view is displayed (it could be
-		# invisible due to the current filter criterion)
-		if itemView then itemView.flash("success")
+	behaviors: [ SortList, FilterList ]
+	filterKeys: ["titre", "description"]
 }
 
 JoueurNoView = View.extend {
@@ -121,24 +83,8 @@ JoueurListView = CollectionView.extend {
 	childView:JoueurItemView
 	childViewEventPrefix: 'item'
 	emptyView:JoueurNoView
-	filterCriterion:null
-
-	initialize: ()->
-		if @options.filterCriterion
-			@filterCriterion = @options.filterCriterion
-
-	viewFilter: (child, index, collection) ->
-		criterion = @filterCriterion
-		model = child.model
-		if criterion is "" or criterion is null or model.get("titre").toLowerCase().indexOf(criterion) isnt -1 or model.get("description").toLowerCase().indexOf(criterion) isnt -1
-			return true
-		else
-			return false
-
-	onSetFilterCriterion: (criterion, options)->
-		@filterCriterion = criterion.toLowerCase()
-		@render()
-
+	behaviors: [FilterList]
+	filterKeys: ["titre", "description"]
 }
 
 export { RedacteurListView, JoueurListView }

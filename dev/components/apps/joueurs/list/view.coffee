@@ -2,6 +2,7 @@ import Marionette from 'backbone.marionette'
 import templateList from 'templates/joueurs/list/list.tpl'
 import templateItem from 'templates/joueurs/list/item.tpl'
 import templateNone from 'templates/joueurs/list/none.tpl'
+import { SortList, FilterList } from 'apps/common/list_behavior.coffee'
 
 app = require('app').app
 
@@ -39,52 +40,13 @@ ItemView = Marionette.View.extend {
 
 export default Marionette.CollectionView.extend {
 	tagName: "table"
-	className:"table table-hover"
+	className: "table table-hover"
 	template: templateList
 	childViewContainer: "tbody"
-	childView:ItemView
-	childViewEventPrefix: 'item'
-	emptyView:noView
-	filterCriterion:null
-
-	initialize: ()->
-		if @options.filterCriterion
-			@filterCriterion = @options.filterCriterion
-
-	triggers:{
-		"click a.js-sort-id":"sortid"
-		"click a.js-sort-nom":"sortnom"
-	}
-
-	onSortid: (view)->
-		if @collection.comparatorAttr is "id"
-			@collection.comparatorAttr = "inv_id"
-			@collection.comparator = (a,b)->
-				if a.get("id")>b.get("id")
-					-1
-				else
-					1
-		else
-			@collection.comparatorAttr = "id"
-			@collection.comparator = "id"
-		@collection.sort()
-
-	viewFilter: (child, index, collection) ->
-		criterion = @filterCriterion
-		model = child.model
-		if criterion is "" or criterion is null or model.get("nom").toLowerCase().indexOf(criterion) isnt -1 or model.get("username").toLowerCase().indexOf(criterion) isnt -1
-			return true
-		else
-			return false
-
-	onSetFilterCriterion: (criterion, options)->
-		@filterCriterion = criterion.toLowerCase()
-		@render()
-
-	flash: (itemModel)->
-		itemView = @children.findByModel(itemModel)
-		# check whether the new user view is displayed (it could be
-		# invisible due to the current filter criterion)
-		if itemView then itemView.flash("success")
+	childView: ItemView
+	childViewEventPrefix: "item"
+	emptyView: noView
+	behaviors: [SortList, FilterList]
+	filterKeys: ["nom", "username"]
 
 }
