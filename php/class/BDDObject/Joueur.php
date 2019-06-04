@@ -67,26 +67,43 @@ final class Joueur extends Item
 
 	##################################### METHODES #####################################
 
-	public function update_validation($modifs=array(), $full=false)
+	public function update_validation($modifs=array())
 	{
 		if(isset($modifs['username']))
+		{
 			$username = $modifs['username'];
-		elseif ($full)
-			$username = $this->values['username'];
+		}
 		else
+		{
 			$username = false;
+		}
 		$errors = array();
-		if (($username!==false)&&(self::usernameExists($username)!==false )) {
+		// $username == false et $this->values['username']==="" -> erreur
+		// test uniquement si $username !==false et $username !== $this->values['username']
+		if (($username===false)&&($this->values['username']===""))
+		{
+			$errors['username'] = "L'identifiant / email indéfini.";
+		}
+		elseif (($username!==false)&&($username!=$this->values['username'])&&(self::usernameExists($username)!==false ))
+		{
 			$errors['username'] = "L'identifiant / email existe déjà.";
 		}
-		if ($full && ($this->values['hash']==="") && !isset($modifs['pwd']))
+		if (($this->values['hash']==="") && !isset($modifs['pwd']))
+		{
 			$errors['pwd'] = "Mot de passe invalide";
+		}
 		if (isset($modifs['pwd']) && (self::checkPwd($modifs['pwd'])!==true) )
+		{
 			$errors['pwd'] = "Mot de passe invalide";
+		}
 		if (count($errors)>0)
+		{
 			return $errors;
+		}
 		else
+		{
 			return true;
+		}
 	}
 
 	public function parseBeforeUpdate($modifs)
