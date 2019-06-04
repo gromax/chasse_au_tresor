@@ -95,19 +95,6 @@ Controller = Marionette.Object.extend {
         listLayout.getRegion('panelRegion').show(listPanel)
         listLayout.getRegion('itemsRegion').show(listView)
 
-      # listView.on "item:delete", (childView,e)->
-      #   model = childView.model
-      #   idItem = model.get("id")
-      #   if confirm("Supprimer la partie « ##{idItem} - #{model.get('dateDebut_fr')} » ?")
-      #     destroyRequest = model.destroy()
-      #     app.trigger("header:loading", true)
-      #     $.when(destroyRequest).done( ()->
-      #       childView.remove()
-      #     ).fail( (response)->
-      #       alert("Erreur. Essayez à nouveau !")
-      #     ).always( ()->
-      #       app.trigger("header:loading", false)
-      #     )
       app.regions.getRegion('main').show(listLayout)
     ).fail( (response)->
       switch response.status
