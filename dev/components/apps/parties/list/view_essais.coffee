@@ -37,24 +37,7 @@ ItemView = View.extend {
 	template: templateItem
 	triggers: {
 		"click": "show"
-		"click button.js-delete": "delete"
 	}
-
-	flash: (cssClass)->
-		$view = @$el
-		$view.hide().toggleClass("table-"+cssClass).fadeIn(800, ()->
-			setTimeout( ()->
-				$view.toggleClass("table-"+cssClass)
-			, 500)
-		)
-
-	remove: ()->
-		self = @
-		@$el.fadeOut( ()->
-			#self.model.destroy()
-			self.trigger("model:destroy", @model)
-			View.prototype.remove.call(self)
-		)
 }
 
 EssaisListView = CollectionView.extend {
