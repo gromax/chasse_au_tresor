@@ -97,7 +97,7 @@ class joueurs
         {
             $data = json_decode(file_get_contents("php://input"),true);
             $itAdd = new Item();
-            $validation = $itAdd->update_validation($data, true);
+            $validation = $itAdd->update_validation($data);
             if ($validation === true)
             {
                 $id = $itAdd->update($data);
