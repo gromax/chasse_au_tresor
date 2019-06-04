@@ -48,14 +48,7 @@ EssaisListView = CollectionView.extend {
 	childView: ItemView
 	childViewEventPrefix: 'item'
 	emptyView: NoView
-	filterCriterion:null
-
 	behaviors: [SortList]
-
-	initialize: ()->
-		if @options.filterCriterion
-			@filterCriterion = @options.filterCriterion
-
 }
 
 
