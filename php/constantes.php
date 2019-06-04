@@ -11,13 +11,13 @@
   	require_once("../php/configDef/rootConfig.php");
   }
 
-  if (file_exists("../php/config/emailConfig.php"))
+  if (file_exists("../php/config/mailConfig.php"))
   {
-    require_once("../php/config/emailConfig.php");
+    require_once("../php/config/mailConfig.php");
   }
   else
   {
-    require_once("../php/configDef/emailConfig.php");
+    require_once("../php/configDef/mailConfig.php");
   }
 
   // GPS
