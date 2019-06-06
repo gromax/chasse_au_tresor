@@ -2,7 +2,7 @@ import Marionette from 'backbone.marionette'
 import templateList from 'templates/redacteurs/list/list.tpl'
 import templateItem from 'templates/redacteurs/list/item.tpl'
 import templateNone from 'templates/redacteurs/list/none.tpl'
-import { SortList, FilterList } from 'apps/common/list_behavior.coffee'
+import { SortList, FilterList, DestroyWarn } from 'apps/common/behaviors.coffee'
 
 app = require('app').app
 
@@ -15,10 +15,10 @@ noView = Marionette.View.extend {
 ItemView = Marionette.View.extend {
 	tagName: "tr"
 	template: templateItem
+	behaviors: [DestroyWarn]
 	triggers: {
 		"click td a.js-edit": "edit"
 		"click td a.js-editPwd": "editPwd"
-		"click button.js-delete": "delete"
 	}
 
 	flash: (cssClass)->
@@ -27,14 +27,6 @@ ItemView = Marionette.View.extend {
 			setTimeout( ()->
 				$view.toggleClass("table-"+cssClass)
 			, 500)
-		)
-
-	remove: ()->
-		self = @
-		@$el.fadeOut( ()->
-			#self.model.destroy()
-			self.trigger("model:destroy", @model)
-			Marionette.View.prototype.remove.call(self)
 		)
 }
 
