@@ -1,9 +1,9 @@
-import Marionette from 'backbone.marionette'
+import { MnObject } from 'backbone.marionette'
 import FormView from 'apps/common/form_user_view.coffee'
 
 app = require('app').app
 
-Controller = Marionette.Object.extend {
+Controller = MnObject.extend {
 	channelName: 'entities'
 
 	show: (criterion)->

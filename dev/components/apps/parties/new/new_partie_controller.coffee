@@ -1,10 +1,10 @@
-import Marionette from 'backbone.marionette'
+import { MnObject } from 'backbone.marionette'
 import View from 'apps/parties/new/new_partie_view.coffee'
 import { MissingView, AlertView } from 'apps/common/commons_view.coffee'
 
 app = require('app').app
 
-Controller = Marionette.Object.extend {
+Controller = MnObject.extend {
 	channelName: 'entities'
 
 	show: (id)->

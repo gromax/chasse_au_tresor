@@ -1,11 +1,11 @@
-import Marionette from "backbone.marionette"
+import { MnObject } from "backbone.marionette"
 import { SignView } from "apps/common/sign/sign_view.coffee"
 import { MissingView } from "apps/common/commons_view.coffee"
 
 
 app = require("app").app
 
-Controller = Marionette.Object.extend {
+Controller = MnObject.extend {
 	channelName: "entities"
 	show: (options)->
 		if app.Auth.get("logged_in")
