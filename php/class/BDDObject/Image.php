@@ -64,7 +64,7 @@ final class Image extends Item
 				return array();
 
 		} catch(MeekroDBException $e) {
-			if (BDD_DEBUG_ON) return array('error'=>true, 'message'=>"#Images/getList : ".$e->getMessage());
+			if (DEV) return array('error'=>true, 'message'=>"#Images/getList : ".$e->getMessage());
 			return array('error'=>true, 'message'=>'Erreur BDD');
 		}
 	}

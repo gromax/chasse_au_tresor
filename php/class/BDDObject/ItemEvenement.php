@@ -62,7 +62,7 @@ final class ItemEvenement extends Item
       }
 
     } catch(MeekroDBException $e) {
-      if (BDD_DEBUG_ON) return array('error'=>true, 'message'=>"#ItemEvenement/getList : ".$e->getMessage());
+      if (DEV) return array('error'=>true, 'message'=>"#ItemEvenement/getList : ".$e->getMessage());
       return array('error'=>true, 'message'=>'Erreur BDD');
     }
   }

@@ -67,7 +67,7 @@ final class EssaiJoueur extends Item
         return array();
 
     } catch(MeekroDBException $e) {
-      if (BDD_DEBUG_ON) return array('error'=>true, 'message'=>"#EssaiJoueur/getList : ".$e->getMessage());
+      if (DEV) return array('error'=>true, 'message'=>"#EssaiJoueur/getList : ".$e->getMessage());
       return array('error'=>true, 'message'=>'Erreur BDD');
     }
   }
@@ -92,7 +92,7 @@ final class EssaiJoueur extends Item
     }
     catch(MeekroDBException $e)
     {
-      if (BDD_DEBUG_ON) return array('error'=>true, 'message'=>"#EssaiJoueur/insert_validation : ".$e->getMessage());
+      if (DEV) return array('error'=>true, 'message'=>"#EssaiJoueur/insert_validation : ".$e->getMessage());
       return array('error'=>true, 'message'=>'Erreur BDD');
     }
 

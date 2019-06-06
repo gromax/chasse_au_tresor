@@ -27,11 +27,6 @@
   define("PSEUDO_MIN_SIZE", 6);
   define("PSEUDO_MAX_SIZE", 20);
 
-  // debug
-  define("DEBUG",true);
-  define("DEBUG_TEMPLATES",true);
-  define("BDD_DEBUG_ON",true);
-
   // hashs
   define("REDACTEUR_PWD_LOST",1);
   define("JOUEUR_PWD_LOST",1);

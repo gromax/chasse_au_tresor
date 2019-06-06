@@ -61,7 +61,7 @@ final class Redacteur extends Item
 			else
 				return array();
 		} catch(MeekroDBException $e) {
-			if (BDD_DEBUG_ON) return array('error'=>true, 'message'=>"#Redacteur/getList : ".$e->getMessage());
+			if (DEV) return array('error'=>true, 'message'=>"#Redacteur/getList : ".$e->getMessage());
 			return array('error'=>true, 'message'=>'Erreur BDD');
 		}
 	}

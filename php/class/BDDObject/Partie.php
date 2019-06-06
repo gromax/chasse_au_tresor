@@ -77,7 +77,7 @@ final class Partie extends Item
 			}
 
 		} catch(MeekroDBException $e) {
-			if (BDD_DEBUG_ON) return array('error'=>true, 'message'=>"#Partie/getList : ".$e->getMessage());
+			if (DEV) return array('error'=>true, 'message'=>"#Partie/getList : ".$e->getMessage());
 			return array('error'=>true, 'message'=>'Erreur BDD');
 		}
 	}
@@ -93,7 +93,7 @@ final class Partie extends Item
 		}
 		catch(MeekroDBException $e)
 		{
-			if (BDD_DEBUG_ON) return array('error'=>true, 'message'=>"#Partie/getLinkedWithEvenementEtJoueur : ".$e->getMessage());
+			if (DEV) return array('error'=>true, 'message'=>"#Partie/getLinkedWithEvenementEtJoueur : ".$e->getMessage());
 		}
 		return null;
 	}
@@ -135,7 +135,7 @@ final class Partie extends Item
 		}
 		catch(MeekroDBException $e)
 		{
-			if (BDD_DEBUG_ON) return array('error'=>true, 'message'=>"#Partie/insert_validation : ".$e->getMessage());
+			if (DEV) return array('error'=>true, 'message'=>"#Partie/insert_validation : ".$e->getMessage());
 			return array('error'=>true, 'message'=>'Erreur BDD');
 		}
 		if ($bdd_result !== null)
