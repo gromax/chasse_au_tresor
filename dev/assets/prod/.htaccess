@@ -4,4 +4,4 @@ RewriteEngine On
 RewriteCond %{HTTP_HOST} ^jeu\.goupill\.fr [NC]
 RewriteCond %{HTTPS} off
 RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI}
-RewriteRule ^api/ ./api.php [L] # Il faut absolument mettre /api.php sur hosteur mais pas sur la version locale
+RewriteRule ^api/ ./api.php [L]
