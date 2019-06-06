@@ -114,8 +114,7 @@ let config = {
         to: './favicon.png'
       },
       {
-        from: './dev/assets/api.php',
-        to: './api.php'
+        from: devMode ? './dev/assets/dev/api.php' : './dev/assets/prod/api.php'
       },
       {
         from: './dev/assets/image.php',
@@ -148,7 +147,7 @@ let config = {
     new HtmlWebpackPlugin({
       title: 'Chasse au trésor',
       filename: 'index.php',
-      template: 'dev/index.php'
+      template: 'dev/assets/index.php'
     }),
     new webpack.DefinePlugin({
       VERSION: JSON.stringify(require("./package.json").version)
