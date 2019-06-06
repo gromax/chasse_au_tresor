@@ -1,5 +1,5 @@
 import { View, CollectionView } from 'backbone.marionette'
-import { SortList } from 'apps/common/list_behavior.coffee'
+import { SortList } from 'apps/common/behaviors.coffee'
 import templateNone from 'templates/parties/list/essais_none.tpl'
 import templateItem from 'templates/parties/list/essai_item.tpl'
 import templateList from 'templates/parties/list/essais_list.tpl'
