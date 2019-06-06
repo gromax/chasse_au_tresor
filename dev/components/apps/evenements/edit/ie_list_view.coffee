@@ -1,5 +1,5 @@
 import { View, CollectionView } from 'backbone.marionette'
-import { SortList, FilterList } from 'apps/common/list_behavior.coffee'
+import { SortList, FilterList, DestroyWarn } from 'apps/common/behaviors.coffee'
 import templateList from 'templates/evenements/edit/list.tpl'
 import templateItem from 'templates/evenements/edit/item.tpl'
 import templateNone from 'templates/evenements/edit/none.tpl'
@@ -21,9 +21,9 @@ noView = View.extend {
 ItemView = View.extend {
 	tagName: "tr"
 	template: templateItem
+	behaviors: [DestroyWarn]
 	triggers: {
 		"click a.js-edit": "edit"
-		"click button.js-delete": "delete"
 		"click": "show"
 	}
 
@@ -33,14 +33,6 @@ ItemView = View.extend {
 			setTimeout( ()->
 				$view.toggleClass("table-"+cssClass)
 			, 500)
-		)
-
-	remove: ()->
-		self = @
-		@$el.fadeOut( ()->
-			#self.model.destroy()
-			self.trigger("model:destroy", @model)
-			Marionette.View.prototype.remove.call(self)
 		)
 }
 
