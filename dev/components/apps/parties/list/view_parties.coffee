@@ -1,5 +1,5 @@
 import { View, CollectionView } from 'backbone.marionette'
-import { SortList, FilterList } from 'apps/common/list_behavior.coffee'
+import { SortList, FilterList, DestroyWarn } from 'apps/common/behaviors.coffee'
 import templateRedacteurList from 'templates/parties/list/redacteur_parties_list.tpl'
 import templateRedacteurItem from 'templates/parties/list/redacteur_partie_item.tpl'
 import templateRedacteurNone from 'templates/parties/list/redacteur_parties_none.tpl'
@@ -17,9 +17,9 @@ RedacteurNoView = View.extend {
 RedacteurItemView = View.extend {
 	tagName: "tr"
 	template: templateRedacteurItem
+	behaviors: [DestroyWarn]
 	triggers: {
 		"click": "show"
-		"click button.js-delete": "delete"
 	}
 
 	flash: (cssClass)->
@@ -28,14 +28,6 @@ RedacteurItemView = View.extend {
 			setTimeout( ()->
 				$view.toggleClass("table-"+cssClass)
 			, 500)
-		)
-
-	remove: ()->
-		self = @
-		@$el.fadeOut( ()->
-			#self.model.destroy()
-			self.trigger("model:destroy", @model)
-			View.prototype.remove.call(self)
 		)
 }
 
