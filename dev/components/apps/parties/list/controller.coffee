@@ -1,4 +1,4 @@
-import Marionette from 'backbone.marionette'
+import { MnObject } from 'backbone.marionette'
 import { MissingView, AlertView } from 'apps/common/commons_view.coffee'
 import { Layout, Panel } from 'apps/common/list.coffee'
 import { RedacteurListView, JoueurListView } from 'apps/parties/list/view_parties.coffee'
@@ -6,7 +6,7 @@ import { EssaisListView, EssaisEntetePanel } from 'apps/parties/list/view_essais
 
 app = require('app').app
 
-Controller = Marionette.Object.extend {
+Controller = MnObject.extend {
   channelName: 'entities'
 
   listRedacteur: (criterion)->
@@ -43,19 +43,18 @@ Controller = Marionette.Object.extend {
         idItem = model.get("id")
         app.trigger("partie:essais:list",idItem)
 
-      listView.on "item:delete", (childView,e)->
+      listView.on "item:delete", (childView)->
         model = childView.model
-        idItem = model.get("id")
-        if confirm("Supprimer la partie « ##{idItem} - #{model.get('dateDebut_fr')} » ?")
-          destroyRequest = model.destroy()
-          app.trigger("header:loading", true)
-          $.when(destroyRequest).done( ()->
-            childView.remove()
-          ).fail( (response)->
-            alert("Erreur. Essayez à nouveau !")
-          ).always( ()->
-            app.trigger("header:loading", false)
-          )
+        destroyRequest = model.destroy()
+        app.trigger("header:loading", true)
+        $.when(destroyRequest).done( ()->
+          childView.trigger "remove"
+        ).fail( (response)->
+          alert("Erreur. Essayez à nouveau !")
+        ).always( ()->
+          app.trigger("header:loading", false)
+        )
+
       app.regions.getRegion('main').show(listLayout)
     ).fail( (response)->
       if response.status is 401

@@ -1,4 +1,4 @@
-import Marionette from 'backbone.marionette'
+import { MnObject } from 'backbone.marionette'
 import { MissingView, AlertView } from 'apps/common/commons_view.coffee'
 import { ListeView, Layout, EnteteView } from 'apps/evenements/edit/ie_list_view.coffee'
 import FormView from 'apps/evenements/common/formItem_view.coffee'
@@ -8,7 +8,7 @@ import { FilesView } from 'apps/common/files_loader.coffee'
 
 app = require('app').app
 
-Controller = Marionette.Object.extend {
+Controller = MnObject.extend {
   channelName: "entities",
   show: (id) ->
     app.trigger("header:loading", true)
@@ -101,17 +101,15 @@ Controller = Marionette.Object.extend {
 
         liste.on "item:delete", (childView) ->
           model = childView.model
-          idItem = model.get("id")
-          if confirm("Supprimer ##{idItem} ?")
-            destroyRequest = model.destroy()
-            app.trigger("header:loading", true)
-            $.when(destroyRequest).done( ()->
-              childView.remove()
-            ).fail( (response)->
-              alert("Erreur. Essayez à nouveau !")
-            ).always( ()->
-              app.trigger("header:loading", false)
-            )
+          destroyRequest = model.destroy()
+          app.trigger("header:loading", true)
+          $.when(destroyRequest).done( ()->
+            childView.trigger "remove"
+          ).fail( (response)->
+            alert("Erreur. Essayez à nouveau !")
+          ).always( ()->
+            app.trigger("header:loading", false)
+          )
 
         liste.on "item:show", (childView) ->
           model = childView.model
@@ -256,19 +254,17 @@ Controller = Marionette.Object.extend {
 
         subItemsView.on "subItem:delete", (childView,e)->
           model = childView.model
-          idItem = model.get("id")
-          if confirm("Supprimer l'élément ?")
-            model.destroy()
-            item.set("subItemsData", JSON.stringify(subItemsCollection.toJSON()))
-            destroyRequest = item.save()
-            app.trigger("header:loading", true)
-            $.when(destroyRequest).done( ()->
-              childView.remove()
-            ).fail( (response)->
-              alert("Erreur. Essayez à nouveau !")
-            ).always( ()->
-              app.trigger("header:loading", false)
-            )
+          model.destroy()
+          item.set("subItemsData", JSON.stringify(subItemsCollection.toJSON()))
+          destroyRequest = item.save()
+          app.trigger("header:loading", true)
+          $.when(destroyRequest).done( ()->
+            childView.trigger "remove"
+          ).fail( (response)->
+            alert("Erreur. Essayez à nouveau !")
+          ).always( ()->
+            app.trigger("header:loading", false)
+          )
 
         subItemsView.on "subItem:image:select", (childView) ->
           imgView = new FilesView { model:evenement, title: "Images de ##{evenement.get('id')}: #{evenement.get('titre')}", items:images, selectButton:true }

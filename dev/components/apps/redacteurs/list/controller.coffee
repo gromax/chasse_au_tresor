@@ -1,4 +1,4 @@
-import Marionette from 'backbone.marionette'
+import { MnObject } from 'backbone.marionette'
 import { AlertView } from 'apps/common/commons_view.coffee'
 import { Layout, Panel } from 'apps/common/list.coffee'
 import ListView from 'apps/redacteurs/list/view.coffee'
@@ -6,7 +6,7 @@ import FormView from 'apps/common/form_user_view.coffee'
 
 app = require('app').app
 
-Controller = Marionette.Object.extend {
+Controller = MnObject.extend {
 	channelName: 'entities'
 
 	list: (criterion)->
@@ -156,17 +156,15 @@ Controller = Marionette.Object.extend {
 
 			listView.on "item:delete", (childView,e)->
 				model = childView.model
-				idItem = model.get("id")
-				if confirm("Supprimer le compte de « ##{idItem} : #{model.get('nom')} » ?")
-					destroyRequest = model.destroy()
-					app.trigger("header:loading", true)
-					$.when(destroyRequest).done( ()->
-						childView.remove()
-					).fail( (response)->
-						alert("Erreur. Essayez à nouveau !")
-					).always( ()->
-						app.trigger("header:loading", false)
-					)
+				destroyRequest = model.destroy()
+				app.trigger("header:loading", true)
+				$.when(destroyRequest).done( ()->
+					childView.trigger "remove"
+				).fail( (response)->
+					alert("Erreur. Essayez à nouveau !")
+				).always( ()->
+					app.trigger("header:loading", false)
+				)
 			app.regions.getRegion('main').show(listLayout)
 		).fail( (response)->
 			if response.status is 401
