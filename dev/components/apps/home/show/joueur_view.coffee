@@ -1,9 +1,9 @@
-import Marionette from 'backbone.marionette'
+import { View } from 'backbone.marionette'
 import template from 'templates/home/show/joueur.tpl'
 
 app = require('app').app
 
-export default Marionette.View.extend {
+export default View.extend {
   template: template
   triggers: {
     "click a.js-edit-me": "edit:me"
