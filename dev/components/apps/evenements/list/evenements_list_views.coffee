@@ -14,7 +14,7 @@ import list_evenements_joueur_none_tpl from 'templates/evenements/list/list-even
 NoEvenementView_Redacteur = View.extend {
 	template: list_evenements_redacteur_none_tpl
 	tagName: "tr"
-	className: "alert"
+	className: "table-danger"
 }
 
 EvenementItemView_Redacteur = View.extend {
