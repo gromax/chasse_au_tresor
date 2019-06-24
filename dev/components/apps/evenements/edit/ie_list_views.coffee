@@ -1,5 +1,5 @@
 import { View, CollectionView } from 'backbone.marionette'
-import { SortList, DestroyWarn, FlashItem } from 'apps/common/behaviors.coffee'
+import { SortList, DestroyWarn, FlashItem, SubmitClicked, EditItem } from 'apps/common/behaviors.coffee'
 
 import ie_list_tpl from 'templates/evenements/edit/list-ie.tpl'
 import ie_list_item_view_tpl from 'templates/evenements/edit/list-ie-item.tpl'
