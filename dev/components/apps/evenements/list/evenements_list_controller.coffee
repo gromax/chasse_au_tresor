@@ -46,8 +46,9 @@ Controller = MnObject.extend {
 				app.regions.getRegion('dialog').show(view)
 
 			listView.on "item:edit", (childView, args)->
+				model = childView.model
 				view = new EditEvenementView {
-					model: childView.model
+					model: model
 					itemView: childView
 					title: "Modification de ##{model.get('id')} : #{model.get('nom')}"
 				}
