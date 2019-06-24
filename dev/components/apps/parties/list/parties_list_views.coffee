@@ -65,9 +65,9 @@ PartieItem_JoueurView = View.extend {
 PartiesList_JoueurView = CollectionView.extend {
   tagName: "div"
   className:"list-group"
-  childView:JoueurItemView
+  childView:PartieItem_JoueurView
   childViewEventPrefix: "item"
-  emptyView:JoueurNoView
+  emptyView:NoPartie_JoueurView
   behaviors: [FilterList]
   filterKeys: ["titre", "description"]
 }
