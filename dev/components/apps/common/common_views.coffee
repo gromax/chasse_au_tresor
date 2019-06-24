@@ -48,20 +48,17 @@ MissingView = View.extend {
 AlertView = View.extend {
   template: alert_tpl
   dismiss: true
-  className: -> "alert alert-"+(@options.type or "danger")
-
-  initialize: (options) ->
-    options = options ? {};
-    @title = options.title ? "Erreur !"
-    @message = options.message ? "Erreur inconnue. Reessayez !"
-    @type = options.type ? "danger"
+  message: "Erreur inconnue. Reessayez !"
+  title: "Erreur !"
+  type: "danger"
+  className: -> "alert alert-"+(@getOption "type")
 
   templateContext: ->
     {
-      title: @title
-      message: @message
+      title: @getOption "title"
+      message: @getOption "message"
       dismiss: @getOption "dismiss"
-      type: @type
+      type: @getOption "type"
     }
 
 }
