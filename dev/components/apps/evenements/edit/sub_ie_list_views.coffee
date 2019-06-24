@@ -46,17 +46,17 @@ MenuButtons = Behavior.extend {
 
   submitClicked: (e)->
     e.preventDefault()
-    data = Syphon.serialize(@view)
+    data = Syphon.serialize @view
     #file = @$el.find("[type='file']")?.prop('files')[0]
     #if file then data.file = file
     #console.log data
-    @view.trigger("form:submit", @view, data)
+    @view.trigger "submit", data
 
   showClicked: (e)->
     e.preventDefault()
     if @view.editMode
-      data = Syphon.serialize(@view)
-      @view.trigger("form:submit", @view, data)
+      data = Syphon.serialize @view
+      @view.trigger "submit", data
 
   onUp: ->
     current = @view.model
@@ -87,12 +87,12 @@ MenuButtons = Behavior.extend {
 
   onDelete: ->
     if confirm("Effacer l'élément ?")
-      model = childView.model
+      model = @view.model
       model.destroy()
       @saveAfterEvent(collection, parentView)
 
-  onSubmit: ->
-    model = childView.model
+  onSubmit: (data) ->
+    model = @view.model
     validationResult = model.set(data, {validate:true})
     if validationResult
       #switch type
@@ -106,12 +106,15 @@ MenuButtons = Behavior.extend {
   saveAfterEvent: ->
     parentView = @view.getOption "parentView"
     collection = parentView?.collection
+    view = @view
     if (item=parentView.getOption("itemEvenement"))? and collection?
       item.set "subItemsData", JSON.stringify(collection.toJSON())
       updatingItem = item.save()
       app = require('app').app
       app.trigger "header:loading", true
       $.when(updatingItem).done( ->
+        view.editMode = false
+        view.render()
       ).fail( (response)->
         switch response.status
           when 401
@@ -138,7 +141,7 @@ RedacteurExtensions = {
 
 NoSubIEView = View.extend {
   className: "card text-white bg-secondary"
-  template: templateNoSub
+  template: sub_ie_list_none_tpl
 }
 
 # SubItem de base
@@ -196,8 +199,8 @@ SubIEItemBrutView = SubIEItemView.extend {
     data
 }
 
-SubIEItemSVGView_Redacteur = SubIEItemSVGView.extend redacteurExtension
-SubIEItemBrutView_Redacteur = SubIEItemBrutView.extend redacteurExtension
+SubIEItemSVGView_Redacteur = SubIEItemSVGView.extend RedacteurExtensions
+SubIEItemBrutView_Redacteur = SubIEItemBrutView.extend RedacteurExtensions
 
 SubIECollectionView = CollectionView.extend {
   childView:  (model)->
