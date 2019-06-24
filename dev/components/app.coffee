@@ -47,6 +47,7 @@ Manager = Marionette.Application.extend {
 			require('apps/evenements/app_evenements.coffee')
 			require('apps/parties/app_parties.coffee')
 			require('apps/header/app_header.coffee')
+			require('apps/common/app_default.coffee')
 			# import des différentes app
 			self.trigger "header:show"
 			if Backbone.history
