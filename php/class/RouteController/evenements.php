@@ -142,7 +142,8 @@ class evenements
             EC::set_error_code(401);
             return false;
         }
-        if (!$ac->isRedacteur()){
+        if ((!$ac->isRedacteur()) && (!$ac->isRoot()))
+        {
             EC::set_error_code(403);
             return false;
         }
@@ -154,7 +155,7 @@ class evenements
             return false;
         }
 
-        if ($ac->getLoggedUserId()!==$item->getIdProprietaire())
+        if (!$ac->isRoot() && ($ac->getLoggedUserId()!==$item->getIdProprietaire()))
         {
             EC::set_error_code(403);
             return false;
