@@ -82,7 +82,7 @@ final class Redacteur extends Item
 			$username_errors = array();
 			if (!self::checkEMail($username))
 				$username_errors[] = "Email invalide.";
-			if (self::usernameExists($username)!==false )
+			if (($username!==false)&&($username!=$this->values['username'])&&(self::usernameExists($username)!==false ))
 				$username_errors[] = "L'identifiant / email existe déjà.";
 			if (count($username_errors)>0)
 				$errors['username'] = $username_errors;

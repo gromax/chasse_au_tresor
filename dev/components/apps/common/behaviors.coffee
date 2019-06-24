@@ -31,12 +31,12 @@ FilterList = Behavior.extend {
       @view.removeFilter(filterFct, options)
     else
       filterKeys = @view.filterKeys
-    parseFct = (model) ->
-      reductionFct = (m,k) ->
-        m+model.get(k)
-      _.reduce(filterKeys, reductionFct, "").normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()
-    filterFct = (view, index, children) ->
-      parseFct(view.model).indexOf(criterion) isnt -1
+      parseFct = (model) ->
+        reductionFct = (m,k) ->
+          m+model.get(k)
+        _.reduce(filterKeys, reductionFct, "").normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()
+      filterFct = (view, index, children) ->
+        parseFct(view.model).indexOf(criterion) isnt -1
       @view.setFilter(filterFct, options)
 }
 

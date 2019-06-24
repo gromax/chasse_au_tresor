@@ -1,6 +1,6 @@
 import { MnObject } from 'backbone.marionette'
-import { MissingView, AlertView, ListLayout } from 'apps/common/commons_view.coffee'
-import { IEListPanel, IECollectionView, EditIEDescriptionView } from 'apps/evenements/edit/ie_list_view.coffee'
+import { MissingView, AlertView, ListLayout } from 'apps/common/common_views.coffee'
+import { IEListPanel, IECollectionView, EditIEDescriptionView } from 'apps/evenements/edit/ie_list_views.coffee'
 import { app } from 'app'
 
 Controller = MnObject.extend {

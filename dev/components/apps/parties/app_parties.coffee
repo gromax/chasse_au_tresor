@@ -11,20 +11,20 @@ Router = Backbone.Router.extend {
   list: (criterion) ->
     rank = app.Auth.get("rank")
     if (rank is "root") or (rank is "redacteur")
-      require("apps/parties/list/controller.coffee").controller.listRedacteur(criterion)
+      require("apps/parties/list/parties_list_controller.coffee").controller.listRedacteur(criterion)
     else if (rank is "joueur")
-      require("apps/parties/list/controller.coffee").controller.listJoueur(criterion)
+      require("apps/parties/list/parties_list_controller.coffee").controller.listJoueur(criterion)
 
   showEssaisPartie: (idPartie)->
     rank = app.Auth.get("rank")
     if (rank is "redacteur")
-      require("apps/parties/list/controller.coffee").controller.listEssais(idPartie)
+      require("apps/parties/list/parties_list_controller.coffee").controller.listEssais(idPartie)
 
   show: (id, cle) ->
     rank = app.Auth.get("rank")
     if (rank is "joueur")
       if typeof cle is "string" then cle = cle.replace(/__/g," ")
-      require("apps/parties/show/controller.coffee").controller.show({id, cle})
+      require("apps/parties/show/partie_joueur_controller.coffee").controller.show({id, cle})
 
   showHash: (hash) ->
     rank = app.Auth.get("rank")
@@ -33,7 +33,7 @@ Router = Backbone.Router.extend {
         app.trigger "partie:show:hash", hash
       require("apps/common/sign/sign_controller.coffee").controller.show({signin:true, desactiveModeChoiceButton:true, adm:0, callback:cb, showToggleButton:true })
     if rank is "joueur"
-      require("apps/parties/show/controller.coffee").controller.show({hash})
+      require("apps/parties/show/partie_joueur_controller.coffee").controller.show({hash})
 
   start: (id) ->
     rank = app.Auth.get("rank")

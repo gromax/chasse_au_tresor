@@ -11,7 +11,7 @@ Router = Backbone.Router.extend {
   list: (criterion) ->
     rank = app.Auth.get("rank")
     if rank is "root"
-      require("apps/redacteurs/list/redacteurs_list_controllers.coffee").controller.list(criterion)
+      require("apps/redacteurs/list/redacteurs_list_controller.coffee").controller.list(criterion)
 }
 
 router = new Router()

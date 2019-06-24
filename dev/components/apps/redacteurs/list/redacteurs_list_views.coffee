@@ -23,12 +23,12 @@ RedacteurItemView = View.extend {
 
 RedacteursCollectionView = CollectionView.extend {
   tagName: "table"
-  className:"table table-hover"
+  className: "table table-hover"
   template: templateList
+  childView: RedacteurItemView
+  emptyView: NoRedacteurView
   childViewContainer: "tbody"
-  childView:RedacteurItemView
   childViewEventPrefix: 'item'
-  emptyView:NoRedacteurView
   behaviors: [SortList, FilterList]
   filterKeys: ["nom", "username"]
 }

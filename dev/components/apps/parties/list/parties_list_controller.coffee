@@ -1,38 +1,32 @@
 import { MnObject } from 'backbone.marionette'
-import { MissingView, AlertView } from 'apps/common/commons_view.coffee'
-import { Layout, Panel } from 'apps/common/list.coffee'
-import { RedacteurListView, JoueurListView } from 'apps/parties/list/view_parties.coffee'
-import { EssaisListView, EssaisEntetePanel } from 'apps/parties/list/view_essais.coffee'
-
-app = require('app').app
+import { MissingView, AlertView, ListPanel, ListLayout } from 'apps/common/common_views.coffee'
+import { PartiesList_RedacteurView, PartiesList_JoueurView } from 'apps/parties/list/parties_list_views.coffee'
+import { EssaisCollectionView, ListEssaisPanel } from 'apps/parties/list/essais_list_views.coffee'
+import { app } from 'app'
 
 Controller = MnObject.extend {
   channelName: 'entities'
-
   listRedacteur: (criterion)->
     criterion = criterion ? ""
-    app.trigger("header:loading", true)
-    listLayout = new Layout()
-    listPanel = new Panel {
-      filterCriterion: criterion
+    app.trigger "header:loading", true
+    listLayout = new ListLayout()
+    listPanel = new ListPanel {
       title: "Parties"
+      filterCriterion: criterion
     }
-
     channel = @getChannel()
-
     require "entities/dataManager.coffee"
-    Item = require("entities/parties.coffee").Item
-
     fetching = channel.request("custom:entities", ["parties"])
     $.when(fetching).done( (items)->
-      listView = new RedacteurListView {
+      listView = new PartiesList_RedacteurView {
         collection: items
-        filterCriterion: criterion
       }
 
       listPanel.on "items:filter", (filterCriterion)->
-        listView.triggerMethod("set:filter:criterion", filterCriterion, { preventRender:false })
+        listView.trigger("set:filter:criterion", filterCriterion, { preventRender:false })
         app.trigger("evenements:filter", filterCriterion)
+
+      listPanel.trigger "items:filter", filterCriterion
 
       listLayout.on "render", ()->
         listLayout.getRegion('panelRegion').show(listPanel)
@@ -43,18 +37,6 @@ Controller = MnObject.extend {
         idItem = model.get("id")
         app.trigger("partie:essais:list",idItem)
 
-      listView.on "item:delete", (childView)->
-        model = childView.model
-        destroyRequest = model.destroy()
-        app.trigger("header:loading", true)
-        $.when(destroyRequest).done( ()->
-          childView.trigger "remove"
-        ).fail( (response)->
-          alert("Erreur. Essayez à nouveau !")
-        ).always( ()->
-          app.trigger("header:loading", false)
-        )
-
       app.regions.getRegion('main').show(listLayout)
     ).fail( (response)->
       if response.status is 401
@@ -63,27 +45,24 @@ Controller = MnObject.extend {
       else
         alertView = new AlertView()
         app.regions.getRegion('main').show(alertView)
-    ).always( ()->
-      app.trigger("header:loading", false)
+    ).always( ->
+      app.trigger "header:loading", false
     )
 
   listEssais: (idPartie) ->
-    app.trigger("header:loading", true)
-    listLayout = new Layout()
-
+    app.trigger "header:loading", true
+    listLayout = new ListLayout()
     channel = @getChannel()
-
     require "entities/dataManager.coffee"
-
     fetching = channel.request("custom:essais", idPartie)
     $.when(fetching).done( (partie, evenement, essais, nomJoueur)->
-      listPanel = new EssaisEntetePanel {
+      listPanel = new ListEssaisPanel {
         partie
         evenement
         essais
         nomJoueur
       }
-      listView = new EssaisListView {
+      listView = new EssaisCollectionView {
         collection: essais
       }
 
@@ -106,30 +85,26 @@ Controller = MnObject.extend {
         else
           alertView = new AlertView()
           app.regions.getRegion('main').show(alertView)
-    ).always( ()->
-      app.trigger("header:loading", false)
+    ).always( ->
+      app.trigger "header:loading", false
     )
 
 
   listJoueur: (criterion)->
     criterion = criterion ? ""
-    app.trigger("header:loading", true)
-    listLayout = new Layout()
-    listPanel = new Panel {
+    app.trigger "header:loading", true
+    listLayout = new ListLayout()
+    listPanel = new ListPanel {
       title: "Mes parties"
       filterCriterion:criterion
     }
-
     channel = @getChannel()
-
     require "entities/dataManager.coffee"
-    Item = require("entities/parties.coffee").Item
 
     fetching = channel.request("custom:entities", ["parties"])
     $.when(fetching).done( (items)->
-      listView = new JoueurListView {
+      listView = new PartiesList_JoueurView {
         collection: items
-        filterCriterion: criterion
       }
 
       listView.on "item:select", (childView) ->
@@ -140,10 +115,11 @@ Controller = MnObject.extend {
         listView.triggerMethod("set:filter:criterion", filterCriterion, { preventRender:false })
         app.trigger("evenements:filter", filterCriterion)
 
+      listPanel.trigger "items:filter", filterCriterion
+
       listLayout.on "render", ()->
         listLayout.getRegion('panelRegion').show(listPanel)
         listLayout.getRegion('itemsRegion').show(listView)
-
 
       app.regions.getRegion('main').show(listLayout)
     ).fail( (response)->
@@ -153,8 +129,8 @@ Controller = MnObject.extend {
       else
         alertView = new AlertView()
         app.regions.getRegion('main').show(alertView)
-    ).always( ()->
-      app.trigger("header:loading", false)
+    ).always( ->
+      app.trigger "header:loading", false
     )
 }
 

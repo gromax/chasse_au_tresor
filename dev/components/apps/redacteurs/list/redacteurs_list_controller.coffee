@@ -1,5 +1,5 @@
 import { MnObject } from 'backbone.marionette'
-import { AlertView, ListPanel, ListLayout } from 'apps/common/commons_view.coffee'
+import { AlertView, ListPanel, ListLayout } from 'apps/common/common_views.coffee'
 import { RedacteursCollectionView } from 'apps/redacteurs/list/redacteurs_list_views.coffee'
 import { EditUserView, NewUserView } from 'apps/common/edit_user_views.coffee'
 import { app } from 'app'
@@ -19,8 +19,6 @@ Controller = MnObject.extend {
     channel = @getChannel()
 
     require "entities/dataManager.coffee"
-    Item = require("entities/redacteurs.coffee").Item
-
     fetching = channel.request("custom:entities", ["redacteurs"])
     $.when(fetching).done( (items)->
       listView = new RedacteursCollectionView {
@@ -28,14 +26,17 @@ Controller = MnObject.extend {
       }
 
       listPanel.on "items:filter", (filterCriterion)->
-        listView.triggerMethod("set:filter:criterion", filterCriterion, { preventRender:false })
+        listView.trigger("set:filter:criterion", filterCriterion, { preventRender:false })
         app.trigger("redacteurs:filter", filterCriterion)
 
-      listLayout.on "render", ()->
+      listView.trigger("set:filter:criterion", criterion, { preventRender:false })
+
+      listLayout.on "render", ->
         listLayout.getRegion('panelRegion').show(listPanel)
         listLayout.getRegion('itemsRegion').show(listView)
 
-      listPanel.on "item:new", ()->
+      listPanel.on "item:new", ->
+        Item = require("entities/redacteurs.coffee").Item
         newItem = new Item()
         view = new NewUserView {
           model: newItem
@@ -58,7 +59,7 @@ Controller = MnObject.extend {
 
       listView.on "item:editPwd", (childView)->
         model = childView.model
-        view = new FormView {
+        view = new EditUserView {
           model:model
           itemView: childView
           showInfos: false

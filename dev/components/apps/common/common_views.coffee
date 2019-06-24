@@ -19,6 +19,12 @@ ListPanel = View.extend {
   triggers: {
     "click button.js-new": "item:new"
   }
+  templateContext: ->
+    {
+      title: @getOption "title"
+      showAddButton: @getOption "showAddButton"
+      filterCriterion: @getOption "filterCriterion"
+    }
 }
 
 ListLayout = View.extend {
@@ -30,9 +36,10 @@ ListLayout = View.extend {
 }
 
 MissingView = View.extend {
+  message: "Cet item n'existe pas"
   templateContext: ->
     {
-      message: @options.message or "Cet item n'existe pas."
+      message: @getOption "message"
     }
 
   template: missing_tpl
@@ -40,8 +47,8 @@ MissingView = View.extend {
 
 AlertView = View.extend {
   template: alert_tpl
-  className: ->
-    return "alert alert-"+(@options.type or "danger")
+  dismiss: true
+  className: -> "alert alert-"+(@options.type or "danger")
 
   initialize: (options) ->
     options = options ? {};
@@ -50,10 +57,10 @@ AlertView = View.extend {
     @type = options.type ? "danger"
 
   templateContext: ->
-    return {
+    {
       title: @title
       message: @message
-      dismiss: @options.dismiss is true
+      dismiss: @getOption "dismiss"
       type: @type
     }
 

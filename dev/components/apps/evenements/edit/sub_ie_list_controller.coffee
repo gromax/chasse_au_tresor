@@ -1,5 +1,5 @@
 import { MnObject } from 'backbone.marionette'
-import { MissingView, AlertView, ListLayout } from 'apps/common/commons_view.coffee'
+import { MissingView, AlertView, ListLayout } from 'apps/common/common_views.coffee'
 import { SubIEListPanel, SubIECollectionView } from 'apps/evenements/edit/sub_ie_list_views.coffee'
 import { FilesView } from 'apps/common/files_loader.coffee'
 

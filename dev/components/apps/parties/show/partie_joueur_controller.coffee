@@ -1,19 +1,15 @@
 import { MnObject } from 'backbone.marionette'
-import { MissingView, AlertView } from 'apps/common/commons_view.coffee'
-import { AccueilView, PanelView, Layout, CleCollectionView } from 'apps/parties/show/partie_joueur_view.coffee'
-import { SubItemCollectionView } from 'apps/evenements/common/sub_items_view.coffee'
-
-app = require('app').app
+import { MissingView, AlertView } from 'apps/common/common_views.coffee'
+import { PartieAccueilView, PartiePanelView, PartieLayout, ClesCollectionView } from 'apps/parties/show/partie_joueur_view.coffee'
+import { SubIECollectionView } from 'apps/evenements/edit/sub_ie_list_views.coffee'
+import { app } from 'app'
 
 Controller = MnObject.extend {
   channelName: "entities",
-
   show: (options) ->
-    app.trigger("header:loading", true)
-
+    app.trigger "header:loading", true
     require "entities/dataManager.coffee"
     channel = @getChannel()
-
     fetchingData = channel.request("custom:partie", options)
     $.when(fetchingData).done( (data)->
       partie = data.partie
@@ -22,10 +18,9 @@ Controller = MnObject.extend {
         cle = options.cle
       else
         cle = ""
-
       evenement = data.evenement
-      layout = new Layout()
-      panel = new PanelView { cle }
+      layout = new PartieLayout()
+      panel = new PartiePanelView { cle }
       panel.on "essai", (essai)->
         app.trigger("partie:show:cle", id, essai.normalize('NFD').replace(/[\u0300-\u036f]/g, ""))
 
@@ -60,17 +55,17 @@ Controller = MnObject.extend {
           SubItemCollection = require("entities/itemsEvenement.coffee").SubItemCollection
           subItemsCollection = new SubItemCollection()
           subItemsCollection.add(d, {parse:true})
-        vuePrincipale = new SubItemCollectionView { collection: subItemsCollection }
+        vuePrincipale = new SubIECollectionView { collection: subItemsCollection }
         vuePrincipale.on "subItem:click:cle", (cible)->
           app.trigger "partie:show:cle", id, cible.normalize('NFD').replace(/[\u0300-\u036f]/g, "")
       else
-        vuePrincipale = new AccueilView {
+        vuePrincipale = new PartieAccueilView {
           model:partie
           evenement:evenement
           cle
         }
 
-      vueCles = new CleCollectionView { collection: data.essais, idSelected: data.item?.get("id") ? -1 }
+      vueCles = new ClesCollectionView { collection: data.essais, idSelected: data.item?.get("id") ? -1 }
       vueCles.on "cle:select", (v)->
         app.trigger "partie:show:cle", id, v.model.get("essai").normalize('NFD').replace(/[\u0300-\u036f]/g, "")
 

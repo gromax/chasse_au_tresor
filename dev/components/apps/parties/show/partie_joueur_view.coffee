@@ -1,42 +1,37 @@
 import { View, CollectionView } from 'backbone.marionette'
-import templateAccueil from "templates/parties/show/accueil.tpl"
-import templatePanel from "templates/parties/show/panel.tpl"
-import templateLayout from "templates/parties/show/layout.tpl"
-import templateCleItem from "templates/parties/show/cleItem.tpl"
+import accueil_tpl from "templates/parties/show/accueil.tpl"
+import panel_tpl from "templates/parties/show/panel.tpl"
+import layout_tpl from "templates/parties/show/layout.tpl"
+import cleItem_tpl from "templates/parties/show/cleItem.tpl"
 
-
-PanelView = View.extend {
-  template: templatePanel
-
+# Panneau de recherche : input + submit + bouton GPS
+PartiePanelView = View.extend {
+  template: panel_tpl
   events: {
     "submit #essai-form": "essayerCle"
   }
-
   triggers: {
     "click button.js-gps": "essai:gps"
   }
-
   ui: {
     essai: "input.js-essai"
   }
-
   essayerCle: (e)->
     e.preventDefault()
     essai = @ui.essai.val()
     @trigger "essai", essai
-
   onSetCle: (cle)->
     @ui.essai.val(cle)
-
   templateContext: ->
     {
       cle: @options.cle ? ""
     }
 }
 
-# Clés
-CleView = View.extend {
-  template: templateCleItem
+# Panneau des clés déjà trouvées
+# Ici, vu d'une seule clé
+CleItemView = View.extend {
+  template: cleItem_tpl
   tagName: "a"
   attributes: {
     href:"#"
@@ -55,9 +50,10 @@ CleView = View.extend {
     }
 }
 
-CleCollectionView = CollectionView.extend {
+# Ici vue de l'ensemble des clés
+ClesCollectionView = CollectionView.extend {
   className: "list-group"
-  childView: CleView
+  childView: CleItemView
   childViewEventPrefix: 'cle'
   #childViewContainer: "#content"
   childViewOptions: ->
@@ -66,9 +62,9 @@ CleCollectionView = CollectionView.extend {
     }
 }
 
-AccueilView = View.extend {
-  template: templateAccueil
-
+# panneau d'accueil quand aucune clé n'est trouvée ou en cas d'erreur
+PartieAccueilView = View.extend {
+  template: accueil_tpl
   templateContext: ->
     essaiCle = @options.cle ? ""
     gps = (essaiCle isnt "" and /^gps=[0-9]+\.[0-9]+,[0-9]+\.[0-9]+(,[0-9]+)?$/.test(essaiCle))
@@ -84,8 +80,9 @@ AccueilView = View.extend {
     }
 }
 
-Layout = View.extend {
-  template: templateLayout
+# disposition de l'ensemble des vues
+PartieLayout = View.extend {
+  template: layout_tpl
   regions: {
     panelRegion: "#panel-region"
     motsRegion: "#mots-region"
@@ -93,5 +90,5 @@ Layout = View.extend {
   }
 }
 
-export { AccueilView, PanelView, Layout, CleCollectionView }
+export { PartieAccueilView, PartiePanelView, PartieLayout, ClesCollectionView }
 

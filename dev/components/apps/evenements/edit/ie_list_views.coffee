@@ -1,10 +1,10 @@
 import { View, CollectionView } from 'backbone.marionette'
 import { SortList, DestroyWarn, FlashItem } from 'apps/common/behaviors.coffee'
 
-import ie_list_tpl from 'templates/evenements/edit/list-itemsEvenement.tpl'
-import ie_list_item_view_tpl from 'templates/evenements/edit/list-itemsEvenement-item.tpl'
-import ie_list_none_tpl from 'templates/evenements/edit/list-itemsEvenement-none.tpl'
-import ie_list_panel_tpl from "templates/evenements/edit/edit-list-item-panel.tpl"
+import ie_list_tpl from 'templates/evenements/edit/list-ie.tpl'
+import ie_list_item_view_tpl from 'templates/evenements/edit/list-ie-item.tpl'
+import ie_list_none_tpl from 'templates/evenements/edit/list-ie-none.tpl'
+import ie_list_panel_tpl from "templates/evenements/edit/list-ie-panel.tpl"
 import edit_ie_description_tpl from 'templates/evenements/edit/edit-ie-description.tpl'
 
 IENoItemView = View.extend {

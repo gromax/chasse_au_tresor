@@ -1,12 +1,10 @@
-import Marionette from 'backbone.marionette'
-import template from 'templates/parties/new/new_partie.tpl'
+import { View } from 'backbone.marionette'
+import new_partie_tpl from 'templates/parties/new/new_partie.tpl'
 
-app = require('app').app
-
-export default Marionette.View.extend {
+NewPartieView = View.extend {
   tagName: "div"
   className: "jumbotron"
-  template: template
+  template: new_partie_tpl
 
   events: {
     "click a.js-continue": "continueClicked"
@@ -26,3 +24,5 @@ export default Marionette.View.extend {
     l = @model.get("idPartie")
     return { hasPartie: typeof l is "number" }
 }
+
+export { NewPartieView }
