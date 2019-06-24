@@ -34,9 +34,9 @@ Controller = MnObject.extend {
           app.regions.getRegion('dialog').show(view)
 
         liste.on "item:edit", (childView) ->
-          model =
+          model = childView.model
           view = new EditIEDescriptionView {
-            model: childView.model
+            model: model
             itemView: childView
             title: "Modification de ##{model.get('id')}"
           }
@@ -49,8 +49,8 @@ Controller = MnObject.extend {
           idEvenement = model.get("idEvenement")
           app.trigger("evenement:cle:show", idEvenement, idItem)
 
-        layout.on "render", ()->
-          layout.getRegion('enteteRegion').show(entete)
+        layout.on "render", ->
+          layout.getRegion('panelRegion').show(entete)
           layout.getRegion('itemsRegion').show(liste)
         app.regions.getRegion('main').show(layout)
       else
@@ -63,8 +63,8 @@ Controller = MnObject.extend {
       else
         alertView = new AlertView()
         app.regions.getRegion('main').show(alertView)
-    ).always( () ->
-      app.trigger("header:loading", false)
+    ).always( ->
+      app.trigger "header:loading", false
     )
 }
 
