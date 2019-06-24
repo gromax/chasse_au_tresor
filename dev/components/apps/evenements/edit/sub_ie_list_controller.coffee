@@ -2,6 +2,7 @@ import { MnObject } from 'backbone.marionette'
 import { MissingView, AlertView, ListLayout } from 'apps/common/common_views.coffee'
 import { SubIEListPanel, SubIECollectionView } from 'apps/evenements/edit/sub_ie_list_views.coffee'
 import { FilesView } from 'apps/common/files_loader.coffee'
+import { app } from 'app'
 
 Controller = MnObject.extend {
   channelName: "entities"
@@ -31,7 +32,7 @@ Controller = MnObject.extend {
           SubItemCollection = require("entities/itemsEvenement.coffee").SubItemCollection
           subItemsCollection = new SubItemCollection()
           subItemsCollection.add d, { parse:true }
-        subItemsView = new SubIECollectionView { collection: subItemsCollection, redacteurMode:true, itemsEvenement: item }
+        subItemsView = new SubIECollectionView { collection: subItemsCollection, redacteurMode:true, itemEvenement: item }
 
         panel.on "navigate:parent", ->
           app.trigger "evenement:show", idEvenement
