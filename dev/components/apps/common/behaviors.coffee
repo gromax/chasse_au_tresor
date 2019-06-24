@@ -1,4 +1,5 @@
 import { Behavior } from 'backbone.marionette'
+import Syphon from 'backbone.syphon'
 SortList = Behavior.extend {
   events: {
     "click a.js-sort":"sortFct"
@@ -58,8 +59,8 @@ DestroyWarn = Behavior.extend {
       app = require('app').app
       destroyRequest = model.destroy()
       app.trigger("header:loading", true)
+      view = @view
       $.when(destroyRequest).done( ->
-        view = @view
         view.$el.fadeOut( ->
           view.trigger("model:destroy", view.model)
           view.remove()
