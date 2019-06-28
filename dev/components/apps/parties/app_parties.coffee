@@ -43,9 +43,13 @@ Router = Backbone.Router.extend {
 
 router = new Router()
 
-app.on "parties:list", ()->
-  app.navigate("parties")
-  router.list()
+app.on "parties:list", (criterion)->
+  if criterion
+    app.navigate "parties/list/criterion:#{criterion}"
+    router.list(criterion)
+  else
+    app.navigate("parties")
+    router.list()
 
 app.on "parties:filter", (criterion) ->
   if criterion
