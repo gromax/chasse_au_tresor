@@ -26,7 +26,7 @@ Controller = MnObject.extend {
           Item = require("entities/itemsEvenement.coffee").Item
           newItem =
           view = new EditIEDescriptionView {
-            model: new Item()
+            model: new Item({ idEvenement:id})
             collection: itemsEvenement
             listView: liste
             title: "Nouvel item"
