@@ -5,6 +5,7 @@ use DB;
 use ErrorController as EC;
 use SessionController as SC;
 use MeekroDBException;
+use WhereClause;
 
 abstract class Item
 {
@@ -116,6 +117,36 @@ abstract class Item
 		require_once BDD_CONFIG;
 		try {
 			$bdd_result=DB::queryFirstRow("SELECT ".implode(",",$keys)." FROM ".PREFIX_BDD.static::$BDDName." WHERE ".$keyName."=%s", $keyValue);
+			if ($bdd_result === null)
+			{
+				return null;
+			}
+
+			$item = new static($bdd_result);
+			if (self::SAVE_IN_SESSION)
+			{
+				SC::get()->setParamInCollection(static::$BDDName, $item->id, $item);
+			}
+			return $item;
+		} catch(MeekroDBException $e) {
+			EC::addBDDError($e->getMessage(),static::$BDDName."/getObjectWithKey");
+		}
+		return null;
+	}
+
+	public static function getObjectWithKeys($list) // liste sous la forme [key]=>value
+	{
+		$keys = array_keys(static::champs());
+		array_unshift($keys,"id");
+
+		require_once BDD_CONFIG;
+		try {
+			$where = new WhereClause('and'); // create a WHERE statement of pieces joined by ANDs
+			foreach ($list as $key => $value) {
+				$where->add("$key=%s", $value);
+			}
+
+			$bdd_result=DB::queryFirstRow("SELECT ".implode(",",$keys)." FROM ".PREFIX_BDD.static::$BDDName." WHERE %l", $where);
 			if ($bdd_result === null)
 			{
 				return null;
