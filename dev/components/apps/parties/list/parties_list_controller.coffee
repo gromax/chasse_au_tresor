@@ -67,7 +67,7 @@ Controller = MnObject.extend {
       }
 
       listPanel.on "navigate:parent", ->
-        app.trigger "parties:filter", evenement.get("titre")
+        app.trigger "parties:list", evenement.get("titre")
 
       listLayout.on "render", ()->
         listLayout.getRegion('panelRegion').show(listPanel)
@@ -115,7 +115,7 @@ Controller = MnObject.extend {
         listView.triggerMethod("set:filter:criterion", filterCriterion, { preventRender:false })
         app.trigger("evenements:filter", filterCriterion)
 
-      listPanel.trigger "items:filter", filterCriterion
+      listView.triggerMethod("set:filter:criterion", criterion, { preventRender:false })
 
       listLayout.on "render", ()->
         listLayout.getRegion('panelRegion').show(listPanel)
