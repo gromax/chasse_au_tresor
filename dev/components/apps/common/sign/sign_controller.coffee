@@ -77,6 +77,7 @@ Controller = MnObject.extend {
 
       view.on "form:submit", (data) ->
         if view.options.signin is true
+          data.adm = (data.adm is "1")
           signinCallback(data)
         else
           signupCallback(data)
