@@ -76,7 +76,7 @@ Créer un compte
     <div class="form-group row">
       <label for="user-pwd-2" class="col-form-label col-sm-3">Mot de passe</label>
       <div class="col-sm-9">
-        <input type="password" class="form-control" id="user-pwd-2" placeholder="Entrez un mot de passe">
+        <input type="password" class="form-control" id="user-pwd2" name="pwd2" placeholder="Entrez un mot de passe">
         <div class="invalid-feedback">
           Les mots de passe ne correspondent pas.
         </div>
@@ -84,7 +84,7 @@ Créer un compte
     </div>
 
     <div class="form-check">
-      <input type="checkbox" class="form-check-input" id="nrCheck">
+      <input type="checkbox" class="form-check-input" id="nrCheck" name="jenesuispasunrobot">
       <label class="form-check-label" for="nrCheck">Je ne suis pas un robot</label>
       <div class="invalid-feedback">
         Robots interdits !
