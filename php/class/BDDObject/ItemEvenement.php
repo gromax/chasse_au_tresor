@@ -71,7 +71,7 @@ final class ItemEvenement extends Item
   {
     if (($cleEssai===null)||($cleEssai==""))
     {
-      return self::getObjectWithKey("regexCle","^accueil$");
+      return self::getObjectWithKeys(array("regexCle"=>"^accueil$", "idEvenement"=>$idEvenement));
     }
 
     require_once BDD_CONFIG;
