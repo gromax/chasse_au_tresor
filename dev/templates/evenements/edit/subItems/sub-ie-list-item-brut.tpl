@@ -29,6 +29,11 @@ if(editMode){%>
     <button type="submit" class="btn btn-primary js-submit">Valider</button>
   </form>
 </div>
+
+<ul class="list-group list-group-flush">
+  <li class="list-group-item list-group-item-primary"><b>Lien :</b>[link=<i>clé</i>]<i>texte à afficher</i>[/link]</li>
+</ul>
+
 <%} else {%>
 <div class="card-body">
   <% if(contenu!==""){%><%=contenu%><%} else {%><p class="text-muted">Élément vide</p><%}%>
