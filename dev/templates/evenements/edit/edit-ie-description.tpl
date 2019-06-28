@@ -2,6 +2,7 @@
   <div class="form-group">
     <label for="item-tagCle" class="control-label">Étiquette :</label>
     <input class="form-control" id="item-tagCle" name="tagCle" type="text" value="<%- tagCle %>" placeHolder="Étiquette"/>
+    <small class="form-text text-muted">Entrez Accueil pour la page d'accueil.</small>
   </div>
     <div class="form-group">
     <label for="item-regexCle" class="control-label">Regex :</label>
@@ -10,7 +11,8 @@
       <div class="input-group-append">
         <button class="btn btn-primary js-gps" type="button" title="géolocalisation"><i class="fa fa-map-marker"></i></button>
       </div>
-    </div>
+   </div>
+   <small class="form-text text-muted">Entrez ^accueil$ pour la page d'accueil.</small>
   </div>
   <div class="form-group">
     <label for="item-test" class="control-label">Test :</label>
