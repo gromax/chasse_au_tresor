@@ -103,8 +103,11 @@ SubmitClicked = Behavior.extend {
         $(this).removeClass("has-error")
       )
 
-    if @getOption("messagesDiv")
-      $container = $view.find("#messages")
+    messagesDiv = @getOption("messagesDiv") or "messages"
+    if $.isArray(errors)
+      $container = $view.find("##{messagesDiv}")
+      unless $container
+        $container = $view.append "<div id='messagesDiv'></div>"
       markErrors = (value)->
         $errorEl
         if value.success
@@ -113,7 +116,23 @@ SubmitClicked = Behavior.extend {
           $errorEl = $("<div>", { class: "alert alert-danger", role:"alert", text: value.message })
         $container.append($errorEl)
     else
+      $(".is-invalid",$view).each -> $(@).removeClass("is-invalid")
+      $(".is-valid",$view).each -> $(@).removeClass("is-valid")
       markErrors = (value, key) ->
+        $inp = $view.find("input[name='#{key}']")
+        if $.isArray(value)
+          reduceFct = (m,v,i) -> m+"<p>#{v}</p>"
+          html = _.reduce(value, reduceFct, "")
+        else
+          html = value
+        $next = $inp.next()
+        unless $next
+          $next = $inp.after("<div class='invalid-feedback'></div>")
+          $next.html html
+        $inp.addClass("is-invalid")
+
+
+        '''
         $controlGroup = $("input[name='#{key}']",$view).closest(".form-group")
         $controlGroup.addClass("has-error")
         if $.isArray(value)
@@ -124,6 +143,7 @@ SubmitClicked = Behavior.extend {
         else
           $errorEl = $("<span>", { class: "help-inline text-danger", text: value })
           $controlGroup.append($errorEl)
+        '''
 
     clearFormErrors()
     _.each(errors, markErrors)
