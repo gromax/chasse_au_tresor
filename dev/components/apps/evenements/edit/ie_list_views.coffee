@@ -9,13 +9,8 @@ import edit_ie_description_tpl from 'templates/evenements/edit/edit-ie-descripti
 
 IENoItemView = View.extend {
   template:  ie_list_none_tpl
-  tagName: "table"
-  className:"table table-hover"
-  addButton: false
-  templateContext: ->
-    {
-      addButton: @getOption "addButton"
-    }
+  tagName: "tr"
+  className:"table-warning"
 }
 
 IEItemView = View.extend {
@@ -35,7 +30,7 @@ IEListPanel = View.extend {
   }
   templateContext: ->
     {
-      baseUrl: window.location.href.split("#")[0]
+      baseUrl: window.location.href.split("#")[0].slice(0, -1)+"#"
     }
 }
 
@@ -82,6 +77,9 @@ EditIEDescriptionView = View.extend {
     "input @ui.regexCle": "test:reload"
     "click button.js-gps": "set:gps"
   }
+
+  initialize: ->
+    @title = @getOption "title"
 
   onSetGps: ->
     options = {
