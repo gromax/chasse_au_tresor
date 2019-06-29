@@ -17,6 +17,12 @@ Controller = MnObject .extend {
       else
         app.regions.getRegion('main').show(new OffHomeView())
 
+  showNotFound: ->
+    view = new AlertView {
+      message: "Page introuvable"
+      dismiss: false
+    }
+    app.regions.getRegion('main').show(view)
 }
 
 export controller = new Controller()
