@@ -1,6 +1,6 @@
 import { View } from 'backbone.marionette'
 import user_edit_tpl from 'templates/common/user-edit.tpl'
-import { SubmitClicked, EditItem, NewItem } from 'apps/common/behaviors.coffee'
+import { SubmitClicked, EditItem } from 'apps/common/behaviors.coffee'
 
 EditUserView = View.extend {
   template: user_edit_tpl
@@ -37,21 +37,16 @@ EditUserView = View.extend {
 
 NewUserView = View.extend {
   template: user_edit_tpl
-  behaviors: [SubmitClicked, NewItem]
-  generateTitle: false
+  behaviors: [SubmitClicked, EditItem]
   initialize: ->
     @title = @getOption "title"
-  onRender: ->
-    if @getOption "generateTitle"
-      $title = $("<h1>", { text: @title })
-      @$el.prepend($title)
   templateContext: ->
     {
       showPWD: true
       showInfos: true
       showToggle: false
     }
-
 }
+
 
 export { EditUserView, NewUserView }
