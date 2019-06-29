@@ -1,4 +1,4 @@
-import HeaderView from "apps/header/show/view.coffee"
+import { HeaderView } from "apps/header/show/view.coffee"
 
 export controller = {
 	show: () ->
