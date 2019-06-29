@@ -58,26 +58,32 @@ Router = Backbone.Router.extend {
     else
       require("apps/home/editMe/edit_me_controller.coffee").controller.show()
 
+  notFound: ->
+    require("apps/home/show/home_show_controller.coffee").controller.showNotFound()
+
 }
 
 router = new Router()
 
-app.on "home:show", ()->
+app.on "home:show", ->
   app.navigate("home")
   router.showHome()
 
-app.on "home:login", ()->
+app.on "home:login", ->
   app.navigate("login")
   router.showSign()
 
-app.on "home:signup", ()->
+app.on "home:signup", ->
   app.navigate("signin")
   router.showSignUp()
 
-app.on "home:logout", ()->
+app.on "home:logout", ->
   router.logout()
   app.trigger("home:show")
 
-app.on "edit:me", ()->
+app.on "edit:me", ->
   app.navigate("edit-me")
   router.showEditMe()
+
+app.on "not:found", ->
+  router.notFound()
