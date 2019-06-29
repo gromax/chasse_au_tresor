@@ -3,6 +3,7 @@ import { AlertView } from 'apps/common/common_views.coffee'
 
 Router = Backbone.Router.extend {
   routes: {
+    '*path': 'notFound'
   }
 
   showMessageSuccess: (message) ->
@@ -19,6 +20,8 @@ Router = Backbone.Router.extend {
     }
     app.regions.getRegion('message').show(view)
 
+  notFound: ->
+    app.trigger "not:found"
 
 }
 
