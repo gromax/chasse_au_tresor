@@ -1,53 +1,53 @@
-import Marionette from 'backbone.marionette'
-import template from 'templates/header/show/header-navbar.tpl'
+import { View } from 'backbone.marionette'
+import header_tpl from 'templates/header/show/header-navbar.tpl'
+import { app } from 'app'
 
-app = require('app').app
-export default Marionette.View.extend {
-	template: template
-	triggers: {
-		"click a.js-home": "home:show"
-		"click a.js-edit-me": "home:editme"
-		"click a.js-login": "home:login"
-		"click a.js-logup": "home:signup"
-		"click a.js-logout": "home:logout"
-	}
+HeaderView = View.extend {
+  template: header_tpl
+  triggers: {
+    "click a.js-home": "home:show"
+    "click a.js-edit-me": "home:editme"
+    "click a.js-login": "home:login"
+    "click a.js-logup": "home:signup"
+    "click a.js-logout": "home:logout"
+  }
 
-	initialize: (options) ->
-		options = options ? {};
-		@auth = _.clone(app.Auth.attributes)
+  initialize: (options) ->
+    options = options ? {};
+    @auth = _.clone(app.Auth.attributes)
 
-	serializeData: () ->
-		isOff = not @auth.logged_in
-		{
-			isOff: isOff
-			nom: if isOff then "Déconnecté" else @auth.nom
-			version: app.version
-		}
+  templateContext: ->
+    isOff = not @auth.logged_in
+    {
+      isOff: isOff
+      nom: if isOff then "Déconnecté" else @auth.nom
+      version: app.version
+    }
 
-	logChange: () ->
-		@initialize()
-		@render()
+  logChange: ->
+    @initialize()
+    @render()
 
-	onHomeShow: (e) ->
-		app.trigger("home:show")
+  onHomeShow: (e) ->
+    app.trigger "home:show"
 
-	onHomeEditme: (e) ->
-		app.trigger("user:show",app.Auth.get("id"))
+  onHomeEditme: (e) ->
+    app.trigger "edit:me"
 
-	onHomeLogin: (e) ->
-		app.trigger("home:login")
+  onHomeLogin: (e) ->
+    app.trigger "home:login"
 
-	onHomeSignup: (e) ->
-		app.trigger("home:signup")
+  onHomeSignup: (e) ->
+    app.trigger "home:signup"
 
-	onHomeLogout: (e) ->
-		app.trigger("home:logout")
+  onHomeLogout: (e) ->
+    app.trigger "home:logout"
 
-	spin: (set_on) ->
-		if (set_on)
-			$("span.js-spinner", @$el).html("<i class='fa fa-spinner fa-spin'></i>")
-		else
-			$("span.js-spinner", @$el).html("")
+  spin: (set_on) ->
+    if set_on
+      $("span.js-spinner", @$el).html("<i class='fa fa-spinner fa-spin'></i>")
+    else
+      $("span.js-spinner", @$el).html("")
 }
 
-
+export { HeaderView }
