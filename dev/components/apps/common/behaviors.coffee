@@ -79,6 +79,7 @@ SubmitClicked = Behavior.extend {
   options: {
     messagesDiv: false # si on précise une cible, les messages sont concentrés là, sinon ils sont associés à l'input de name correspondant à l'erreur
   }
+  messagesDivId: "messages"
   events: {
     'click @ui.submit': 'submitClicked'
   }
@@ -91,33 +92,19 @@ SubmitClicked = Behavior.extend {
 
   onFormDataInvalid: (errors) ->
     $view = @view.$el
-    clearFormErrors = () ->
-      $form = $view.find("form")
-      $form.find("div.alert").each( ()->
-        $(this).remove()
-      )
-      $form.find(".help-inline.text-danger").each( ()->
-        $(this).remove()
-      )
-      $form.find(".form-group.has-error").each( ()->
-        $(this).removeClass("has-error")
-      )
-
-    messagesDiv = @getOption("messagesDiv") or "messages"
+    messagesDivId = @getOption "messagesDivId"
     if $.isArray(errors)
-      $container = $view.find("##{messagesDiv}")
+      $messagesContainer = $("##{messagesDivId}",$view)
       unless $container
-        $container = $view.append "<div id='messagesDiv'></div>"
+        $container = $view.append "<div id='#{messagesDivId}'></div>"
       markErrors = (value)->
         $errorEl
         if value.success
           $errorEl = $("<div>", { class: "alert alert-success", role:"alert", text: value.message })
         else
           $errorEl = $("<div>", { class: "alert alert-danger", role:"alert", text: value.message })
-        $container.append($errorEl)
+        $container.append $errorEl
     else
-      $(".is-invalid",$view).each -> $(@).removeClass("is-invalid")
-      $(".is-valid",$view).each -> $(@).removeClass("is-valid")
       markErrors = (value, key) ->
         $inp = $view.find("input[name='#{key}']")
         if $.isArray(value)
@@ -125,38 +112,17 @@ SubmitClicked = Behavior.extend {
           html = _.reduce(value, reduceFct, "")
         else
           html = value
-        $next = $inp.next()
-        unless $next
-          $next = $inp.after("<div class='invalid-feedback'></div>")
-          $next.html html
+        $feedback = $inp.siblings('.invalid-feedback').first()
+        if $feedback.length is 0
+          $parent = $inp.closest('.form-group')
+          $feedback = $("<div class='invalid-feedback d-block'></div>").appendTo($parent)
+        $feedback.html html
         $inp.addClass("is-invalid")
-
-
-        '''
-        $controlGroup = $("input[name='#{key}']",$view).closest(".form-group")
-        $controlGroup.addClass("has-error")
-        if $.isArray(value)
-          value.forEach( (el)->
-            $errorEl = $("<span>", { class: "help-inline text-danger", text: el })
-            $controlGroup.append($errorEl)
-          )
-        else
-          $errorEl = $("<span>", { class: "help-inline text-danger", text: value })
-          $controlGroup.append($errorEl)
-        '''
-
-    clearFormErrors()
+    # nettoyage d'erreurs précédentes
+    $(".is-invalid",$view).each -> $(@).removeClass("is-invalid")
+    #$(".is-valid",$view).each -> $(@).removeClass("is-valid")
+    $view.find("div.alert").each -> $(@).remove()
     _.each(errors, markErrors)
-    '''
-    onFormDataInvalid: (error)->
-    # Il faut effacer le invalid de chaque clé
-    $el = $(@el)
-    $("[id|='subitem-']").each (index)->
-      $(@).removeClass("is-invalid")
-    _.mapObject error, (val, key)->
-      $el.find("#subitem-#{key}").each (index)->
-        $(@).addClass("is-invalid")
-    '''
 }
 
 FlashItem = Behavior.extend {
@@ -277,39 +243,4 @@ EditItem = Behavior.extend {
       @view.trigger "form:data:invalid",model.validationError
 }
 
-NewItem = Behavior.extend {
-  onFormSubmit: (data)->
-    newItem = @view.model
-    savingItem = newItem.save(data)
-    if savingItem
-      app = require('app').app
-      app.trigger "header:loading", true
-      view = @view
-      $.when(savingItem).done( ->
-        view.getOption("collection")?.add newItem
-        view.trigger "dialog:close"
-        view.getOption("listView")?.children.findByModel(newItem)?.trigger("flash:success")
-        view.trigger "model:save:success", view.model
-      ).fail( (response)->
-        switch response.status
-          when 422
-            view.trigger "form:data:invalid", response.responseJSON.errors
-          when 401
-            alert("Vous devez vous (re)connecter !")
-            view.trigger("dialog:close")
-            app.trigger("home:logout")
-          else
-            if errorCode = view.getOption("errorCode")
-              errorCode = "/#{errorCode}"
-            else
-              errorCode = ""
-            alert("Erreur inconnue. Essayez à nouveau ou prévenez l'administrateur [code #{response.status}#{errorCode}]")
-        view.trigger "model:save:fail", response
-      ).always(()->
-        app.trigger("header:loading", false)
-      )
-    else
-      @view.trigger "form:data:invalid",newItem.validationError
-}
-
-export { SortList, FilterList, DestroyWarn, SubmitClicked, FlashItem, ToggleItemValue, FilterPanel, EditItem, NewItem }
+export { SortList, FilterList, DestroyWarn, SubmitClicked, FlashItem, ToggleItemValue, FilterPanel, EditItem }
