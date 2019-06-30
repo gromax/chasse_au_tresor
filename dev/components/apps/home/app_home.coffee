@@ -84,6 +84,3 @@ app.on "home:logout", ->
 app.on "edit:me", ->
   app.navigate("edit-me")
   router.showEditMe()
-
-app.on "not:found", ->
-  router.notFound()
