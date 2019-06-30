@@ -3,6 +3,7 @@ import Syphon from 'backbone.syphon'
 
 Manager = Marionette.Application.extend {
 	region: '#app'
+	ajaxCount: 0
 	getCurrentRoute: () -> Backbone.history.fragment
 	navigate: (route, options) ->
 		options or (options = {})
