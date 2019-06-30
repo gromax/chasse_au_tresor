@@ -1,5 +1,5 @@
 import { MnObject } from 'backbone.marionette'
-import { MissingView, AlertView, ListLayout } from 'apps/common/common_views.coffee'
+import { ListLayout } from 'apps/common/common_views.coffee'
 import { SubIEListPanel, SubIECollectionView } from 'apps/evenements/edit/sub_ie_list_views.coffee'
 import { FilesView } from 'apps/common/files_loader.coffee'
 import { app } from 'app'
@@ -7,7 +7,7 @@ import { app } from 'app'
 Controller = MnObject.extend {
   channelName: "entities"
   show: (id) ->
-    app.trigger "header:loading", true
+    app.trigger "loading:up"
     require "entities/dataManager.coffee"
     channel = @getChannel()
 
@@ -58,17 +58,17 @@ Controller = MnObject.extend {
           subItemsCollection.add({type, index }, { parse:true })
           item.set("subItemsData", JSON.stringify(subItemsCollection.toJSON()))
           updatingItem = item.save()
-          app.trigger("header:loading", true)
-          $.when(updatingItem).done( ()->
+          app.trigger "loading:up"
+          $.when(updatingItem).done( ->
             newSubItem = subItemsCollection.models[index]
             newSubItemView = subItemsView.children.findByModel(newSubItem)
             newSubItemView.flash()
           ).fail( (response)->
             newSubItem = subItemsCollection.models[index]
             subItemsCollection.remove(newSubItem)
-            alert("Erreur inconnue.")
-          ).always( ()->
-            app.trigger("header:loading", false)
+            alert "Erreur inconnue."
+          ).always( ->
+            app.trigger "loading:down"
           )
 
         panel.on "files:show", (v)->
@@ -85,7 +85,7 @@ Controller = MnObject.extend {
             nItem = new Item()
             nItem.set("idEvenement", idEvenement)
             uploadingItem = nItem.saveImg(formData)
-            app.trigger("header:loading", true)
+            app.trigger "loading:up"
             $.when(uploadingItem).done( (response)->
               images.add(nItem)
               fileView.showLast()
@@ -96,27 +96,25 @@ Controller = MnObject.extend {
                   fileView.trigger("dialog:close")
                   app.trigger("home:logout")
                 else
-                  alert("Erreur inconnue. Essayez à nouveau ou prévenez l'administrateur [code #{response.status}/031]")
-            ).always( ()->
-              app.trigger("header:loading", false)
+                  alert "Erreur inconnue. Essayez à nouveau ou prévenez l'administrateur"
+            ).always( ->
+              app.trigger "loading:down"
             )
 
           fileView.on "item:delete", (model)->
             if model and confirm("Supprimer l'élément actif ?")
               destroyRequest = model.destroy()
-              app.trigger("header:loading", true)
-              $.when(destroyRequest).done( ()->
+              app.trigger "loading:up"
+              $.when(destroyRequest).done( ->
                 fileView.refreshList()
                 fileView.render()
               ).fail( (response)->
                 alert("Erreur. Essayez à nouveau !")
-              ).always( ()->
-                app.trigger("header:loading", false)
+              ).always( ->
+                app.trigger "loading:down"
               )
 
           app.regions.getRegion('dialog').show(fileView)
-
-
 
         layout.on "render", ()->
           layout.getRegion('panelRegion').show(panel)
@@ -124,17 +122,11 @@ Controller = MnObject.extend {
 
         app.regions.getRegion('main').show(layout)
       else
-        view = new MissingView()
-        app.regions.getRegion('main').show(view)
+        app.trigger "not:found"
     ).fail( (response) ->
-      if response.status is 401
-        alert("Vous devez vous (re)connecter !")
-        app.trigger("home:logout")
-      else
-        alertView = new AlertView()
-        app.regions.getRegion('main').show(alertView)
+      app.trigger "data:fetch:fail", response
     ).always( () ->
-      app.trigger("header:loading", false)
+      app.trigger "loading:down"
     )
 }
 

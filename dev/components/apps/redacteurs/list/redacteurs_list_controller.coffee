@@ -1,5 +1,5 @@
 import { MnObject } from 'backbone.marionette'
-import { AlertView, ListPanel, ListLayout } from 'apps/common/common_views.coffee'
+import { ListPanel, ListLayout } from 'apps/common/common_views.coffee'
 import { RedacteursCollectionView } from 'apps/redacteurs/list/redacteurs_list_views.coffee'
 import { EditUserView, NewUserView } from 'apps/common/edit_user_views.coffee'
 import { app } from 'app'
@@ -8,19 +8,18 @@ Controller = MnObject.extend {
   channelName: 'entities'
   list: (criterion)->
     criterion = criterion ? ""
-    app.trigger "header:loading", true
-    listLayout = new ListLayout()
-    listPanel = new ListPanel {
-      title: "Rédacteurs"
-      filterCriterion:criterion
-      showAddButton:true
-    }
-
+    app.trigger "loading:up"
     channel = @getChannel()
-
     require "entities/dataManager.coffee"
     fetching = channel.request("custom:entities", ["redacteurs"])
     $.when(fetching).done( (items)->
+      listLayout = new ListLayout()
+      listPanel = new ListPanel {
+        title: "Rédacteurs"
+        filterCriterion:criterion
+        showAddButton:true
+      }
+
       listView = new RedacteursCollectionView {
         collection: items
       }
@@ -69,14 +68,9 @@ Controller = MnObject.extend {
         app.regions.getRegion('dialog').show(view)
       app.regions.getRegion('main').show(listLayout)
     ).fail( (response)->
-      if response.status is 401
-        alert("Vous devez vous (re)connecter !")
-        app.trigger("home:logout")
-      else
-        alertView = new AlertView()
-        app.regions.getRegion('main').show(alertView)
-    ).always( ()->
-      app.trigger("header:loading", false)
+      app.trigger "data:fetch:fail", response
+    ).always( ->
+      app.trigger "loading:down"
     )
 }
 

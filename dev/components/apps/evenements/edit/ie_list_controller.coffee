@@ -1,17 +1,17 @@
 import { MnObject } from 'backbone.marionette'
-import { MissingView, AlertView, ListLayout } from 'apps/common/common_views.coffee'
+import { ListLayout } from 'apps/common/common_views.coffee'
 import { IEListPanel, IECollectionView, EditIEDescriptionView } from 'apps/evenements/edit/ie_list_views.coffee'
 import { app } from 'app'
 
 Controller = MnObject.extend {
   channelName: "entities"
   show: (id) ->
-    app.trigger "header:loading", true
+    app.trigger "loading:up"
 
     require "entities/dataManager.coffee"
     channel = @getChannel()
 
-    fetchingData = channel.request("custom:entities", ["evenements", "itemsEvenement"])
+    fetchingData = channel.request "custom:entities", ["evenements", "itemsEvenement"]
     $.when(fetchingData).done( (evenements, itemsEvenement)->
       evenement = evenements.get(id)
       if evenement isnt  undefined
@@ -54,17 +54,11 @@ Controller = MnObject.extend {
           layout.getRegion('itemsRegion').show(liste)
         app.regions.getRegion('main').show(layout)
       else
-        view = new MissingView()
-        app.regions.getRegion('main').show(view)
+        app.trigger "not:found"
     ).fail( (response) ->
-      if response.status is 401
-        alert("Vous devez vous (re)connecter !")
-        app.trigger("home:logout")
-      else
-        alertView = new AlertView()
-        app.regions.getRegion('main').show(alertView)
+      app.trigger "data:fetch:fail", response
     ).always( ->
-      app.trigger "header:loading", false
+      app.trigger "loading:down"
     )
 }
 

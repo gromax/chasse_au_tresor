@@ -8,16 +8,17 @@ Controller = MnObject.extend {
   channelName: 'entities'
   listRedacteur: (criterion)->
     criterion = criterion ? ""
-    app.trigger "header:loading", true
-    listLayout = new ListLayout()
-    listPanel = new ListPanel {
-      title: "Parties"
-      filterCriterion: criterion
-    }
+    app.trigger "loading:up"
+
     channel = @getChannel()
     require "entities/dataManager.coffee"
     fetching = channel.request("custom:entities", ["parties"])
     $.when(fetching).done( (items)->
+      listLayout = new ListLayout()
+      listPanel = new ListPanel {
+        title: "Parties"
+        filterCriterion: criterion
+      }
       listView = new PartiesList_RedacteurView {
         collection: items
       }
@@ -39,23 +40,18 @@ Controller = MnObject.extend {
 
       app.regions.getRegion('main').show(listLayout)
     ).fail( (response)->
-      if response.status is 401
-        alert("Vous devez vous (re)connecter !")
-        app.trigger("home:logout")
-      else
-        alertView = new AlertView()
-        app.regions.getRegion('main').show(alertView)
+      app.trigger "data:fetch:fail", response
     ).always( ->
-      app.trigger "header:loading", false
+      app.trigger "loading:down"
     )
 
   listEssais: (idPartie) ->
-    app.trigger "header:loading", true
-    listLayout = new ListLayout()
+    app.trigger "loading:up"
     channel = @getChannel()
     require "entities/dataManager.coffee"
     fetching = channel.request("custom:essais", idPartie)
     $.when(fetching).done( (partie, evenement, essais, nomJoueur)->
+      listLayout = new ListLayout()
       listPanel = new ListEssaisPanel {
         partie
         evenement
@@ -75,34 +71,26 @@ Controller = MnObject.extend {
 
       app.regions.getRegion('main').show(listLayout)
     ).fail( (response)->
-      switch response.status
-        when 401
-          alert("Vous devez vous (re)connecter !")
-          app.trigger("home:logout")
-        when 404
-          view = new MissingView()
-          app.regions.getRegion('main').show(view)
-        else
-          alertView = new AlertView()
-          app.regions.getRegion('main').show(alertView)
+      app.trigger "data:fetch:fail", response
     ).always( ->
-      app.trigger "header:loading", false
+      app.trigger "loading:down"
     )
 
 
   listJoueur: (criterion)->
     criterion = criterion ? ""
-    app.trigger "header:loading", true
-    listLayout = new ListLayout()
-    listPanel = new ListPanel {
-      title: "Mes parties"
-      filterCriterion:criterion
-    }
+    app.trigger "loading:up"
     channel = @getChannel()
     require "entities/dataManager.coffee"
 
     fetching = channel.request("custom:entities", ["parties"])
     $.when(fetching).done( (items)->
+      listLayout = new ListLayout()
+      listPanel = new ListPanel {
+        title: "Mes parties"
+        filterCriterion:criterion
+      }
+
       listView = new PartiesList_JoueurView {
         collection: items
       }
@@ -123,14 +111,9 @@ Controller = MnObject.extend {
 
       app.regions.getRegion('main').show(listLayout)
     ).fail( (response)->
-      if response.status is 401
-        alert("Vous devez vous (re)connecter !")
-        app.trigger("home:logout")
-      else
-        alertView = new AlertView()
-        app.regions.getRegion('main').show(alertView)
+      app.trigger "data:fetch:fail", response
     ).always( ->
-      app.trigger "header:loading", false
+      app.trigger "loading:down"
     )
 }
 

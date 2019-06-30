@@ -1,5 +1,5 @@
 import { MnObject } from 'backbone.marionette'
-import { AlertView, ListPanel, ListLayout } from 'apps/common/common_views.coffee'
+import { ListPanel, ListLayout } from 'apps/common/common_views.coffee'
 import { JoueursCollectionView } from 'apps/joueurs/list/joueurs_list_views.coffee'
 import { EditUserView } from 'apps/common/edit_user_views.coffee'
 import { app } from 'app'
@@ -8,21 +8,18 @@ Controller = MnObject.extend {
   channelName: 'entities'
   list: (criterion)->
     criterion = criterion ? ""
-    app.trigger "header:loading", true
-    listLayout = new ListLayout()
-    listPanel = new ListPanel {
-      title: "Joueurs"
-      filterCriterion:criterion
-      showAddButton:false
-    }
-
+    app.trigger "loading:up"
     channel = @getChannel()
-
     require "entities/dataManager.coffee"
-    Item = require("entities/joueurs.coffee").Item
-
     fetching = channel.request("custom:entities", ["joueurs"])
     $.when(fetching).done( (items)->
+      listLayout = new ListLayout()
+      listPanel = new ListPanel {
+        title: "Joueurs"
+        filterCriterion:criterion
+        showAddButton:false
+      }
+
       listView = new JoueursCollectionView {
         collection: items
       }
@@ -31,7 +28,7 @@ Controller = MnObject.extend {
         listView.triggerMethod("set:filter:criterion", filterCriterion, { preventRender:false })
         app.trigger("joueurs:filter", filterCriterion)
 
-      listLayout.on "render", ()->
+      listLayout.on "render", ->
         listLayout.getRegion('panelRegion').show(listPanel)
         listLayout.getRegion('itemsRegion').show(listView)
 
@@ -56,18 +53,11 @@ Controller = MnObject.extend {
           title: "Nouveau mot de passe pour ##{model.get('id')} : #{model.get('nom')}"
         }
         app.regions.getRegion('dialog').show(view)
-
-
       app.regions.getRegion('main').show(listLayout)
     ).fail( (response)->
-      if response.status is 401
-        alert("Vous devez vous (re)connecter !")
-        app.trigger("home:logout")
-      else
-        alertView = new AlertView()
-        app.regions.getRegion('main').show(alertView)
-    ).always( ()->
-      app.trigger("header:loading", false)
+      app.trigger "data:fetch:fail", response
+    ).always( ->
+      app.trigger "loading:down"
     )
 }
 
