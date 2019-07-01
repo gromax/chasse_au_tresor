@@ -1,1 +1,1 @@
-<% if (gps){ %><i class="fa fa-map-marker"></i>&nbsp;<% } else { if (essai=="Accueil"){ %><i class="fa fa-home"></i>&nbsp;<% }}%><% if (tagCle=="") {%><%- essai %><%} else {%><%- tagCle %><% } %>
+<% if (tagCle=="") {%><%- essai %><%} else {%><%- tagCle %><% } %> &nbsp; <% if(pts!=0){if(pts>0){%><span class="badge badge-success">+<%-pts%></span><%} else {%><span class="badge badge-danger"><%-pts%></span><%}}%><% if (gps){ %><i class="fa fa-map-marker"></i><% } else { if (essai=="Accueil"){ %><i class="fa fa-home"></i><% }}%>
