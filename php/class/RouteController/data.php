@@ -85,10 +85,20 @@ class data
         $itemEvenement = null;
 
         // on doit chercher un itEvent avec cette clé
-        $itemEvenement = ItemEvenement::tryCle($evenement->getId(), $cle);
+        $regexGPS = "/^gps=[0-9]+\.[0-9]+,[0-9]+\.[0-9]+(,[0-9]+)?$/";
+        if (preg_match($regexGPS,$cle)==1)
+        {
+            $essaiGPS = true;
+            $itemEvenement = ItemEvenement::tryCleGPS($evenement->getId(), $cle);
+        }
+        else
+        {
+            $essaiGPS = false;
+            $itemEvenement = ItemEvenement::tryCle($evenement->getId(), $cle);
+        }
+        $dataNewEssai = null;
         if ($itemEvenement!==null)
         {
-            // on inserre la clé correspondante dans la liste des essaiJoueur
             if ($cle===null)
             {
                 $essai = "Accueil";
@@ -103,6 +113,19 @@ class data
                 "date"=> date("Y-m-d H:i:s"),
                 "idItem"=>$itemEvenement->getId()
                 );
+        }
+        elseif (($cle!==null)&&(!$essaiGPS)&&($evenement->getValues()['sauveEchecs']))
+        {
+            $dataNewEssai = array(
+                "idPartie"=>$partie->getId(),
+                "essai"=>$cle,
+                "date"=> date("Y-m-d H:i:s"),
+                "idItem"=>-1
+                );
+        }
+
+        if ($dataNewEssai!==null)
+        {
             $essaiJoueur = new EssaiJoueur();
             $validation = $essaiJoueur->insert_validation($dataNewEssai);
             if ($validation===true)
