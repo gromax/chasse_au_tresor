@@ -12,33 +12,34 @@ import list_evenements_joueur_none_tpl from 'templates/evenements/list/list-even
 #-------------------------
 
 NoEvenementView_Redacteur = View.extend {
-	template: list_evenements_redacteur_none_tpl
-	tagName: "tr"
-	className: "table-danger"
+  template: list_evenements_redacteur_none_tpl
+  tagName: "tr"
+  className: "table-danger"
 }
 
 EvenementItemView_Redacteur = View.extend {
-	tagName: "tr"
-	template: list_evenements_redacteur_item_tpl
-	behaviors: [DestroyWarn, FlashItem, ToggleItemValue]
-	triggers: {
-		"click a.js-edit": "edit"
-		"click button.js-actif": "activation:toggle"
-		"click button.js-visible": "visible:toggle"
-		"click": "show"
-	}
+  tagName: "tr"
+  template: list_evenements_redacteur_item_tpl
+  behaviors: [DestroyWarn, FlashItem, ToggleItemValue]
+  triggers: {
+    "click a.js-edit": "edit"
+    "click button.js-actif": "activation:toggle"
+    "click button.js-visible": "visible:toggle"
+    "click button.js-sauveEchecs": "sauveEchecs:toggle"
+    "click": "show"
+  }
 
 }
 EvenementsCollectionView_Redacteur = CollectionView.extend {
-	tagName: "table"
-	className:"table table-hover"
-	template: list_evenements_redacteur_tpl
-	childViewContainer: "tbody"
-	childView:EvenementItemView_Redacteur
-	childViewEventPrefix: 'item'
-	emptyView:NoEvenementView_Redacteur
-	behaviors: [ SortList, FilterList ]
-	filterKeys: ["titre", "description"]
+  tagName: "table"
+  className:"table table-hover"
+  template: list_evenements_redacteur_tpl
+  childViewContainer: "tbody"
+  childView:EvenementItemView_Redacteur
+  childViewEventPrefix: 'item'
+  emptyView:NoEvenementView_Redacteur
+  behaviors: [ SortList, FilterList ]
+  filterKeys: ["titre", "description"]
 }
 
 EditEvenementView = View.extend {
@@ -58,35 +59,34 @@ EditEvenementView = View.extend {
 # vues pour un Joueur -
 #-------------------------
 
-
 NoEvenementView_Joueur = View.extend {
-	template:  list_evenements_joueur_none_tpl
-	tagName: "a"
-	className:"list-group-item list-group-item-action disabled"
+  template: list_evenements_joueur_none_tpl
+  tagName: "a"
+  className:"list-group-item list-group-item-action disabled"
 }
 
 EvenementItemView_Joueur = View.extend {
-	tagName: "a"
-	attributes: { href: '#' }
-	className: ->
-		if @model.get("actif")
-			"list-group-item list-group-item-action"
-		else
-			"list-group-item list-group-item-action disabled"
-	template: list_evenements_joueur_item_tpl
-	triggers: {
-		"click": "select"
-	}
+  tagName: "a"
+  attributes: { href: '#' }
+  className: ->
+    if @model.get("actif")
+      "list-group-item list-group-item-action"
+    else
+      "list-group-item list-group-item-action disabled"
+  template: list_evenements_joueur_item_tpl
+  triggers: {
+    "click": "select"
+  }
 }
 
 EvenementsCollectionView_Joueur = CollectionView.extend {
-	tagName: "div"
-	className:"list-group"
-	childView:EvenementItemView_Joueur
-	childViewEventPrefix: 'item'
-	emptyView:NoEvenementView_Joueur
-	behaviors: [FilterList]
-	filterKeys: ["titre", "description"]
+  tagName: "div"
+  className:"list-group"
+  childView:EvenementItemView_Joueur
+  childViewEventPrefix: 'item'
+  emptyView:NoEvenementView_Joueur
+  behaviors: [FilterList]
+  filterKeys: ["titre", "description"]
 }
 
 export { EvenementsCollectionView_Redacteur, EvenementsCollectionView_Joueur, EditEvenementView }
