@@ -67,6 +67,55 @@ final class ItemEvenement extends Item
     }
   }
 
+
+  public static function tryCleGPS($idEvenement, $cleEssai)
+  {
+    // On teste si la proposition est de type gps
+    // attention la lattitude est donnée en premier
+    $ecartMax2 = (GPS_LIMIT/1852)*(GPS_LIMIT/1852);
+    // Il faut récupérer les coordonnées
+    $arr1 = explode("=",$cleEssai);
+    $arrCoordsEssaiStr = explode(",",$arr1[1]);
+    $arrCoordsEssai = array("y"=>0+$arrCoordsEssaiStr[0] , "x"=> 0+$arrCoordsEssaiStr[1]);
+    $distMin2 = 360000; // correspond à 10°²
+    $idFound = null;
+    require_once BDD_CONFIG;
+    try
+    {
+      $list = DB::query("SELECT id, regexCle FROM ".PREFIX_BDD."itemsEvenement WHERE idEvenement=%i",$idEvenement);
+      foreach ($list as $value) {
+        if (preg_match($regexGPS,$value['regexCle'])==1)
+        {
+          // l'item est une localisation gps
+          // on va pouvoir faire une comparaison
+          $arr1 = explode("=",$value['regexCle']);
+          $arrCoordsItemStr = explode(",",$arr1[1]);
+          $arrCoordsItem = array("y"=>0+trim($arrCoordsItemStr[0]) , "x"=> 0+trim($arrCoordsItemStr[1]));
+          $ym = ($arrCoordsEssai["y"]+$arrCoordsItem["y"])/2;
+          $dx = 60*($arrCoordsEssai["x"]-$arrCoordsItem["x"])*cos($ym*0.01745329251994329577);
+          $dy = 60*($arrCoordsEssai["y"]-$arrCoordsItem["y"]);
+          $dist2 = ($dx*$dx + $dy*$dy); // en minutes²
+          if (($dist2<=$ecartMax2)&&($dist2<$distMin2)) // (GPS_LIMIT / 1852m)²
+          {
+            // à moins de GPS_LIMIT
+            // correspondance plus proche trouvée
+            $distMin2 = $dist2;
+            $idFound = $value['id'];
+          }
+        }
+      }
+      if ($idFound!==null)
+      {
+        return self::getObject($idFound);
+      }
+    }
+    catch(MeekroDBException $e)
+    {
+      EC::addBDDError($e->getMessage(), "ItemEvenement/tryCle");
+    }
+    return null;
+  }
+
   public static function tryCle($idEvenement, $cleEssai)
   {
     if (($cleEssai===null)||($cleEssai==""))
@@ -78,59 +127,19 @@ final class ItemEvenement extends Item
     try
     {
       $list = DB::query("SELECT id, regexCle FROM ".PREFIX_BDD."itemsEvenement WHERE idEvenement=%i",$idEvenement);
-      // On teste si la proposition est de type gps
-      // attention la lattitude est donnée en premier
-      $regexGPS = "/^gps=[0-9]+\.[0-9]+,[0-9]+\.[0-9]+(,[0-9]+)?$/";
-      if (preg_match($regexGPS,$cleEssai)==1)
-      {
-        $ecartMax2 = (GPS_LIMIT/1852)*(GPS_LIMIT/1852);
-        // Il faut récupérer les coordonnées
-        $arr1 = explode("=",$cleEssai);
-        $arrCoordsEssaiStr = explode(",",$arr1[1]);
-        $arrCoordsEssai = array("y"=>0+$arrCoordsEssaiStr[0] , "x"=> 0+$arrCoordsEssaiStr[1]);
-        $distMin2 = 360000; // correspond à 10°²
-        $idFound = null;
-        foreach ($list as $value) {
-          if (preg_match($regexGPS,$value['regexCle'])==1)
-          {
-            // l'item est une localisation gps
-            // on va pouvoir faire une comparaison
-            $arr1 = explode("=",$value['regexCle']);
-            $arrCoordsItemStr = explode(",",$arr1[1]);
-            $arrCoordsItem = array("y"=>0+trim($arrCoordsItemStr[0]) , "x"=> 0+trim($arrCoordsItemStr[1]));
-            $ym = ($arrCoordsEssai["y"]+$arrCoordsItem["y"])/2;
-            $dx = 60*($arrCoordsEssai["x"]-$arrCoordsItem["x"])*cos($ym*0.01745329251994329577);
-            $dy = 60*($arrCoordsEssai["y"]-$arrCoordsItem["y"]);
-            $dist2 = ($dx*$dx + $dy*$dy); // en minutes²
-            if (($dist2<=$ecartMax2)&&($dist2<$distMin2)) // (GPS_LIMIT / 1852m)²
-            {
-              // à moins de GPS_LIMIT
-              // correspondance plus proche trouvée
-              $distMin2 = $dist2;
-              $idFound = $value['id'];
-            }
-          }
-        }
-        if ($idFound!==null)
+      foreach ($list as $value) {
+        $regexCleItem = "/".$value['regexCle']."/i";
+
+        // Il faut vérifier si $value['cle'] match $cle
+        // debug: echo "$re ? ".$value['cle']." -> ".preg_match($re,$value['cle'])."<br>";
+
+        if (preg_match($regexCleItem,$cleEssai)==1)
         {
-          return self::getObject($idFound);
+          // correspondance trouvée
+          return self::getObject($value['id']);
         }
       }
-      else
-      {
-        foreach ($list as $value) {
-          $regexCleItem = "/".$value['regexCle']."/i";
 
-          // Il faut vérifier si $value['cle'] match $cle
-          // debug: echo "$re ? ".$value['cle']." -> ".preg_match($re,$value['cle'])."<br>";
-
-          if (preg_match($regexCleItem,$cleEssai)==1)
-          {
-            // correspondance trouvée
-            return self::getObject($value['id']);
-          }
-        }
-      }
     }
     catch(MeekroDBException $e)
     {
