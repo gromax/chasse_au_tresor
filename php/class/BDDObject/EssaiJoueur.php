@@ -9,9 +9,9 @@ use MeekroDBException;
 
 final class EssaiJoueur extends Item
 {
-	protected static $BDDName = "essaisJoueur";
+  protected static $BDDName = "essaisJoueur";
 
-	##################################### METHODES STATIQUES #####################################
+  ##################################### METHODES STATIQUES #####################################
 
   protected static function champs()
   {
@@ -49,18 +49,18 @@ final class EssaiJoueur extends Item
     return false;
   }
 
-	public static function getList($options = array())
+  public static function getList($options = array())
   {
     require_once BDD_CONFIG;
     try {
       if (isset($options['joueur']))
         return DB::query("SELECT c.id, c.idItem, c.essai, c.date FROM (".PREFIX_BDD."essaisJoueur c JOIN ".PREFIX_BDD."parties p ON p.id = c.idPartie) WHERE p.idProprietaire=%i", $options['joueur']);
       elseif (isset($options['redacteur']))
-        return DB::query("SELECT c.id, c.idItem, c.essai, c.date, ie.pts FROM (((".PREFIX_BDD."essaisJoueur c JOIN ".PREFIX_BDD."parties p ON p.id = c.idPartie) JOIN ".PREFIX_BDD."evenements e ON e.id = p.idEvenement) JOIN ".PREFIX_BDD."itemsEvenement ie ON ie.id=c.idItem) WHERE e.idProprietaire=%i", $options['redacteur']);
+        return DB::query("SELECT c.id, c.idItem, c.essai, c.date, COALESCE(ie.pts,e.ptsEchecs) AS pts FROM (((".PREFIX_BDD."essaisJoueur c JOIN ".PREFIX_BDD."parties p ON p.id = c.idPartie) JOIN ".PREFIX_BDD."evenements e ON e.id = p.idEvenement) LEFT JOIN ".PREFIX_BDD."itemsEvenement ie ON ie.id=c.idItem) WHERE e.idProprietaire=%i", $options['redacteur']);
       elseif (isset($options['evenement']))
         return DB::query("SELECT c.id, c.idItem, c.essai, c.date FROM (".PREFIX_BDD."essaisJoueur c JOIN ".PREFIX_BDD."parties p ON p.id = c.idPartie) WHERE p.idEvenement=%i", $options['evenement']);
       elseif (isset($options['partie']))
-        return DB::query("SELECT c.id, c.idItem, c.essai, date, i.tagCle, i.pts FROM (".PREFIX_BDD."essaisJoueur c LEFT JOIN ".PREFIX_BDD."itemsEvenement i ON i.id=c.idItem ) WHERE idPartie=%i", $options['partie']);
+        return DB::query("SELECT c.id, c.idPartie, c.idItem, c.essai, date, COALESCE(i.tagCle, '') AS tagCle , COALESCE(i.pts,e.ptsEchecs) AS pts FROM (((".PREFIX_BDD."essaisJoueur c JOIN ".PREFIX_BDD."parties p ON c.idPartie = p.id) JOIN ".PREFIX_BDD."evenements e ON p.idEvenement = e.id) LEFT JOIN ".PREFIX_BDD."itemsEvenement i ON i.id=c.idItem ) WHERE c.idPartie=%i", $options['partie']);
       elseif (isset($options['root']))
         return DB::query("SELECT id, essai, date FROM ".PREFIX_BDD."essaisJoueur");
       else
@@ -72,7 +72,7 @@ final class EssaiJoueur extends Item
     }
   }
 
-	##################################### METHODES #####################################
+  ##################################### METHODES #####################################
 
   public function insert_validation($data=array())
   {
@@ -85,20 +85,39 @@ final class EssaiJoueur extends Item
     {
       $errors['item'] = "Il faut préciser l'id d'un item";
     }
-    // il faut vérifier l'inexistance d'un couple de valeurs
-    require_once BDD_CONFIG;
-    try {
-      $bdd_result = DB::queryFirstRow("SELECT id FROM ".PREFIX_BDD."essaisJoueur WHERE idPartie=%i AND idItem=%i", $data['idPartie'], $data['idItem']);
-    }
-    catch(MeekroDBException $e)
+    if ($data['idItem']!=-1)
     {
-      if (DEV) return array('error'=>true, 'message'=>"#EssaiJoueur/insert_validation : ".$e->getMessage());
-      return array('error'=>true, 'message'=>'Erreur BDD');
-    }
+      // il faut vérifier l'inexistance d'un couple de valeurs idPartie / idItem
+      require_once BDD_CONFIG;
+      try {
+        $bdd_result = DB::queryFirstRow("SELECT id FROM ".PREFIX_BDD."essaisJoueur WHERE idPartie=%i AND idItem=%i", $data['idPartie'], $data['idItem']);
+      }
+      catch(MeekroDBException $e)
+      {
+        if (DEV) return array('error'=>true, 'message'=>"#EssaiJoueur/insert_validation : ".$e->getMessage());
+        return array('error'=>true, 'message'=>'Erreur BDD');
+      }
 
-    if ($bdd_result !== null)
-    {
-      $errors['partie'] = "Cette partie a déjà une partie clé liée à cet item";
+      if ($bdd_result !== null)
+      {
+        $errors['partie'] = "Cette partie a déjà une partie clé liée à cet item";
+      }
+    } else {
+      // il faut vérifier l'inexistance d'un couple de valeurs idPartie / essai
+      require_once BDD_CONFIG;
+      try {
+        $bdd_result = DB::queryFirstRow("SELECT id FROM ".PREFIX_BDD."essaisJoueur WHERE idPartie=%i AND essai=%s", $data['idPartie'], $data['essai']);
+      }
+      catch(MeekroDBException $e)
+      {
+        if (DEV) return array('error'=>true, 'message'=>"#EssaiJoueur/insert_validation : ".$e->getMessage());
+        return array('error'=>true, 'message'=>'Erreur BDD');
+      }
+
+      if ($bdd_result !== null)
+      {
+        $errors['partie'] = "Cette partie a déjà une partie clé liée à cet item";
+      }
     }
 
     if (count($errors)>0)
