@@ -38,9 +38,9 @@ CleItemView = View.extend {
     style:"font-size:15px"
   }
   className: ->
-    if @model.get("idItem") is -1 then "list-group-item list-group-item-action list-group-item-danger"
-    else if @model.get("idItem") is @options.idSelected then "list-group-item list-group-item-action list-group-item-warning"
-    else "list-group-item list-group-item-action list-group-item-primary"
+    if @model.get("idItem") is -1 then "list-group-item list-group-item-action list-group-item-danger d-flex justify-content-between"
+    else if @model.get("idItem") is @options.idSelected then "list-group-item list-group-item-action list-group-item-warning d-flex justify-content-between"
+    else "list-group-item list-group-item-action list-group-item-primary d-flex justify-content-between"
   triggers: {
     "click":"select"
   }
