@@ -45,7 +45,7 @@ router = new Router()
 
 app.on "parties:list", (criterion)->
   if criterion
-    app.navigate "parties/list/criterion:#{criterion}"
+    app.navigate "parties/filter/criterion:#{criterion}"
     router.list(criterion)
   else
     app.navigate("parties")
