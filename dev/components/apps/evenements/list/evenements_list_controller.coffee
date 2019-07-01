@@ -58,6 +58,9 @@ Controller = MnObject.extend {
       listView.on "item:visible:toggle", (childView)->
         childView.trigger "toggle:attribute", "visible"
 
+      listView.on "item:sauveEchecs:toggle", (childView)->
+        childView.trigger "toggle:attribute", "sauveEchecs"
+
       listView.on "item:show", (childView,e) ->
         id = childView.model.get("id")
         app.trigger("evenement:show", id)
