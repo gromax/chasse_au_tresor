@@ -1,5 +1,5 @@
 import { MnObject } from 'backbone.marionette'
-import { MissingView, AlertView, ListPanel, ListLayout } from 'apps/common/common_views.coffee'
+import { ListPanel, ListLayout } from 'apps/common/common_views.coffee'
 import { PartiesList_RedacteurView, PartiesList_JoueurView } from 'apps/parties/list/parties_list_views.coffee'
 import { EssaisCollectionView, ListEssaisPanel } from 'apps/parties/list/essais_list_views.coffee'
 import { app } from 'app'
