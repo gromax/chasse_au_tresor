@@ -65,6 +65,9 @@ Controller = MnObject.extend {
       listPanel.on "navigate:parent", ->
         app.trigger "parties:list", evenement.get("titre")
 
+      listView.on "remove:child", ->
+        listPanel.render()
+
       listLayout.on "render", ()->
         listLayout.getRegion('panelRegion').show(listPanel)
         listLayout.getRegion('itemsRegion').show(listView)
