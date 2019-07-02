@@ -12,13 +12,14 @@
 	<%}%>
 
 	<% if (showPWD){ %>
+	<% if ((!showInfos)&&(username!="")){%><input type="hidden" value="<%- username %>"/><% } %>
 	<div class="form-group">
 		<label for="item-pwd" class="control-label">Mot de passe :</label>
-		<input class="form-control" id="item-pwd" name="pwd" type="password" value="" placeHolder="Mot de passe"/>
+		<input class="form-control" id="item-pwd" name="pwd" type="password" value="" placeHolder="Mot de passe" autocomplete="off" />
 	</div>
 	<div class="form-group">
 		<label for="item-pwdConfirm" class="control-label">Confirmation :</label>
-		<input class="form-control" id="item-pwdConfirm" name="pwdConfirm" type="password" value="" placeHolder="Mot de passe"/>
+		<input class="form-control" id="item-pwdConfirm" name="pwd2" type="password" value="" placeHolder="Confirmation"/>
 	</div>
 	<%}%>
 
