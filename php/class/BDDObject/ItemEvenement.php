@@ -82,26 +82,25 @@ final class ItemEvenement extends Item
     require_once BDD_CONFIG;
     try
     {
-      $list = DB::query("SELECT id, regexCle FROM ".PREFIX_BDD."itemsEvenement WHERE idEvenement=%i",$idEvenement);
+      //$list = DB::query("SELECT id, regexCle FROM ".PREFIX_BDD."itemsEvenement WHERE idEvenement=%i",$idEvenement);
+      $list = DB::query("SELECT id, regexCle FROM ".PREFIX_BDD."itemsEvenement WHERE idEvenement=%i AND regexCle REGEXP '^gps=[0-9]+\.[0-9]+,[0-9]+\.[0-9]+(,[0-9]+)?$'",$idEvenement);
+      // list des localisation gps
       foreach ($list as $value) {
-        if (preg_match($regexGPS,$value['regexCle'])==1)
+        // l'item est une localisation gps
+        // on va pouvoir faire une comparaison
+        $arr1 = explode("=",$value['regexCle']);
+        $arrCoordsItemStr = explode(",",$arr1[1]);
+        $arrCoordsItem = array("y"=>0+trim($arrCoordsItemStr[0]) , "x"=> 0+trim($arrCoordsItemStr[1]));
+        $ym = ($arrCoordsEssai["y"]+$arrCoordsItem["y"])/2;
+        $dx = 60*($arrCoordsEssai["x"]-$arrCoordsItem["x"])*cos($ym*0.01745329251994329577);
+        $dy = 60*($arrCoordsEssai["y"]-$arrCoordsItem["y"]);
+        $dist2 = ($dx*$dx + $dy*$dy); // en minutes²
+        if (($dist2<=$ecartMax2)&&($dist2<$distMin2)) // (GPS_LIMIT / 1852m)²
         {
-          // l'item est une localisation gps
-          // on va pouvoir faire une comparaison
-          $arr1 = explode("=",$value['regexCle']);
-          $arrCoordsItemStr = explode(",",$arr1[1]);
-          $arrCoordsItem = array("y"=>0+trim($arrCoordsItemStr[0]) , "x"=> 0+trim($arrCoordsItemStr[1]));
-          $ym = ($arrCoordsEssai["y"]+$arrCoordsItem["y"])/2;
-          $dx = 60*($arrCoordsEssai["x"]-$arrCoordsItem["x"])*cos($ym*0.01745329251994329577);
-          $dy = 60*($arrCoordsEssai["y"]-$arrCoordsItem["y"]);
-          $dist2 = ($dx*$dx + $dy*$dy); // en minutes²
-          if (($dist2<=$ecartMax2)&&($dist2<$distMin2)) // (GPS_LIMIT / 1852m)²
-          {
-            // à moins de GPS_LIMIT
-            // correspondance plus proche trouvée
-            $distMin2 = $dist2;
-            $idFound = $value['id'];
-          }
+          // à moins de GPS_LIMIT
+          // correspondance plus proche trouvée
+          $distMin2 = $dist2;
+          $idFound = $value['id'];
         }
       }
       if ($idFound!==null)
