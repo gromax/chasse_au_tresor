@@ -88,15 +88,16 @@ EditIEDescriptionView = View.extend {
       maximumAge: 0
     }
     self = @
+    app = require('app').app
     errorFct = (err) ->
-      app.trigger("header:loading", false)
+      app.trigger "loading:down"
       console.warn("ERREUR (#{err.code}): #{err.message}")
 
     successFct = (pos) ->
-      app.trigger("header:loading", false)
-      crd = pos.coords;
+      app.trigger "loading:down"
+      crd = pos.coords
       self.ui.regexCle.val("gps=#{crd.latitude},#{crd.longitude}")
-    app.trigger("header:loading", true)
+    app.trigger "loading:up"
     navigator.geolocation.getCurrentPosition(successFct, errorFct, options)
 
   onTestReload: ->
