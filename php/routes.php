@@ -18,7 +18,7 @@ function loadRouter()
   $router->addRule('api/redacteurs/:id', 'redacteurs', 'update', 'PUT');
   $router->addRule('api/redacteurs', 'redacteurs', 'insert', 'POST');
 
-  // redacteurs
+  // joueurs
   $router->addRule('api/joueurs/:id', 'joueurs', 'fetch', 'GET');
   $router->addRule('api/joueurs/:id', 'joueurs', 'delete', 'DELETE');
   $router->addRule('api/joueurs/:id', 'joueurs', 'update', 'PUT');
@@ -30,7 +30,7 @@ function loadRouter()
   $router->addRule('api/evenements/:id', 'evenements', 'update', 'PUT');
   $router->addRule('api/evenements', 'evenements', 'insert', 'POST');
 
-  // evenements
+  // itemEvenements
   $router->addRule('api/itemsEvenement/:id', 'itemsEvenement', 'fetch', 'GET');
   $router->addRule('api/itemsEvenement/:id', 'itemsEvenement', 'delete', 'DELETE');
   $router->addRule('api/itemsEvenement/:id', 'itemsEvenement', 'update', 'PUT');
@@ -45,7 +45,7 @@ function loadRouter()
   $router->addRule('api/parties/:id', 'parties', 'fetch', 'GET');
   $router->addRule('api/parties/:id', 'parties', 'delete', 'DELETE');
   $router->addRule('api/parties', 'parties', 'insert', 'POST');
-
+  $router->addRule('api/essaisJoueur/:id', 'essaisJoueur', 'delete', 'DELETE');
 
   // data
   $router->addRule('api/customData/:asks', 'data', 'customFetch', 'GET');
