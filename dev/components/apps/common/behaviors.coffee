@@ -58,7 +58,7 @@ DestroyWarn = Behavior.extend {
     if confirm(message)
       app = require('app').app
       destroyRequest = model.destroy()
-      app.trigger("header:loading", true)
+      app.trigger "loading:up"
       view = @view
       $.when(destroyRequest).done( ->
         view.$el.fadeOut( ->
@@ -67,8 +67,8 @@ DestroyWarn = Behavior.extend {
         )
       ).fail( (response)->
         alert("Erreur. Essayez à nouveau !")
-      ).always( ()->
-        app.trigger("header:loading", false)
+      ).always( ->
+        app.trigger "loading:down"
       )
 }
 
@@ -89,7 +89,15 @@ SubmitClicked = Behavior.extend {
     e.stopPropagation() # empêche la propagation d'un click à l'élément parent dans le dom
     data = Syphon.serialize(@)
     @view.trigger("form:submit", data)
-
+  clearForm: ->
+    $view = @view.$el
+    $(".is-invalid",$view).each -> $(@).removeClass("is-invalid")
+    #$(".is-valid",$view).each -> $(@).removeClass("is-valid")
+    $view.find("div.alert").each -> $(@).remove()
+    $view.find(".invalid-feedback.d-block").remove()
+  onFormDataValid: ->
+    # nettoyage d'erreurs précédentes
+    @clearForm()
   onFormDataInvalid: (errors) ->
     $view = @view.$el
     messagesDivId = @getOption "messagesDivId"
@@ -119,9 +127,7 @@ SubmitClicked = Behavior.extend {
         $feedback.html html
         $inp.addClass("is-invalid")
     # nettoyage d'erreurs précédentes
-    $(".is-invalid",$view).each -> $(@).removeClass("is-invalid")
-    #$(".is-valid",$view).each -> $(@).removeClass("is-valid")
-    $view.find("div.alert").each -> $(@).remove()
+    @clearForm()
     _.each(errors, markErrors)
 }
 
@@ -220,6 +226,7 @@ EditItem = Behavior.extend {
         itemView?.trigger("flash:success")
         # soit on a fournit la liste et on flash via la liste
         view.getOption("listView")?.children.findByModel(model)?.trigger("flash:success")
+        view.trigger "form:data:valid"
         onSuccess = view.getOption("onSuccess")
         onSuccess?(model,data)
       ).fail( (response)->
