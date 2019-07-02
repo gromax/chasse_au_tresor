@@ -1,5 +1,5 @@
 import { View, CollectionView } from 'backbone.marionette'
-import { SortList } from 'apps/common/behaviors.coffee'
+import { SortList, DestroyWarn } from 'apps/common/behaviors.coffee'
 import list_essais_none_tpl from 'templates/parties/list/list_essais_none.tpl'
 import list_essais_item_tpl from 'templates/parties/list/list_essai_item.tpl'
 import list_essais_tpl from 'templates/parties/list/list_essais.tpl'
@@ -31,7 +31,14 @@ NoView = View.extend {
 
 ItemView = View.extend {
   tagName: "tr"
+  behaviors: [DestroyWarn]
   template: list_essais_item_tpl
+  className: ->
+    pts = @model.get "pts"
+    switch
+      when pts <0 then "table-danger"
+      when pts >0 then "table-success"
+      else ""
   triggers: {
     "click": "show"
   }
