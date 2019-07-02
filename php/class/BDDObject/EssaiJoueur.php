@@ -6,6 +6,7 @@ use DB;
 use ErrorController as EC;
 use SessionController as SC;
 use MeekroDBException;
+use BDDObject\Partie;
 
 final class EssaiJoueur extends Item
 {
@@ -124,6 +125,11 @@ final class EssaiJoueur extends Item
       return $errors;
     else
       return true;
+  }
+
+  public function getPartie()
+  {
+    return Partie::getObject($this->values['idPartie']);
   }
 
 }
