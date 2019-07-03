@@ -12,6 +12,8 @@ Router = Backbone.Router.extend {
     rank = app.Auth.get("rank")
     if (rank is "root") or (rank is "redacteur")
       require("apps/evenements/edit/ie_list_controller.coffee").controller.show(id)
+    else
+      app.trigger "not:found"
 
   list: (criterion) ->
     rank = app.Auth.get("rank")
@@ -19,11 +21,15 @@ Router = Backbone.Router.extend {
       require("apps/evenements/list/evenements_list_controller.coffee").controller.listRedacteur(criterion)
     else if (rank is "joueur")
       require("apps/evenements/list/evenements_list_controller.coffee").controller.listJoueur(criterion)
+    else
+      app.trigger "not:found"
 
   showItemEvenement: (idE,id) ->
     rank = app.Auth.get("rank")
     if (rank is "root") or (rank is "redacteur")
       require("apps/evenements/edit/sub_ie_list_controller.coffee").controller.show(id)
+    else
+      app.trigger "not:found"
 }
 
 router = new Router()
