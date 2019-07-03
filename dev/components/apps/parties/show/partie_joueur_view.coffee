@@ -3,6 +3,7 @@ import accueil_tpl from "templates/parties/show/accueil.tpl"
 import panel_tpl from "templates/parties/show/panel.tpl"
 import layout_tpl from "templates/parties/show/layout.tpl"
 import cleItem_tpl from "templates/parties/show/cleItem.tpl"
+import cles_list_tpl from "templates/parties/show/cles_list.tpl"
 
 # Panneau de recherche : input + submit + bouton GPS
 PartiePanelView = View.extend {
@@ -52,10 +53,33 @@ CleItemView = View.extend {
 
 # Ici vue de l'ensemble des clés
 ClesCollectionView = CollectionView.extend {
-  className: "list-group"
+  template:cles_list_tpl
   childView: CleItemView
   childViewEventPrefix: 'cle'
-  #childViewContainer: "#content"
+  childViewContainer: ".js-cles-list"
+  showErreursVisiblesButton:true
+  erreursVisibles: true
+  events: {
+    "click a.js-erreursVisiblesToggle": "erreursVisiblesToggle"
+  }
+  erreursVisiblesToggle: (e) ->
+    e.preventDefault()
+    $dom = e.currentTarget
+    @options.erreursVisibles = not (@getOption "erreursVisibles")
+    $label = $("small", $dom)
+    $ico = $(".fa", $dom)
+    if @options.erreursVisibles
+      $ico.removeClass("fa-eye-slash").addClass("fa-eye")
+      $label.html "Erreurs visibles"
+    else
+      $ico.removeClass("fa-eye").addClass("fa-eye-slash")
+      $label.html "Erreurs cachées"
+    @trigger "erreurs:visibles:toggle"
+  templateContext: ->
+    {
+      erreursVisibles: @getOption "erreursVisibles"
+      showErreursVisiblesButton: @getOption "showErreursVisiblesButton"
+    }
   childViewOptions: ->
     {
       idSelected: @options.idSelected
