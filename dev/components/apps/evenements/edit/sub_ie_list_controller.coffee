@@ -48,7 +48,7 @@ Controller = MnObject.extend {
           imgView.on "item:select", (v,e)->
             { hash, ext } = v.getSelectedAttr()
             childView.$el.find("input[name='imgUrl']").val("#{hash}.#{ext}")
-            imgView.trigger("dialog:close")
+            imgView.trigger "dialog:close"
 
           app.regions.getRegion('dialog').show(imgView)
 
@@ -62,7 +62,7 @@ Controller = MnObject.extend {
           $.when(updatingItem).done( ->
             newSubItem = subItemsCollection.models[index]
             newSubItemView = subItemsView.children.findByModel(newSubItem)
-            newSubItemView.flash()
+            newSubItemView.trigger "flash:success"
           ).fail( (response)->
             newSubItem = subItemsCollection.models[index]
             subItemsCollection.remove(newSubItem)
