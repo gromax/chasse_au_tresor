@@ -46,6 +46,8 @@ function loadRouter()
   $router->addRule('api/parties/:id', 'parties', 'delete', 'DELETE');
   $router->addRule('api/parties', 'parties', 'insert', 'POST');
   $router->addRule('api/essaisJoueur/:id', 'essaisJoueur', 'delete', 'DELETE');
+  $router->addRule('api/essaisJoueur/count/:id', 'essaisJoueur', 'getCount', 'GET');
+
 
   // data
   $router->addRule('api/customData/:asks', 'data', 'customFetch', 'GET');
