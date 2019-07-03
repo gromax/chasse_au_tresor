@@ -7,7 +7,7 @@ import { app } from 'app'
 Controller = MnObject.extend {
   channelName: "entities",
   show: (options) ->
-    app.trigger "header:loading", true
+    app.trigger "loading:up"
     require "entities/dataManager.coffee"
     channel = @getChannel()
     fetchingData = channel.request("custom:partie", options)
@@ -32,14 +32,14 @@ Controller = MnObject.extend {
         }
 
         errorFct = (err) ->
-          app.trigger("header:loading", false)
+          app.trigger "loading:up"
           console.warn("ERREUR (#{err.code}): #{err.message}")
 
         successFct = (pos) ->
-          app.trigger("header:loading", false)
+          app.trigger "loading:down"
           crd = pos.coords;
           app.trigger("partie:show:cle", id, "gps=#{crd.latitude},#{crd.longitude},#{Math.round(crd.accuracy)}")
-        app.trigger("header:loading", true)
+        app.trigger "loading:up"
         navigator.geolocation.getCurrentPosition(successFct, errorFct, options)
 
 
@@ -65,9 +65,51 @@ Controller = MnObject.extend {
           cle
         }
 
-      vueCles = new ClesCollectionView { collection: data.essais, idSelected: data.item?.get("id") ? -1 }
+      vueCles = new ClesCollectionView {
+        collection: data.essais
+        idSelected: data.item?.get("id") ? -1
+        erreursVisibles: app.user_options.erreursVisibles
+        showErreursVisiblesButton: evenement.get "sauveEchecs"
+      }
+
+      clesFilterFct = (view, index, children) ->
+        view.model.get("idItem") >= 0
+      unless app.user_options.erreursVisibles
+        vueCles.setFilter clesFilterFct, {}
       vueCles.on "cle:select", (v)->
         app.trigger "partie:show:cle", id, v.model.get("essai").normalize('NFD').replace(/[\u0300-\u036f]/g, "")
+      vueCles.on "erreurs:visibles:toggle", ->
+        app.user_options.erreursVisibles = not app.user_options.erreursVisibles
+        if app.user_options.erreursVisibles
+          vueCles.removeFilter {}
+        else
+          vueCles.setFilter clesFilterFct, {}
+
+      refRefresh = {
+        stop: false
+      }
+
+      vueCles.on "cles:refresh", ->
+        fetchingCount = channel.request("custom:count:essais", id)
+        app.trigger "loading:up"
+        $.when(fetchingCount).done( (cnt)->
+          if cnt+vueCles.collection.where({idItem:-1}).length isnt vueCles.children.length
+            app.trigger "show:message:success", "Nouvelle clé disponible, rechargez la page !"
+        ).fail( (response)->
+          console.warn "Erreur de rechargement"
+          refRefresh.stop = true
+        ).always(->
+          app.trigger "loading:down"
+        )
+
+
+      refreshClesFct= ->
+        if refRefresh.stop or not jQuery.contains(document, vueCles.$el[0])
+          clearInterval refRefresh.interval
+        else
+          vueCles.trigger "cles:refresh"
+
+      refRefresh.interval = setInterval(refreshClesFct, 30000)
 
       layout.on "render", ()->
         layout.getRegion('panelRegion').show(panel)
@@ -84,8 +126,8 @@ Controller = MnObject.extend {
       else
         alertView = new AlertView()
         app.regions.getRegion('main').show(alertView)
-    ).always( () ->
-      app.trigger("header:loading", false)
+    ).always( ->
+      app.trigger "loading:down"
     )
 }
 
