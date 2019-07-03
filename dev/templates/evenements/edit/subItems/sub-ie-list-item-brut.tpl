@@ -32,6 +32,7 @@ if(editMode){%>
 
 <ul class="list-group list-group-flush">
   <li class="list-group-item list-group-item-primary"><b>Lien :</b>[link=<i>clé</i>]<i>texte à afficher</i>[/link]</li>
+  <li class="list-group-item list-group-item-primary"><b>Couleur :</b>[c=rouge]<i>texte à afficher</i>[/c]. Autre couleurs : bleu, vert</li>
 </ul>
 
 <%} else {%>
