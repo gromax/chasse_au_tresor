@@ -40,6 +40,9 @@ Manager = Marionette.Application.extend {
 
   onStart: (app, options) ->
     @version = VERSION
+    @user_options = {
+      erreursVisibles: true
+    }
     self = @
     historyStart = () ->
       require('apps/common/app_default.coffee') # mettre en premier (étrangement...)
