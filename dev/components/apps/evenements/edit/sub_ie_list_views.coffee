@@ -196,6 +196,14 @@ SubIEItemBrutView = SubIEItemView.extend {
         else
           "<a href='#' class='badge badge-success js-cle' cible='#{p2}'>#{p3}</a>"
       data.contenu = data.contenu.replace(/\[link(=(.*))?\](.*)\[\/link\]/gi, remplaceurCleAvecTag)
+      remplaceurCouleur=(correspondance, p1, p2, decalage, chaine) ->
+        switch p1
+          when "rouge" then c = "#FF0000"
+          when "bleu" then c = "#0000FF"
+          when "vert" then c = "#00BB00"
+          else c = "#999999"
+        "<span style='color:#{c};'>#{p2}</span>"
+      data.contenu = data.contenu.replace(/\[c=([a-z]*)\](.*?)\[\/c\]/gi, remplaceurCouleur)
     data
 }
 
