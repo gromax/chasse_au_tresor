@@ -73,6 +73,18 @@ final class EssaiJoueur extends Item
     }
   }
 
+  public static function getOkCount($idPartie)
+  {
+    require_once BDD_CONFIG;
+    try {
+      $bddResult = DB::query("SELECT COUNT(*) AS cnt FROM ((".PREFIX_BDD."essaisJoueur c JOIN ".PREFIX_BDD."parties p ON c.idPartie = p.id) JOIN ".PREFIX_BDD."evenements e ON p.idEvenement = e.id) WHERE c.idPartie=%i AND c.idItem >=0", $idPartie);
+      return (integer) $bddResult[0]["cnt"];
+    } catch(MeekroDBException $e) {
+      if (DEV) return array('error'=>true, 'message'=>"#EssaiJoueur/getOkCount : ".$e->getMessage());
+      return null;
+    }
+  }
+
   ##################################### METHODES #####################################
 
   public function insert_validation($data=array())
