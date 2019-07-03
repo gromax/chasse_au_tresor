@@ -29,7 +29,7 @@ FilterList = Behavior.extend {
   onSetFilterCriterion: (criterion, options) ->
     criterion = criterion.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()
     if criterion is "" or typeof @view.filterKeys is "undefined"
-      @view.removeFilter(filterFct, options)
+      @view.removeFilter(options)
     else
       filterKeys = @view.filterKeys
       parseFct = (model) ->
