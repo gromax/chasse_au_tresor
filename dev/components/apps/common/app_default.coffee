@@ -27,7 +27,7 @@ Router = Backbone.Router.extend {
     }
     app.regions.getRegion('main').show(view)
 
-  dataFetchFail: ->
+  dataFetchFail: (response) ->
     switch response.status
       when 401
         alert("Vous devez vous (re)connecter !")
