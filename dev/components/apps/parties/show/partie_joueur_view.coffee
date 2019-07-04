@@ -62,6 +62,9 @@ ClesCollectionView = CollectionView.extend {
   events: {
     "click a.js-erreursVisiblesToggle": "erreursVisiblesToggle"
   }
+  triggers: {
+    "click a.js-refresh": "click:refresh:button"
+  }
   erreursVisiblesToggle: (e) ->
     e.preventDefault()
     $dom = e.currentTarget
@@ -84,6 +87,8 @@ ClesCollectionView = CollectionView.extend {
     {
       idSelected: @options.idSelected
     }
+  onShowMessageNews: ->
+    $("div.d-none", @$el).removeClass('d-none')
 }
 
 # panneau d'accueil quand aucune clé n'est trouvée ou en cas d'erreur
