@@ -85,31 +85,32 @@ Controller = MnObject.extend {
         else
           vueCles.setFilter clesFilterFct, {}
 
-      refRefresh = {
-        stop: false
-      }
-
-      vueCles.on "cles:refresh", ->
+      vueCles.on "cles:test:need:refresh", ->
         fetchingCount = channel.request("custom:count:essais", id)
         app.trigger "loading:up"
         $.when(fetchingCount).done( (cnt)->
           if cnt+vueCles.collection.where({idItem:-1}).length isnt vueCles.children.length
-            app.trigger "show:message:success", "Nouvelle clé disponible, rechargez la page !"
+            vueCles.triggerMethod "show:message:news"
         ).fail( (response)->
           console.warn "Erreur de rechargement"
-          refRefresh.stop = true
+          vueCles.stopRefresh = true
         ).always(->
           app.trigger "loading:down"
         )
 
+      vueCles.on "click:refresh:button", ->
+        app.trigger "partie:show:cle", id, cle
 
-      refreshClesFct= ->
-        if refRefresh.stop or not jQuery.contains(document, vueCles.$el[0])
-          clearInterval refRefresh.interval
+      vueCles.on "destroy", ->
+        clearInterval @testNeedRefreshClesInterval
+
+      testNeedRefreshClesFct= ->
+        if vueCles.stopRefresh
+          clearInterval vueCles.testNeedRefreshClesInterval
         else
-          vueCles.trigger "cles:refresh"
+          vueCles.trigger "cles:test:need:refresh"
 
-      refRefresh.interval = setInterval(refreshClesFct, 30000)
+      vueCles.testNeedRefreshClesInterval = setInterval(testNeedRefreshClesFct, 30000)
 
       layout.on "render", ()->
         layout.getRegion('panelRegion').show(panel)
