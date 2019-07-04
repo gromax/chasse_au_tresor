@@ -25,6 +25,8 @@ Router = Backbone.Router.extend {
     if (rank is "joueur")
       if typeof cle is "string" then cle = cle.replace(/__/g," ")
       require("apps/parties/show/partie_joueur_controller.coffee").controller.show({id, cle})
+    else
+      app.trigger "not:found"
 
   showHash: (hash) ->
     rank = app.Auth.get("rank")
@@ -66,8 +68,11 @@ app.on "partie:show", (id) ->
   router.show(id,"")
 
 app.on "partie:show:cle", (id,cle) ->
-  app.navigate "partie:#{id}/cle:#{cle.replace(/\s/g,"__")}"
-  router.show(id,cle)
+  if cle is ""
+    app.trigger "partie:show", id
+  else
+    app.navigate "partie:#{id}/cle:#{cle.replace(/\s/g,"__")}"
+    router.show(id,cle)
 
 app.on "partie:show:hash", (hash) ->
   app.navigate "partie/hash:#{hash}"
