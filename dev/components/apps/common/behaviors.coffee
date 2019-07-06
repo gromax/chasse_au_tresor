@@ -1,5 +1,6 @@
 import { Behavior } from 'backbone.marionette'
 import Syphon from 'backbone.syphon'
+
 SortList = Behavior.extend {
   events: {
     "click a.js-sort":"sortFct"
@@ -76,9 +77,6 @@ SubmitClicked = Behavior.extend {
   ui: {
     submit: 'button.js-submit'
   }
-  options: {
-    messagesDiv: false # si on précise une cible, les messages sont concentrés là, sinon ils sont associés à l'input de name correspondant à l'erreur
-  }
   messagesDivId: "messages"
   events: {
     'click @ui.submit': 'submitClicked'
@@ -103,15 +101,15 @@ SubmitClicked = Behavior.extend {
     messagesDivId = @getOption "messagesDivId"
     if $.isArray(errors)
       $messagesContainer = $("##{messagesDivId}",$view)
-      unless $container
-        $container = $view.append "<div id='#{messagesDivId}'></div>"
+      unless $messagesContainer
+        $messagesContainer = $view.append "<div id='#{messagesDivId}'></div>"
       markErrors = (value)->
         $errorEl
         if value.success
           $errorEl = $("<div>", { class: "alert alert-success", role:"alert", text: value.message })
         else
           $errorEl = $("<div>", { class: "alert alert-danger", role:"alert", text: value.message })
-        $container.append $errorEl
+        $messagesContainer.append $errorEl
     else
       markErrors = (value, key) ->
         $inp = $view.find("input[name='#{key}']")
@@ -161,7 +159,7 @@ ToggleItemValue = Behavior.extend {
     self = @
     if updatingItem
       app = require('app').app
-      app.trigger "header:loading", true
+      app.trigger "loading:up"
       $.when(updatingItem).done( ->
         self.view.render()
         self.view.trigger "flash:success"
@@ -175,27 +173,11 @@ ToggleItemValue = Behavior.extend {
           else
             errorCode = ""
           alert "Erreur inconnue. Essayez à nouveau ou prévenez l'administrateur [code #{response.status}#{errorCode}]"
-      ).always( ()->
-        app.trigger "header:loading", false
+      ).always( ->
+        app.trigger "loading:down"
       )
     else
       @view.trigger "flash:error"
-}
-
-FilterPanel = Behavior.extend {
-  ui: {
-    criterion: "input.js-filter-criterion"
-    form: "#filter-form"
-  }
-  events: {
-    "submit @ui.form": "applyFilter"
-  }
-  applyFilter: (e)->
-    e.preventDefault()
-    criterion = @ui.criterion.val()
-    @view.trigger("items:filter", criterion)
-  onSetFilterCriterion: (criterion)->
-    @ui.criterion.val(criterion)
 }
 
 EditItem = Behavior.extend {
@@ -213,12 +195,12 @@ EditItem = Behavior.extend {
     updatingItem = model[updatingFunctionName](data)
     if updatingItem
       app = require('app').app
-      app.trigger "header:loading", true
+      app.trigger "loading:up"
       view = @view
       $.when(updatingItem).done( ->
         itemView = view.getOption("itemView")
         itemView?.render() # cas d'une itemView existante
-        if (collection=view.getOption "collection") and not collection.get(model.get("id"))
+        if (collection=listView?.collection) and not collection.get(model.get("id"))
           # c'est un ajout
           collection.add model
         view.trigger "dialog:close" # si ce n'est pas une vue dialog, le trigger ne fait rien
@@ -243,11 +225,27 @@ EditItem = Behavior.extend {
             else
               errorCode = ""
             alert "Erreur inconnue. Essayez à nouveau ou prévenez l'administrateur [code #{response.status}#{errorCode}]"
-      ).always(()->
-        app.trigger "header:loading", false
+      ).always( ->
+        app.trigger "loading:down", false
       )
     else
       @view.trigger "form:data:invalid",model.validationError
+}
+
+FilterPanel = Behavior.extend {
+  ui: {
+    criterion: "input.js-filter-criterion"
+    form: "#filter-form"
+  }
+  events: {
+    "submit @ui.form": "applyFilter"
+  }
+  applyFilter: (e)->
+    e.preventDefault()
+    criterion = @ui.criterion.val()
+    @view.trigger("items:filter", criterion)
+  onSetFilterCriterion: (criterion)->
+    @ui.criterion.val(String(criterion).replace(/__/g," "))
 }
 
 export { SortList, FilterList, DestroyWarn, SubmitClicked, FlashItem, ToggleItemValue, FilterPanel, EditItem }
