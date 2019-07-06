@@ -47,7 +47,7 @@ router = new Router()
 
 app.on "parties:list", (criterion)->
   if criterion
-    app.navigate "parties/filter/criterion:#{criterion}"
+    app.navigate "parties/filter/criterion:#{criterion.replace(/\s/g,"__")}"
     router.list(criterion)
   else
     app.navigate("parties")
@@ -55,7 +55,7 @@ app.on "parties:list", (criterion)->
 
 app.on "parties:filter", (criterion) ->
   if criterion
-    app.navigate "parties/filter/criterion:#{criterion}"
+    app.navigate "parties/filter/criterion:#{criterion.replace(/\s/g,"__")}"
   else
     app.navigate "parties"
 
