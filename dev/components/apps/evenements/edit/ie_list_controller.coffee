@@ -27,7 +27,6 @@ Controller = MnObject.extend {
           newItem =
           view = new EditIEDescriptionView {
             model: new Item({ idEvenement:id})
-            collection: itemsEvenement
             listView: liste
             title: "Nouvel item"
           }
