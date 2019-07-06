@@ -23,7 +23,7 @@ ListPanel = View.extend {
     {
       title: @getOption "title"
       showAddButton: @getOption "showAddButton"
-      filterCriterion: @getOption "filterCriterion"
+      filterCriterion: @getOption("filterCriterion").replace(/__/g," ")
     }
 }
 
