@@ -199,6 +199,7 @@ EditItem = Behavior.extend {
       view = @view
       $.when(updatingItem).done( ->
         itemView = view.getOption("itemView")
+        listView = view.getOption("listView")
         itemView?.render() # cas d'une itemView existante
         if (collection=listView?.collection) and not collection.get(model.get("id"))
           # c'est un ajout
@@ -207,7 +208,7 @@ EditItem = Behavior.extend {
         # soit itemView éxistait et on flash direct
         itemView?.trigger("flash:success")
         # soit on a fournit la liste et on flash via la liste
-        view.getOption("listView")?.children.findByModel(model)?.trigger("flash:success")
+        listView?.children.findByModel(model)?.trigger("flash:success")
         view.trigger "form:data:valid"
         onSuccess = view.getOption("onSuccess")
         onSuccess?(model,data)
