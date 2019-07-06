@@ -7,7 +7,8 @@ Item = Backbone.Model.extend {
     essai: ""
     tagCle: ""
     pts: 0
-  },
+    prerequis: ""
+  }
 
   toJSON: ->
     out = _.pick(this.attributes, 'id', 'idPartie', 'essai', 'date', 'data')
