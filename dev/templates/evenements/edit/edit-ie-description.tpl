@@ -22,5 +22,10 @@
     <label for="item-pts" class="control-label">points</label>
     <input class="form-control js-pts" id="item-pts" name="pts" type="text" value="<%- pts %>" placeHolder="Nombre de points"/>
   </div>
+  <div class="form-group">
+    <label for="item-prerequis" class="control-label">prérequis</label>
+    <input class="form-control js-pts" id="item-prerequis" name="prerequis" type="text" value="<%- prerequis %>" placeHolder="Prérequis"/>
+    <small class="form-text text-muted">forme id1&id2&id3|id4&id5...</small>
+  </div>
   <button class="btn btn-success js-submit">Enregistrer</button>
 </form>
