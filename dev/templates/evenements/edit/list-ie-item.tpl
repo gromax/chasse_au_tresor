@@ -1,6 +1,6 @@
 <td><span class="badge badge-pill badge-primary"><%- id %></span></td>
 <td><%- tagCle %></td>
-<td><%- regexCle %></td>
+<td><%- regexCle %><%if (prerequis!="") {%><br><small><%-prerequis%><% } %></td>
 <td><%- pts %></td>
 <td align="right">
 	<div class="btn-group" role="group">
