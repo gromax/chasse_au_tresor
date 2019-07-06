@@ -40,7 +40,6 @@ Controller = MnObject.extend {
         view = new NewUserView {
           model: newItem
           title: "Nouveau rédacteur"
-          collection: "items"
           listView: listView
         }
         app.regions.getRegion('dialog').show(view)
