@@ -57,11 +57,11 @@ final class EssaiJoueur extends Item
       if (isset($options['joueur']))
         return DB::query("SELECT c.id, c.idItem, c.essai, c.date FROM (".PREFIX_BDD."essaisJoueur c JOIN ".PREFIX_BDD."parties p ON p.id = c.idPartie) WHERE p.idProprietaire=%i", $options['joueur']);
       elseif (isset($options['redacteur']))
-        return DB::query("SELECT c.id, c.idItem, c.essai, c.date, COALESCE(ie.pts,e.ptsEchecs) AS pts FROM (((".PREFIX_BDD."essaisJoueur c JOIN ".PREFIX_BDD."parties p ON p.id = c.idPartie) JOIN ".PREFIX_BDD."evenements e ON e.id = p.idEvenement) LEFT JOIN ".PREFIX_BDD."itemsEvenement ie ON ie.id=c.idItem) WHERE e.idProprietaire=%i", $options['redacteur']);
+        return DB::query("SELECT c.id, c.idItem, c.essai, c.date, COALESCE(ie.pts,e.ptsEchecs) AS pts, COALESCE(ie.prerequis,'') AS prerequis FROM (((".PREFIX_BDD."essaisJoueur c JOIN ".PREFIX_BDD."parties p ON p.id = c.idPartie) JOIN ".PREFIX_BDD."evenements e ON e.id = p.idEvenement) LEFT JOIN ".PREFIX_BDD."itemsEvenement ie ON ie.id=c.idItem) WHERE e.idProprietaire=%i", $options['redacteur']);
       elseif (isset($options['evenement']))
         return DB::query("SELECT c.id, c.idItem, c.essai, c.date FROM (".PREFIX_BDD."essaisJoueur c JOIN ".PREFIX_BDD."parties p ON p.id = c.idPartie) WHERE p.idEvenement=%i", $options['evenement']);
       elseif (isset($options['partie']))
-        return DB::query("SELECT c.id, c.idPartie, c.idItem, c.essai, date, COALESCE(i.tagCle, '') AS tagCle , COALESCE(i.pts,e.ptsEchecs) AS pts FROM (((".PREFIX_BDD."essaisJoueur c JOIN ".PREFIX_BDD."parties p ON c.idPartie = p.id) JOIN ".PREFIX_BDD."evenements e ON p.idEvenement = e.id) LEFT JOIN ".PREFIX_BDD."itemsEvenement i ON i.id=c.idItem ) WHERE c.idPartie=%i", $options['partie']);
+        return DB::query("SELECT c.id, c.idPartie, c.idItem, c.essai, date, COALESCE(i.tagCle, '') AS tagCle , COALESCE(i.pts,e.ptsEchecs) AS pts, COALESCE(i.prerequis, '') AS prerequis FROM (((".PREFIX_BDD."essaisJoueur c JOIN ".PREFIX_BDD."parties p ON c.idPartie = p.id) JOIN ".PREFIX_BDD."evenements e ON p.idEvenement = e.id) LEFT JOIN ".PREFIX_BDD."itemsEvenement i ON i.id=c.idItem ) WHERE c.idPartie=%i", $options['partie']);
       elseif (isset($options['root']))
         return DB::query("SELECT id, essai, date FROM ".PREFIX_BDD."essaisJoueur");
       else
