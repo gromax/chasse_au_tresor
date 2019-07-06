@@ -42,6 +42,28 @@ ItemView = View.extend {
   triggers: {
     "click": "show"
   }
+  templateContext: ->
+    prerequis = @model.get("prerequis")
+    prerequisOk = true
+    if prerequis isnt ""
+      ids = @getOption "ids"
+      listMINTERMS = prerequis.split("|")
+      if listMINTERMS.length>0
+        prerequisOk=false
+        for it in listMINTERMS
+          litterals = it.split("&")
+          notMeetingPrerequisFound = false
+          for lit in litterals
+            if not _.contains(ids,Number(lit))
+              notMeetingPrerequisFound = true
+              break
+          unless notMeetingPrerequisFound
+            prerequisOk = true
+            break
+    {
+      prerequisOk
+    }
+
 }
 
 EssaisCollectionView = CollectionView.extend {
@@ -53,6 +75,10 @@ EssaisCollectionView = CollectionView.extend {
   childViewEventPrefix: 'item'
   emptyView: NoView
   behaviors: [SortList]
+  childViewOptions: ->
+    {
+      ids: @collection.pluck "idItem"
+    }
 }
 
 export { EssaisCollectionView, ListEssaisPanel }
