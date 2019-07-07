@@ -19,11 +19,13 @@ ListPanel = View.extend {
   triggers: {
     "click button.js-new": "item:new"
   }
+  initialize: ->
+    @options.filterCriterion = @getOption("filterCriterion").replace(/__/g," ")
   templateContext: ->
     {
       title: @getOption "title"
       showAddButton: @getOption "showAddButton"
-      filterCriterion: @getOption("filterCriterion").replace(/__/g," ")
+      filterCriterion: @options.filterCriterion
     }
 }
 
