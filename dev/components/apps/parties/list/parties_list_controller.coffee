@@ -25,9 +25,9 @@ Controller = MnObject.extend {
 
       listPanel.on "items:filter", (filterCriterion)->
         listView.trigger("set:filter:criterion", filterCriterion, { preventRender:false })
-        app.trigger("evenements:filter", filterCriterion)
+        app.trigger("parties:filter", filterCriterion)
 
-      listView.trigger("set:filter:criterion", criterion, { preventRender:false })
+      listView.trigger("set:filter:criterion", listPanel.options.filterCriterion, { preventRender:false })
 
       listLayout.on "render", ()->
         listLayout.getRegion('panelRegion').show(listPanel)
