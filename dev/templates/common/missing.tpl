@@ -1,1 +1,1 @@
-<div class="alert alert-error"><%- message %></div>
+<%= message %>

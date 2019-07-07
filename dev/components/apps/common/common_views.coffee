@@ -36,6 +36,7 @@ ListLayout = View.extend {
 }
 
 MissingView = View.extend {
+  className: "alert alert-danger"
   message: "Cet item n'existe pas"
   templateContext: ->
     {
