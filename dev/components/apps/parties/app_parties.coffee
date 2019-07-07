@@ -31,7 +31,7 @@ Router = Backbone.Router.extend {
   showHash: (hash) ->
     rank = app.Auth.get("rank")
     if rank is "off"
-      cb = () ->
+      cb = ->
         app.trigger "partie:show:hash", hash
       require("apps/common/sign/sign_controller.coffee").controller.show({signin:true, desactiveModeChoiceButton:true, adm:0, callback:cb, showToggleButton:true })
     if rank is "joueur"
