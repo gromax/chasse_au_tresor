@@ -119,7 +119,9 @@ Controller = MnObject.extend {
       app.regions.getRegion('main').show(layout)
     ).fail( (response) ->
       if response.status is 404
-        view = new MissingView()
+        view = new MissingView {
+          message: "<ul><li>Vous cherchez une partie qui n'existe pas,</li><li>ou peut-être un événement qui n'est pas encore activé. Dans ce cas, essayez plus tard.</li></ul>"
+        }
         app.regions.getRegion('main').show(view)
       else if response.status is 401
         alert("Vous devez vous (re)connecter !")
