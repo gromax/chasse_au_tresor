@@ -117,7 +117,7 @@ class evenements
             $data = json_decode(file_get_contents("php://input"),true);
             $data['idProprietaire'] = $ac->getLoggedUserId();
             $item = new Evenement();
-            $data["hash"] = bin2hex(random_bytes(20));
+            $data["hash"] = bin2hex(random_bytes(3));
             $id = $item->update($data);
             if ($id!==null)
                 $out = $item->getValues();
