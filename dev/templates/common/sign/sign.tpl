@@ -1,6 +1,6 @@
 <% if (signin) {
 %><div class="card-header">
-Connexion<% if (adm==1) { %> &nbsp; <span class='badge badge-warning'>mode rédacteur</span><% } %>
+Connexion
 </div>
 <div class="card-body">
   <form>
@@ -8,19 +8,7 @@ Connexion<% if (adm==1) { %> &nbsp; <span class='badge badge-warning'>mode réda
       <label for="user-username" class="col-form-label col-sm-3">Email / Identifiant</label>
       <div class="col-sm-9 input-group">
         <input type="input" class="form-control" name="username" id="user-username" placeholder="Entrez un email / identifiant" value="<%- username %>">
-        <% if (adm==1) { %>
-        <div class="input-group-append">
-          <button class="btn btn-success btn-sm js-setAdm" title="Je suis un rédacteur" type="button"><i class="fa fa-pencil"></i></button>
-          <button class="btn btn-outline-success btn-sm js-unsetAdm" title="Je suis un joueur" type="button" <% if (desactiveModeChoiceButton) { %>disabled<% } %> ><i class="fa fa-gamepad"></i></button>
-        </div>
-        <% } else { %>
-        <div class="input-group-append">
-          <button class="btn btn-outline-success btn-sm js-setAdm" title="Je suis un rédacteur" type="button" <% if (desactiveModeChoiceButton) { %>disabled<% } %> ><i class="fa fa-pencil"></i></button>
-          <button class="btn btn-success btn-sm js-unsetAdm" title="Je suis un joueur" type="button"><i class="fa fa-gamepad"></i></button>
-        </div>
-        <% } %>
       </div>
-      <input type="hidden" name="adm" value="<%- adm %>">
     </div>
 
     <div class="form-group row">
