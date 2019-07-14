@@ -35,11 +35,11 @@ final class Evenement extends Item
     require_once BDD_CONFIG;
     try {
       if (isset($options['redacteur']))
-        return DB::query("SELECT e.id, e.titre, e.idProprietaire, r.nom AS nomProprietaire, e.description, e.actif, e.visible, e.sauveEchecs, e.ptsEchecs, e.hash, (SELECT COUNT(p.id) FROM ".PREFIX_BDD."parties p where p.idEvenement = e.id) AS count_parties, (SELECT COUNT(i.id) FROM ".PREFIX_BDD."itemsEvenement i where i.idEvenement = e.id) AS count_items FROM (".PREFIX_BDD."evenements e JOIN ".PREFIX_BDD."redacteurs r ON r.id = e.idProprietaire) WHERE e.idProprietaire=%i", $options['redacteur']);
+        return DB::query("SELECT e.id, e.titre, e.idProprietaire, r.nom AS nomProprietaire, e.description, e.actif, e.visible, e.sauveEchecs, e.ptsEchecs, e.hash, (SELECT COUNT(p.id) FROM ".PREFIX_BDD."parties p where p.idEvenement = e.id) AS count_parties, (SELECT COUNT(i.id) FROM ".PREFIX_BDD."itemsEvenement i where i.idEvenement = e.id) AS count_items FROM (".PREFIX_BDD."evenements e JOIN ".PREFIX_BDD."users r ON r.id = e.idProprietaire) WHERE e.idProprietaire=%i", $options['redacteur']);
       elseif (isset($options['joueur']))
         return DB::query("SELECT e.id, e.titre, e.idProprietaire, e.description, e.actif, e.sauveEchecs, e.ptsEchecs, p.id as idPartie, (SELECT COUNT(i.id) FROM ".PREFIX_BDD."itemsEvenement i where i.idEvenement = e.id) AS count_items FROM (".PREFIX_BDD."evenements e LEFT JOIN ".PREFIX_BDD."parties p ON e.id = p.idEvenement AND p.idProprietaire=%i) WHERE e.visible=1", $options['joueur']);
       elseif (isset($options['root']))
-        return DB::query("SELECT e.id, e.titre, e.idProprietaire, r.nom AS nomProprietaire, e.description, e.actif, e.visible, e.sauveEchecs, e.ptsEchecs, e.hash, (SELECT COUNT(p.id) FROM ".PREFIX_BDD."parties p where p.idEvenement = e.id) AS count_parties, (SELECT COUNT(i.id) FROM ".PREFIX_BDD."itemsEvenement i where i.idEvenement = e.id) AS count_items FROM (".PREFIX_BDD."evenements e JOIN ".PREFIX_BDD."redacteurs r ON r.id = e.idProprietaire)");
+        return DB::query("SELECT e.id, e.titre, e.idProprietaire, r.nom AS nomProprietaire, e.description, e.actif, e.visible, e.sauveEchecs, e.ptsEchecs, e.hash, (SELECT COUNT(p.id) FROM ".PREFIX_BDD."parties p where p.idEvenement = e.id) AS count_parties, (SELECT COUNT(i.id) FROM ".PREFIX_BDD."itemsEvenement i where i.idEvenement = e.id) AS count_items FROM (".PREFIX_BDD."evenements e JOIN ".PREFIX_BDD."users r ON r.id = e.idProprietaire)");
       else
         return array();
 

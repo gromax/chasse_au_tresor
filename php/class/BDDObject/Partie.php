@@ -61,15 +61,15 @@ final class Partie extends Item
 			}
 			elseif (isset($options['redacteur']))
 			{
-				return DB::query("SELECT p.id, p.idEvenement, e.titre AS titreEvenement, p.idProprietaire, j.nom AS nomProprietaire, p.dateDebut, MAX(essai.date) AS dateFin, SUM(COALESCE(ie.pts,e.ptsEchecs)) AS score, e.actif FROM ((((".PREFIX_BDD."parties p JOIN ".PREFIX_BDD."joueurs j ON j.id=p.idProprietaire) JOIN ".PREFIX_BDD."evenements e ON e.id=p.idEvenement) LEFT JOIN ".PREFIX_BDD."essaisJoueur essai ON essai.idPartie=p.id) LEFT JOIN ".PREFIX_BDD."itemsEvenement ie ON ie.id=essai.idItem) WHERE e.idProprietaire=%i GROUP BY p.id", $options['redacteur']);
+				return DB::query("SELECT p.id, p.idEvenement, e.titre AS titreEvenement, p.idProprietaire, j.nom AS nomProprietaire, p.dateDebut, MAX(essai.date) AS dateFin, SUM(COALESCE(ie.pts,e.ptsEchecs)) AS score, e.actif FROM ((((".PREFIX_BDD."parties p JOIN ".PREFIX_BDD."users j ON j.id=p.idProprietaire) JOIN ".PREFIX_BDD."evenements e ON e.id=p.idEvenement) LEFT JOIN ".PREFIX_BDD."essaisJoueur essai ON essai.idPartie=p.id) LEFT JOIN ".PREFIX_BDD."itemsEvenement ie ON ie.id=essai.idItem) WHERE e.idProprietaire=%i GROUP BY p.id", $options['redacteur']);
 			}
 			elseif (isset($options['evenement']))
 			{
-				return DB::query("SELECT p.id, p.idEvenement, e.titre AS titreEvenement, p.idProprietaire, j.nom AS nomProprietaire, p.dateDebut, p.dateFin, p.fini, e.actif FROM ((".PREFIX_BDD."parties p JOIN ".PREFIX_BDD."joueurs j ON j.id=p.idProprietaire) JOIN ".PREFIX_BDD."evenements e ON e.id=p.idEvenement) WHERE e.id=%i", $options['evenement']);
+				return DB::query("SELECT p.id, p.idEvenement, e.titre AS titreEvenement, p.idProprietaire, j.nom AS nomProprietaire, p.dateDebut, p.dateFin, p.fini, e.actif FROM ((".PREFIX_BDD."parties p JOIN ".PREFIX_BDD."users j ON j.id=p.idProprietaire) JOIN ".PREFIX_BDD."evenements e ON e.id=p.idEvenement) WHERE e.id=%i", $options['evenement']);
 			}
 			elseif (isset($options['root']))
 			{
-				return DB::query("SELECT p.id, p.idEvenement, e.titre AS titreEvenement, p.idProprietaire, j.nom AS nomProprietaire, p.dateDebut, e.actif FROM ((".PREFIX_BDD."parties p JOIN ".PREFIX_BDD."joueurs j ON j.id=p.idProprietaire) JOIN ".PREFIX_BDD."evenements e ON e.id=p.idEvenement)");
+				return DB::query("SELECT p.id, p.idEvenement, e.titre AS titreEvenement, p.idProprietaire, j.nom AS nomProprietaire, p.dateDebut, e.actif FROM ((".PREFIX_BDD."parties p JOIN ".PREFIX_BDD."users j ON j.id=p.idProprietaire) JOIN ".PREFIX_BDD."evenements e ON e.id=p.idEvenement)");
 			}
 			else
 			{
