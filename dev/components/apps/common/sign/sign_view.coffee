@@ -7,7 +7,6 @@ SignView = View.extend {
   className:"card"
   signin: true
   showForgotten: false
-  desactiveModeChoiceButton: false
   username: ""
   pwd: ""
   showToggleButton: false
@@ -17,24 +16,8 @@ SignView = View.extend {
   events: {
     "click button.js-submit": "submitClicked"
     "click a.js-toggle": "toggleInUp"
-    "click button.js-unsetAdm": "unsetAdm"
-    "click button.js-setAdm": "setAdm"
     "click button.js-forgotten": "forgottenClicked"
   }
-
-  setAdm: (e) ->
-    e.preventDefault()
-    $('button.js-unsetAdm').removeClass('btn-success').addClass('btn-outline-success')
-    $('button.js-setAdm').removeClass('btn-outline-success').addClass('btn-success')
-    $("input[name='adm']").val("1")
-    $(".card-header",@$el).html("Connexion &nbsp; <span class='badge badge-warning'>mode rédacteur</span>")
-
-  unsetAdm: (e) ->
-    e.preventDefault()
-    $('button.js-setAdm').removeClass('btn-success').addClass('btn-outline-success')
-    $('button.js-unsetAdm').removeClass('btn-outline-success').addClass('btn-success')
-    $("input[name='adm']").val("0")
-    $(".card-header",@$el).html("Connexion")
 
   toggleInUp: (e)->
     e.preventDefault()
@@ -53,10 +36,8 @@ SignView = View.extend {
 
   templateContext: ->
     {
-      adm: @options.adm ? 0
       showForgotten: @getOption "showForgotten"
       signin: @getOption "signin"
-      desactiveModeChoiceButton: @getOption "desactiveModeChoiceButton"
       username: @getOption "username"
       pwd: @getOption "pwd"
       showToggleButton: @getOption "showToggleButton"
