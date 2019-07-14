@@ -20,9 +20,12 @@ Controller = MnObject.extend {
         cle = ""
       evenement = data.evenement
       layout = new PartieLayout()
-      panel = new PartiePanelView { cle }
+      panel = new PartiePanelView {
+        cle
+        actif: evenement.get("actif")
+      }
       panel.on "essai", (essai)->
-        app.trigger("partie:show:cle", id, essai.normalize('NFD').replace(/[\u0300-\u036f]/g, ""))
+        app.trigger("partie:show:cle", id, essai.normalize('NFD').replace(/[\u0300-\u036f\'\s\\]/g, ""))
 
       panel.on "essai:gps", ->
         options = {
@@ -59,11 +62,18 @@ Controller = MnObject.extend {
         vuePrincipale.on "subItem:click:cle", (cible)->
           app.trigger "partie:show:cle", id, cible.normalize('NFD').replace(/[\u0300-\u036f]/g, "")
       else
+        # Dans ce cas je souhaite vérifier si la clé fausse est sauvegardée
+        cleSaved = true
+        if cle isnt ""
+          cleSaved = data.essais.filter({essai:cle}).length>0
+
         vuePrincipale = new PartieAccueilView {
           model:partie
           evenement:evenement
           cle
+          cleSaved
         }
+
 
       vueCles = new ClesCollectionView {
         collection: data.essais
