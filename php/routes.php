@@ -13,13 +13,13 @@ function loadRouter()
   $router->addRule('api/session/test', 'session', 'logged', 'GET'); // Vérifie l'état de connexion
 
   // redacteurs
-  $router->addRule('api/redacteurs/:id', 'redacteurs', 'fetch', 'GET');
+  $router->addRule('api/redacteurs/:id', 'users', 'fetch', 'GET');
   $router->addRule('api/redacteurs/:id', 'redacteurs', 'delete', 'DELETE');
   $router->addRule('api/redacteurs/:id', 'redacteurs', 'update', 'PUT');
   $router->addRule('api/redacteurs', 'redacteurs', 'insert', 'POST');
 
   // joueurs
-  $router->addRule('api/joueurs/:id', 'joueurs', 'fetch', 'GET');
+  $router->addRule('api/joueurs/:id', 'users', 'fetch', 'GET');
   $router->addRule('api/joueurs/:id', 'joueurs', 'delete', 'DELETE');
   $router->addRule('api/joueurs/:id', 'joueurs', 'update', 'PUT');
   $router->addRule('api/joueurs', 'joueurs', 'insert', 'POST');
@@ -56,10 +56,8 @@ function loadRouter()
   $router->addRule('api/customData/essais/:id', 'data', 'getEssaisFromPartie', 'GET');
 
   // forgotten
-  $router->addRule('api/redacteur/forgotten', 'redacteurs', 'forgottenWithEmail', 'POST');
-  $router->addRule('api/redacteur/forgotten/:hash', 'session', 'getRedacteurSessionWithHash', 'GET');
-  $router->addRule('api/joueur/forgotten', 'joueurs', 'forgottenWithEmail', 'POST');
-  $router->addRule('api/joueur/forgotten/:hash', 'session', 'getRedacteurSessionWithHash', 'GET');
+  $router->addRule('api/user/forgotten', 'users', 'forgottenWithEmail', 'POST');
+  $router->addRule('api/user/forgotten/:hash', 'session', 'getUserSessionWithHash', 'GET');
   return $router;
 }
 
