@@ -60,13 +60,9 @@ Session = Backbone.Model.extend {
 			success: callback
 		})
 
-	sendReinitEmail: (email, redacteurUser) ->
+	sendReinitEmail: (email) ->
 		defer = $.Deferred()
-		if redacteurUser is true
-			type = "redacteur"
-		else
-			type = "joueur"
-		request = $.ajax("api/#{type}/forgotten",{
+		request = $.ajax("api/user/forgotten",{
 			method:'POST'
 			dataType:'json'
 			data: { email }
@@ -79,12 +75,9 @@ Session = Backbone.Model.extend {
 		)
 		return defer.promise()
 
-	getSessionWithHash: (hash, adm) ->
+	getSessionWithHash: (hash) ->
 		defer = $.Deferred()
-		if adm is true
-			url = "api/redacteur/forgotten/#{hash}"
-		else
-			url = "api/joueur/forgotten/#{hash}"
+		url = "api/user/forgotten/#{hash}"
 		request = $.ajax(url,{
 			method:'GET'
 			dataType:'json'
