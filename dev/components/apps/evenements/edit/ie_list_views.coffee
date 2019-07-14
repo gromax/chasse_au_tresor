@@ -102,7 +102,7 @@ EditIEDescriptionView = View.extend {
 
   onTestReload: ->
     test = @ui.test.val()
-    test = test.normalize('NFD').replace(/[\u0300-\u036f]/g, "")
+    test = test.normalize('NFD').replace(/[\u0300-\u036f\\\s\']/g, "")
     regexCle = @ui.regexCle.val()
     result = false
     if test!="" and regexCle !=""
