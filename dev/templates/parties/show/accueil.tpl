@@ -18,7 +18,14 @@ if (cle!=""){
   } else {
 %><div class="alert alert-danger" role="alert">
   Vous avez essayé <b><%- cle %></b>.<br>
-  <strong>Raté !</strong> Essayez encore...
+  <%
+    if ((!evenement.actif)&&(!cleSaved)){
+      %><strong>L'événement est verrouillé.</strong><br>Vous ne pouvez pas faire de nouveaux essais pour l'instant.<%
+    } else { if (evenement.sauveEchecs && (evenement.ptsEchecs<0)) {
+      %><strong>Raté !</strong> Attention aux pénalités.<% if (evenement.actif){ %> Essayez encore...<% }
+    } else {
+      %><strong>Raté !</strong><% if (evenement.actif){ %> Essayez encore...<% }
+    }}%>
 </div><%
   }
 }
