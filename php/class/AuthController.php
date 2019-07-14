@@ -3,8 +3,7 @@
 //use MeekroDBException; inutile
 use ErrorController as EC;
 use SessionController as SC;
-use BDDObject\Redacteur;
-use BDDObject\Joueur;
+use BDDObject\User;
 
 class AuthController
 {
@@ -52,9 +51,8 @@ class AuthController
     // SC::get()->setParam('loggedUserIp', $_SERVER['REMOTE_ADDR']);
   }
 
-  public static function tryLogin($username, $pwd, $adm)
+  public static function tryLogin($username, $pwd)
   {
-    // $adm true spécifie une connexion de rédac ou adm
     if ($username !== ''){
       if ($pwd === "") {
         EC::addError("Vous avez envoyé un mot de passe vide !");
@@ -62,39 +60,16 @@ class AuthController
         return false;
       }
 
-      if ($adm){
-        // connexion rédac ou adm
-        if ($username==ROOT_USERNAME){
-          if ($pwd == ROOT_PASSWORD) {
-            // succès de la connexion root
-            self::createSession(false,"Root",ROOT_USERNAME,self::RANK_ROOT);
-            return true;
-          }
-        } else {
-          // sinon connexion rédacteur
-          require_once BDD_CONFIG;
-          try {
-            $bdd_result = DB::queryFirstRow("SELECT id, nom, username, hash FROM ".PREFIX_BDD."redacteurs WHERE username=%s", $username);
-          } catch(MeekroDBException $e) {
-            EC::set_error_code(501);
-            EC::addBDDError($e->getMessage(), 'AuthController/tryConnexion');
-            return false;
-          }
-
-          if ($bdd_result !== null) {
-            // L'id existe, reste à vérifier le mot de passe
-            $hash = $bdd_result['hash'];
-            if (($hash=="") || (password_verify($pwd, $hash))) {
-              // Le hash correspond, connexion réussie
-              self::createSession($bdd_result['id'], $bdd_result['nom'], $bdd_result['username'], self::RANK_REDAC);
-              return true;
-            }
-          }
+      if ($username==ROOT_USERNAME){
+        if ($pwd == ROOT_PASSWORD) {
+          // succès de la connexion root
+          self::createSession(false,"Root",ROOT_USERNAME,self::RANK_ROOT);
+          return true;
         }
       } else {
         require_once BDD_CONFIG;
         try {
-          $bdd_result = DB::queryFirstRow("SELECT id, nom, username, hash FROM ".PREFIX_BDD."joueurs WHERE username=%s", $username);
+          $bdd_result = DB::queryFirstRow("SELECT id, nom, username, hash, isredac FROM ".PREFIX_BDD."users WHERE username=%s", $username);
         } catch(MeekroDBException $e) {
           EC::set_error_code(501);
           EC::addBDDError($e->getMessage(), 'AuthController/tryConnexion');
@@ -106,58 +81,52 @@ class AuthController
           $hash = $bdd_result['hash'];
           if (($hash=="") || (password_verify($pwd, $hash))) {
             // Le hash correspond, connexion réussie
-            self::createSession($bdd_result['id'], $bdd_result['nom'], $bdd_result['username'], self::RANK_JOUEUR);
+            if ($bdd_result['isredac']==1)
+            {
+              $rank = self::RANK_REDAC;
+            }
+            else
+            {
+              $rank = self::RANK_JOUEUR;
+            }
+            self::createSession($bdd_result['id'], $bdd_result['nom'], $bdd_result['username'], $rank);
             return true;
           }
         }
       }
-
     }
     EC::addError("Mot de passe ou identifiant/email invalide.");
     EC::set_error_code(422);
     return false;
   }
 
-  public static function tryLoginWithHash($hash, $adm)
+  public static function tryLoginWithHash($hash)
   {
     if ($hash !== '')
     {
-      if ($adm){
-        // connexion rédac ou adm
-        // sinon connexion rédacteur
-        require_once BDD_CONFIG;
-        try {
-          $bdd_result = DB::queryFirstRow("SELECT r.id, r.nom, r.username FROM (".PREFIX_BDD."redacteurs r JOIN ".PREFIX_BDD."hashs h ON h.idProprietaire=r.id) WHERE h.hash=%s AND h.type=".REDACTEUR_PWD_LOST, $hash);
-        } catch(MeekroDBException $e) {
-          EC::set_error_code(501);
-          EC::addBDDError($e->getMessage(), 'AuthController/tryConnexionWithHash');
-          return false;
-        }
+      require_once BDD_CONFIG;
+      try {
+        $bdd_result = DB::queryFirstRow("SELECT u.id, u.nom, u.username, u.isredac FROM (".PREFIX_BDD."users u JOIN ".PREFIX_BDD."hashs h ON h.idProprietaire=u.id) WHERE h.hash=%s AND h.type=".USER_PWD_LOST, $hash);
+      } catch(MeekroDBException $e) {
+        EC::set_error_code(501);
+        EC::addBDDError($e->getMessage(), 'AuthController/tryConnexionWithHash');
+        return false;
+      }
 
-        if ($bdd_result !== null)
+      if ($bdd_result !== null)
+      {
+        if ($bdd_result['isredac']==1)
         {
-          $redac = new Redacteur($bdd_result);
-          $redac->resetHashsForPasswordLost();
-          self::createSession($bdd_result['id'], $bdd_result['nom'], $bdd_result['username'], self::RANK_REDAC);
-          return true;
+          $rank = self::RANK_REDAC;
         }
-      } else {
-        require_once BDD_CONFIG;
-        try {
-          $bdd_result = DB::queryFirstRow("SELECT j.id, j.nom, j.username FROM (".PREFIX_BDD."joueurs j JOIN ".PREFIX_BDD."hashs h ON j.id=h.idProprietaire) WHERE h.hash=%s AND h.type=".JOUEUR_PWD_LOST, $hash);
-        } catch(MeekroDBException $e) {
-          EC::set_error_code(501);
-          EC::addBDDError($e->getMessage(), 'AuthController/tryConnexionWithHash');
-          return false;
-        }
-
-        if ($bdd_result !== null)
+        else
         {
-          $joueur = new Joueur($bdd_result);
-          $joueur->resetHashsForPasswordLost();
-          self::createSession($bdd_result['id'], $bdd_result['nom'], $bdd_result['username'], self::RANK_JOUEUR);
-          return true;
+          $rank = self::RANK_JOUEUR;
         }
+        $user = new User($bdd_result);
+        $user->resetHashsForPasswordLost();
+        self::createSession($bdd_result['id'], $bdd_result['nom'], $bdd_result['username'], $rank);
+        return true;
       }
 
     }
