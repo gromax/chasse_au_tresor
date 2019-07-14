@@ -124,7 +124,7 @@ class data
                 );
         }
 
-        if ($dataNewEssai!==null)
+        if (($dataNewEssai!==null) && $evenement->isActif())
         {
             $essaiJoueur = new EssaiJoueur();
             $validation = $essaiJoueur->insert_validation($dataNewEssai);
