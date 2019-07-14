@@ -7,6 +7,8 @@ import cles_list_tpl from "templates/parties/show/cles_list.tpl"
 
 # Panneau de recherche : input + submit + bouton GPS
 PartiePanelView = View.extend {
+  cle: ""
+  actif: true
   template: panel_tpl
   events: {
     "submit #essai-form": "essayerCle"
@@ -25,7 +27,8 @@ PartiePanelView = View.extend {
     @ui.essai.val(cle)
   templateContext: ->
     {
-      cle: @options.cle ? ""
+      cle: @getOption "cle"
+      actif: @getOption "actif"
     }
 }
 
@@ -94,6 +97,7 @@ ClesCollectionView = CollectionView.extend {
 # panneau d'accueil quand aucune clé n'est trouvée ou en cas d'erreur
 PartieAccueilView = View.extend {
   template: accueil_tpl
+  cleSaved: true
   templateContext: ->
     essaiCle = @options.cle ? ""
     gps = (essaiCle isnt "" and /^gps=[0-9]+\.[0-9]+,[0-9]+\.[0-9]+(,[0-9]+)?$/.test(essaiCle))
@@ -106,6 +110,7 @@ PartieAccueilView = View.extend {
       cle: essaiCle
       gps
       accuracy
+      cleSaved: @getOption "cleSaved"
     }
 }
 
