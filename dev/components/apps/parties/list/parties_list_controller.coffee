@@ -7,7 +7,6 @@ import { app } from 'app'
 Controller = MnObject.extend {
   channelName: 'entities'
   listRedacteur: (criterion)->
-    criterion = criterion ? ""
     app.trigger "loading:up"
 
     channel = @getChannel()
@@ -15,19 +14,15 @@ Controller = MnObject.extend {
     fetching = channel.request("custom:entities", ["parties"])
     $.when(fetching).done( (items)->
       listLayout = new ListLayout()
+      listView = new PartiesList_RedacteurView {
+        collection: items
+        filterCriterion: criterion
+      }
       listPanel = new ListPanel {
+        listView
         title: "Parties"
         filterCriterion: criterion
       }
-      listView = new PartiesList_RedacteurView {
-        collection: items
-      }
-
-      listPanel.on "items:filter", (filterCriterion)->
-        listView.trigger("set:filter:criterion", filterCriterion, { preventRender:false })
-        app.trigger("parties:filter", filterCriterion)
-
-      listView.trigger("set:filter:criterion", listPanel.options.filterCriterion, { preventRender:false })
 
       listLayout.on "render", ()->
         listLayout.getRegion('panelRegion').show(listPanel)
@@ -89,24 +84,19 @@ Controller = MnObject.extend {
     fetching = channel.request("custom:entities", ["parties"])
     $.when(fetching).done( (items)->
       listLayout = new ListLayout()
-      listPanel = new ListPanel {
-        title: "Mes parties"
-        filterCriterion:criterion
-      }
-
       listView = new PartiesList_JoueurView {
         collection: items
+        filterCriterion: criterion
+      }
+      listPanel = new ListPanel {
+        listView
+        title: "Mes parties"
+        filterCriterion:criterion
       }
 
       listView.on "item:select", (childView) ->
         id = childView.model.get("id")
         app.trigger "partie:show", id
-
-      listPanel.on "items:filter", (filterCriterion)->
-        listView.triggerMethod("set:filter:criterion", filterCriterion, { preventRender:false })
-        app.trigger("evenements:filter", filterCriterion)
-
-      listView.triggerMethod("set:filter:criterion", criterion, { preventRender:false })
 
       listLayout.on "render", ()->
         listLayout.getRegion('panelRegion').show(listPanel)

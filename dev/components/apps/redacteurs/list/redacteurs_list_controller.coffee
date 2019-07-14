@@ -7,28 +7,21 @@ import { app } from 'app'
 Controller = MnObject.extend {
   channelName: 'entities'
   list: (criterion)->
-    criterion = criterion ? ""
     app.trigger "loading:up"
     channel = @getChannel()
     require "entities/dataManager.coffee"
     fetching = channel.request("custom:entities", ["redacteurs"])
     $.when(fetching).done( (items)->
       listLayout = new ListLayout()
+      listView = new RedacteursCollectionView {
+        collection: items
+      }
       listPanel = new ListPanel {
+        listView
         title: "Rédacteurs"
         filterCriterion:criterion
         showAddButton:true
       }
-
-      listView = new RedacteursCollectionView {
-        collection: items
-      }
-
-      listPanel.on "items:filter", (filterCriterion)->
-        listView.trigger("set:filter:criterion", filterCriterion, { preventRender:false })
-        app.trigger("redacteurs:filter", filterCriterion)
-
-      listView.trigger("set:filter:criterion", criterion, { preventRender:false })
 
       listLayout.on "render", ->
         listLayout.getRegion('panelRegion').show(listPanel)

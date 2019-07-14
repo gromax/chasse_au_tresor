@@ -25,10 +25,11 @@ SortList = Behavior.extend {
 
 FilterList = Behavior.extend {
   initialize: ->
-    if (typeof @view.options.filterCriterion isnt "undefined") and (@view.options.filterCriterion isnt "")
-      @view.trigger("set:filter:criterion",@view.options.filterCriterion, { preventRender: true })
+    filterCriterion = @view.getOption("filterCriterion") or ""
+    if (filterCriterion isnt "")
+      @view.trigger("set:filter:criterion",filterCriterion, { preventRender: true })
   onSetFilterCriterion: (criterion, options) ->
-    criterion = criterion.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()
+    criterion = criterion.normalize('NFD').replace(/\+/g," ").replace(/[\u0300-\u036f]/g, "").toLowerCase()
     if criterion is "" or typeof @view.filterKeys is "undefined"
       @view.removeFilter(options)
     else
@@ -241,12 +242,18 @@ FilterPanel = Behavior.extend {
   events: {
     "submit @ui.form": "applyFilter"
   }
+  initialize: ->
+    filterCriterion = @view.getOption("filterCriterion") or ""
+    @view.options.filterCriterion = filterCriterion.replace(/\+/g," ")
   applyFilter: (e)->
     e.preventDefault()
     criterion = @ui.criterion.val()
-    @view.trigger("items:filter", criterion)
+    criterionForNav = criterion.replace(/\s/g,"+")
+    @view.getOption("listView")?.triggerMethod("set:filter:criterion", criterion, { preventRender:false })
+    require('app').app.trigger("evenements:filter", criterionForNav)
   onSetFilterCriterion: (criterion)->
-    @ui.criterion.val(String(criterion).replace(/__/g," "))
+    modCriterion = String(criterion).replace(/\+/g," ")
+    @ui.criterion.val(modCriterion)
 }
 
 export { SortList, FilterList, DestroyWarn, SubmitClicked, FlashItem, ToggleItemValue, FilterPanel, EditItem }

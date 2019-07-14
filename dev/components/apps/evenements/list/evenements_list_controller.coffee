@@ -14,20 +14,17 @@ Controller = MnObject.extend {
     fetching = channel.request("custom:entities", ["evenements"])
     $.when(fetching).done( (items)->
       listLayout = new ListLayout()
-      listPanel = new ListPanel {
-        title: "Événements"
-        filterCriterion:criterion
-        showAddButton: app.Auth.get("rank") is "redacteur"
-      }
-
       listView = new EvenementsCollectionView_Redacteur {
         collection: items
         filterCriterion: criterion
       }
 
-      listPanel.on "items:filter", (filterCriterion)->
-        listView.triggerMethod("set:filter:criterion", filterCriterion, { preventRender:false })
-        app.trigger("evenements:filter", filterCriterion)
+      listPanel = new ListPanel {
+        listView
+        title: "Événements"
+        filterCriterion:criterion
+        showAddButton: app.Auth.get("rank") is "redacteur"
+      }
 
       listLayout.on "render", ->
         listLayout.getRegion('panelRegion').show(listPanel)
@@ -79,20 +76,18 @@ Controller = MnObject.extend {
     fetching = channel.request("custom:entities", ["evenements"])
     $.when(fetching).done( (items)->
       listLayout = new ListLayout()
-      listPanel = new ListPanel {
-        title: "Événements"
-        filterCriterion: criterion
-        showAddButton: false
-      }
 
       listView = new EvenementsCollectionView_Joueur {
         collection: items
         filterCriterion: criterion
       }
 
-      listPanel.on "items:filter", (filterCriterion)->
-        listView.triggerMethod("set:filter:criterion", filterCriterion, { preventRender:false })
-        app.trigger("evenements:filter", filterCriterion)
+      listPanel = new ListPanel {
+        listView
+        title: "Événements"
+        filterCriterion: criterion
+        showAddButton: false
+      }
 
       listLayout.on "render", ->
         listLayout.getRegion('panelRegion').show(listPanel)
