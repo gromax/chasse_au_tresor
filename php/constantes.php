@@ -28,8 +28,7 @@
   define("PSEUDO_MAX_SIZE", 20);
 
   // hashs
-  define("REDACTEUR_PWD_LOST",1);
-  define("JOUEUR_PWD_LOST",1);
+  define("USER_PWD_LOST",1);
 
 
 ?>
