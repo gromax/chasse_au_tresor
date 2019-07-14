@@ -62,8 +62,7 @@ class session
             return false;
         }
 
-        $adm = (isset($data['adm'])&&($data['adm']));
-        $loginSuccess = AC::tryLogin($username, $pwd, $adm);
+        $loginSuccess = AC::tryLogin($username, $pwd);
 
         if ($loginSuccess)
         {
@@ -76,10 +75,10 @@ class session
         }
     }
 
-    public function getRedacteurSessionWithHash()
+    public function getUserSessionWithHash()
     {
         $hash = $this->params['hash'];
-        $loginSuccess = AC::tryLoginWithHash($hash, true);
+        $loginSuccess = AC::tryLoginWithHash($hash);
         if ($loginSuccess)
         {
             $ac = new AC();
@@ -90,21 +89,5 @@ class session
             return false;
         }
     }
-
-    public function getJoueurSessionWithHash()
-    {
-        $hash = $this->params['hash'];
-        $loginSuccess = AC::tryLoginWithHash($hash, false);
-        if ($loginSuccess)
-        {
-            $ac = new AC();
-            return $ac->getloggedUserData();
-        }
-        else
-        {
-            return false;
-        }
-    }
-
 }
 ?>
