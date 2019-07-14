@@ -101,6 +101,10 @@ final class Evenement extends Item
     $options = array("evenement"=>$this->id);
     return (Partie::deleteList($options) && ItemEvenement::deleteList($options) && Image::deleteList($options));
   }
+  public function isActif()
+  {
+    return $this->values['actif'];
+  }
 
 }
 
