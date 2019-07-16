@@ -1,4 +1,3 @@
-import Backbone from 'backbone'
 import Radio from 'backbone.radio'
 
 API = {
@@ -39,40 +38,6 @@ API = {
       )
     return promise = defer.promise()
 
-  getItemPartie: (options) ->
-    defer = $.Deferred()
-
-    if options.cle then requestedData = { cle: options.cle }
-    else requestedData = { }
-    if options.hash
-      url = "api/event/hash/#{options.hash}"
-    else
-      url = "api/customData/partie/#{options.id}"
-
-    request = $.ajax(url,{
-      method:'GET'
-      dataType:'json'
-      data: requestedData
-    })
-
-    request.done( (data)->
-      OPartie = require("entities/parties.coffee").Item
-      partie = new OPartie(data.partie)
-      OEvenement = require("entities/evenements.coffee").Item
-      evenement = new OEvenement(data.evenement)
-      ColEssaisJoueur = require("entities/essaisJoueur.coffee").Collection
-      essais = new ColEssaisJoueur(data.essais, {parse:true})
-      if data.item?
-        OItemEvenement = require("entities/itemsEvenement.coffee").Item
-        item = new OItemEvenement(data.item, {parse:true})
-        defer.resolve { evenement, partie, essais, item }
-      else
-        defer.resolve { evenement, partie, essais }
-    ).fail( (response)->
-      defer.reject(response)
-    )
-    return defer.promise()
-
   getEssais: (idPartie) ->
     defer = $.Deferred()
 
@@ -96,24 +61,7 @@ API = {
     )
     return defer.promise()
 
-  getEssaisCount: (idPartie) ->
-    defer = $.Deferred()
-    url = "api/essaisJoueur/count/#{idPartie}"
-    request = $.ajax(url,{
-      method:'GET'
-      dataType:'json'
-    })
 
-    request.done( (data)->
-      cnt = data?.cnt
-      if typeof cnt isnt "undefined"
-        defer.resolve(Number cnt)
-      else
-        defer.reject({})
-    ).fail( (response)->
-      defer.reject(response)
-    )
-    return defer.promise()
 
   purge: ->
     console.log("purge des données")
@@ -123,7 +71,5 @@ API = {
 
 channel = Radio.channel('entities')
 channel.reply('custom:entities', API.getCustomEntities )
-channel.reply('custom:partie', API.getItemPartie )
 channel.reply('custom:essais', API.getEssais )
-channel.reply('custom:count:essais', API.getEssaisCount )
 channel.reply('data:purge', API.purge )
