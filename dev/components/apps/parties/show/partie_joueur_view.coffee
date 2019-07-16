@@ -60,31 +60,31 @@ ClesCollectionView = CollectionView.extend {
   childView: CleItemView
   childViewEventPrefix: 'cle'
   childViewContainer: ".js-cles-list"
-  showErreursVisiblesButton:true
-  erreursVisibles: true
+  showErreursEtFinisVisiblesButton:true
+  erreursetfinisVisibles: true
   events: {
-    "click a.js-erreursVisiblesToggle": "erreursVisiblesToggle"
+    "click a.js-erreursetfinisVisiblesToggle": "erreursetfinisVisiblesToggle"
   }
   triggers: {
     "click a.js-refresh": "click:refresh:button"
   }
-  erreursVisiblesToggle: (e) ->
+  erreursetfinisVisiblesToggle: (e) ->
     e.preventDefault()
     $dom = e.currentTarget
-    @options.erreursVisibles = not (@getOption "erreursVisibles")
+    @options.erreursetfinisVisibles = not (@getOption "erreursetfinisVisibles")
     $label = $("small", $dom)
     $ico = $(".fa", $dom)
-    if @options.erreursVisibles
+    if @options.erreursetfinisVisibles
       $ico.removeClass("fa-eye-slash").addClass("fa-eye")
-      $label.html "Erreurs visibles"
+      $label.html "Erreurs et finis visibles"
     else
       $ico.removeClass("fa-eye").addClass("fa-eye-slash")
-      $label.html "Erreurs cachées"
-    @trigger "erreurs:visibles:toggle"
+      $label.html "Erreurs et finis cachés"
+    @trigger "erreursetfinis:visibles:toggle"
   templateContext: ->
     {
-      erreursVisibles: @getOption "erreursVisibles"
-      showErreursVisiblesButton: @getOption "showErreursVisiblesButton"
+      erreursetfinisVisibles: @getOption "erreursetfinisVisibles"
+      showErreursEtFinisVisiblesButton: @getOption "showErreursEtFinisVisiblesButton"
     }
   childViewOptions: ->
     {
