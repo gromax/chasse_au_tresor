@@ -41,7 +41,7 @@ Manager = Marionette.Application.extend {
   onStart: (app, options) ->
     @version = VERSION
     @user_options = {
-      erreursVisibles: true
+      erreursetfinisVisibles: true
     }
     self = @
     historyStart = () ->
