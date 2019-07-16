@@ -1,5 +1,5 @@
 <td><span class="badge badge-pill badge-primary"><%- id %></span></td>
-<td><% if (tagCle!="") { %><i class="fa fa-tag"></i>&nbsp;</i><%- tagCle %><br/><small><%- essai %></small><% } else { %><%- essai %><% } %><%if (!prerequisOk) {%>&nbsp;<i class="fa fa-exclamation-triangle"></i><% } %></td>
+<td><% if (tagCle!="") { %><i class="fa fa-tag"></i>&nbsp;</i><%- tagCle %><br/><small><%- essai %></small><% } else { %><%- essai %><% } %><%if (!prerequisOk) {%>&nbsp;<i class="fa fa-exclamation-triangle"></i><% } %>&nbsp;<%if (fini) {%>&nbsp;<i class="fa fa-flag-checkered"></i><% } %></td>
 <td align="center"><%- pts %></td>
 <td align="center"><%- date_fr %></td>
 <td align="right">
