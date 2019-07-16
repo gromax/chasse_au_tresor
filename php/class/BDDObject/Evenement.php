@@ -110,6 +110,13 @@ final class Evenement extends Item
   {
     return $this->values['actif'];
   }
+  public function getSuites()
+  {
+    $list = ItemEvenement::getList(array("evenement"=>$this->id));
+    $ids = array_column($list,"id");
+    $suites = array_column($list,"suite");
+    return array_combine($ids, $suites);
+  }
 
 }
 
