@@ -27,5 +27,10 @@
     <input class="form-control js-pts" id="item-prerequis" name="prerequis" type="text" value="<%- prerequis %>" placeHolder="Prérequis"/>
     <small class="form-text text-muted">forme id1&id2&id3|id4&id5...</small>
   </div>
+  <div class="form-group">
+    <label for="item-suite" class="control-label">suite</label>
+    <input class="form-control js-pts" id="item-suite" name="suite" type="text" value="<%- suite %>" placeHolder="Suite"/>
+    <small class="form-text text-muted">forme id1;id2;&id3... ou $ pour sans suite ou vide</small>
+  </div>
   <button class="btn btn-success js-submit">Enregistrer</button>
 </form>
