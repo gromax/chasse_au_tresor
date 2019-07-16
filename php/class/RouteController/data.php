@@ -197,51 +197,6 @@ class data
         }
     }
 
-    public function getPartieWithHash()
-    {
-        $ac = new AC();
-        if (!$ac->connexionOk())
-        {
-            EC::addError("Déconnecté !");
-            EC::set_error_code(401);
-            return false;
-        }
-
-        if ($ac->isJoueur())
-        {
-            $hash = $this->params['hash'];
-            $idJoueur = $ac->getLoggedUserId();
-            // On vérifie l'existence de l'événement
-            $evenement = Evenement::getWithHash($hash);
-            if ($evenement===null)
-            {
-            // Le hash n'existe pas ou l'évent n'est pas actif
-                EC::set_error_code(404);
-                return false;
-            }
-            // On cherche la partie
-            $partie = Partie::getLinkedWithEvenementEtJoueur($evenement->getId(), $idJoueur);
-            if ($partie===null)
-            {
-                // il faut créer la partie
-                $data = array("idProprietaire"=>$idJoueur, "idEvenement"=>$evenement->getId());
-                $partie = new Partie();
-                $idPartie = $partie->update($data);
-                if ($idPartie===null){
-                    EC::set_error_code(501);
-                    return false;
-                }
-            }
-            // On peut poursuivre avec la partie et l'événement
-            return $this->helperPartieFetch($partie,$evenement,$idJoueur,null);
-        }
-        else
-        {
-            EC::set_error_code(403);
-            return false;
-        }
-    }
-
     public function getEssaisFromPartie()
     {
         $ac = new AC();
@@ -297,8 +252,6 @@ class data
             "essais"=>$essais,
             "nomJoueur"=>$nomJoueur
         );
-
-
     }
 
 }
