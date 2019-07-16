@@ -71,23 +71,25 @@ Controller = MnObject.extend {
           cleSaved
         }
 
-
+      fctFilter = (it)->(it.get("idItem")==-1)or it.get("fini")
+      idSelected = data.item?.get("id") ? -2
       vueCles = new ClesCollectionView {
         collection: data.essais
-        idSelected: data.item?.get("id") ? -1
-        erreursVisibles: app.user_options.erreursVisibles
-        showErreursVisiblesButton: evenement.get "sauveEchecs"
+        idSelected: idSelected
+        erreursetfinisVisibles: app.user_options.erreursetfinisVisibles
+        showErreursEtFinisVisiblesButton: data.essais.some(fctFilter)
       }
 
       clesFilterFct = (view, index, children) ->
-        view.model.get("idItem") >= 0
-      unless app.user_options.erreursVisibles
+        model = view.model
+        (model.get("idItem")==idSelected) or (model.get("idItem") >= 0) and not model.get("fini")
+      unless app.user_options.erreursetfinisVisibles
         vueCles.setFilter clesFilterFct, {}
       vueCles.on "cle:select", (v)->
         app.trigger "partie:show:cle", id, v.model.get("essai").normalize('NFD').replace(/[\u0300-\u036f]/g, "")
-      vueCles.on "erreurs:visibles:toggle", ->
-        app.user_options.erreursVisibles = not app.user_options.erreursVisibles
-        if app.user_options.erreursVisibles
+      vueCles.on "erreursetfinis:visibles:toggle", ->
+        app.user_options.erreursetfinisVisibles = not app.user_options.erreursetfinisVisibles
+        if app.user_options.erreursetfinisVisibles
           vueCles.removeFilter {}
         else
           vueCles.setFilter clesFilterFct, {}
