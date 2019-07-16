@@ -23,7 +23,8 @@ final class ItemEvenement extends Item
       'tagCle' => array( 'def' => "", 'type'=> 'string'), // étiquette pour la clé
       'regexCle' => array( 'def' => "", 'type'=> 'string'), // regex pour la clé
       'pts' => array( 'def' => 0, 'type' => 'integer'), // nombre de points
-      'prerequis' => array( 'def'=>"", 'type'=> 'string') // item qui devraient précéder s'il n'y a pas de triche
+      'prerequis' => array( 'def'=>"", 'type'=> 'string'), // item qui devraient précéder s'il n'y a pas de triche
+      'suite' => array( 'def'=>"", 'type'=> 'string'), // item qui suivent
       );
   }
 
@@ -52,11 +53,11 @@ final class ItemEvenement extends Item
     try {
       if (isset($options['redacteur']))
         // rédacteur
-        return DB::query("SELECT i.id, i.idEvenement, i.subItemsData, i.tagCle, i.regexCle, i.pts, i.prerequis FROM (".PREFIX_BDD."itemsEvenement i JOIN ".PREFIX_BDD."evenements e ON e.id = i.idEvenement) WHERE e.idProprietaire=%i", $options['redacteur']);
+        return DB::query("SELECT i.id, i.idEvenement, i.subItemsData, i.tagCle, i.regexCle, i.pts, i.prerequis, i.suite FROM (".PREFIX_BDD."itemsEvenement i JOIN ".PREFIX_BDD."evenements e ON e.id = i.idEvenement) WHERE e.idProprietaire=%i", $options['redacteur']);
       elseif (isset($options['evenement']))
-        return DB::query("SELECT id, idEvenement, subItemsData, tagCle, regexCle, pts, prerequis FROM ".PREFIX_BDD."itemsEvenement WHERE idEvenement=%i", $options['evenement']);
+        return DB::query("SELECT id, idEvenement, subItemsData, tagCle, regexCle, pts, prerequis, suite FROM ".PREFIX_BDD."itemsEvenement WHERE idEvenement=%i", $options['evenement']);
       elseif (isset($options['root']))
-        return DB::query("SELECT id, idEvenement, subItemsData, tagCle, regexCle, pts, prerequis FROM ".PREFIX_BDD."itemsEvenement");
+        return DB::query("SELECT id, idEvenement, subItemsData, tagCle, regexCle, pts, prerequis, suite FROM ".PREFIX_BDD."itemsEvenement");
       else
       {
         return array();
