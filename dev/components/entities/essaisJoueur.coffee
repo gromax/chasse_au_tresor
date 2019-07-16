@@ -8,6 +8,7 @@ Item = Backbone.Model.extend {
     tagCle: ""
     pts: 0
     prerequis: ""
+    fini: false
   }
 
   toJSON: ->
@@ -26,7 +27,7 @@ Item = Backbone.Model.extend {
       data.idItem = Number(data.idItem)
     if data.data then data.data = JSON.parse(data.data)
     else data.data = {}
-
+    data.fini = (data.fini is "1") or (data.fini is 1) or (data.fini is true)
     if (data.date)
       data.date_fr = data.date.replace(/([0-9]{4})-([0-9]{2})-([0-9]{2})\s*([0-9]{2}:[0-9]{2}:[0-9]{2})/,"$3/$2/$1 $4")
     else
