@@ -61,7 +61,52 @@ final class EssaiJoueur extends Item
       elseif (isset($options['evenement']))
         return DB::query("SELECT c.id, c.idItem, c.essai, c.date FROM (".PREFIX_BDD."essaisJoueur c JOIN ".PREFIX_BDD."parties p ON p.id = c.idPartie) WHERE p.idEvenement=%i", $options['evenement']);
       elseif (isset($options['partie']))
-        return DB::query("SELECT c.id, c.idPartie, c.idItem, c.essai, date, COALESCE(i.tagCle, '') AS tagCle , COALESCE(i.pts,e.ptsEchecs) AS pts, COALESCE(i.prerequis, '') AS prerequis FROM (((".PREFIX_BDD."essaisJoueur c JOIN ".PREFIX_BDD."parties p ON c.idPartie = p.id) JOIN ".PREFIX_BDD."evenements e ON p.idEvenement = e.id) LEFT JOIN ".PREFIX_BDD."itemsEvenement i ON i.id=c.idItem ) WHERE c.idPartie=%i", $options['partie']);
+      {
+        $arrOut = DB::query("SELECT c.id, c.idPartie, c.idItem, c.essai, date, COALESCE(i.tagCle, '') AS tagCle , COALESCE(i.pts,e.ptsEchecs) AS pts, COALESCE(i.prerequis, '') AS prerequis FROM (((".PREFIX_BDD."essaisJoueur c JOIN ".PREFIX_BDD."parties p ON c.idPartie = p.id) JOIN ".PREFIX_BDD."evenements e ON p.idEvenement = e.id) LEFT JOIN ".PREFIX_BDD."itemsEvenement i ON i.id=c.idItem ) WHERE c.idPartie=%i", $options['partie']);
+        if (isset($options['markFinished']))
+        {
+          $suites = $options['markFinished'];
+          $founds = array_column($arrOut,"idItem");
+          foreach ($arrOut as $key=>$essai) {
+              $idItem = $essai["idItem"];
+              if ($idItem!="-1")
+              {
+                  if (isset($suites[$idItem]))
+                  {
+                    $suite = $suites[$idItem];
+                  }
+                  else
+                  {
+                    $suite = "";
+                  }
+                  if ($suite=="$")
+                  {
+                      $arrOut[$key]["fini"]=1;
+                  }
+                  elseif ($suite!=="")
+                  {
+                      $arrSuite = explode(";",$suite);
+                      foreach ($arrSuite as $itSuite) {
+                          if (!in_array($itSuite,$founds))
+                          {
+                              $arrOut[$key]["fini"]=0;
+                              break;
+                          }
+                      }
+                      if (!isset($arrOut[$key]["fini"]))
+                      {
+                          $arrOut[$key]["fini"]=1;
+                      }
+                  }
+                  else
+                  {
+                      $arrOut[$key]["fini"]=0;
+                  }
+              }
+          }
+        }
+        return $arrOut;
+      }
       elseif (isset($options['root']))
         return DB::query("SELECT id, essai, date FROM ".PREFIX_BDD."essaisJoueur");
       else
