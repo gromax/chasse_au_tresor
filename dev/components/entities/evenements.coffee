@@ -1,3 +1,5 @@
+import Radio from 'backbone.radio'
+
 Item = Backbone.Model.extend {
   urlRoot: "api/evenements"
 
@@ -53,6 +55,29 @@ Collection = Backbone.Collection.extend {
   model: Item
   comparator: "titre"
 }
+
+API = {
+  getWithHash: (hash)->
+    defer = $.Deferred()
+    request = $.ajax("api/event/hash/#{hash}",{
+      method:'GET'
+      dataType:'json'
+      data: {}
+    })
+
+    request.done( (data)->
+      OEvenement = require("entities/evenements.coffee").Item
+      evenement = new OEvenement(data, {parse:true})
+      defer.resolve evenement
+    ).fail( (response)->
+      defer.reject(response)
+    )
+    return defer.promise()
+}
+
+channel = Radio.channel('entities')
+channel.reply('evenement:hash', API.getWithHash )
+
 
 export {
   Item
