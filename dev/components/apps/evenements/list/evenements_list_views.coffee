@@ -72,7 +72,7 @@ EvenementItemView_Joueur = View.extend {
     if @model.get("actif")
       "list-group-item list-group-item-action"
     else
-      "list-group-item list-group-item-action disabled"
+      "list-group-item list-group-item-danger list-group-item-action"
   template: list_evenements_joueur_item_tpl
   triggers: {
     "click": "select"
