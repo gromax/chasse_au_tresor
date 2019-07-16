@@ -71,20 +71,25 @@ final class Evenement extends Item
     return false;
   }
 
-  public static function getWithHash($hash)
+  public static function getArrayWithHash($hash, $idJoueur = false)
   {
     require_once BDD_CONFIG;
     try {
-      $bdd_result=DB::queryFirstRow("SELECT * FROM ".PREFIX_BDD.static::$BDDName." WHERE hash=%s AND actif=1", $hash);
+      if ($idJoueur !==false)
+      {
+        $bdd_result=DB::queryFirstRow("SELECT e.id, e.titre, e.idProprietaire, e.description, e.actif, e.sauveEchecs, e.ptsEchecs, p.id as idPartie FROM (".PREFIX_BDD."evenements e LEFT JOIN ".PREFIX_BDD."parties p ON e.id = p.idEvenement AND p.idProprietaire=%i) WHERE e.hash=%s", $idJoueur, $hash);
+      }
+      else
+      {
+        $bdd_result=DB::queryFirstRow("SELECT * FROM ".PREFIX_BDD.static::$BDDName." WHERE hash=%s", $hash);
+      }
       if ($bdd_result === null)
       {
         return null;
       }
-
-      $item = new Evenement($bdd_result);
-      return $item;
+      return $bdd_result;
     } catch(MeekroDBException $e) {
-      EC::addBDDError($e->getMessage(),"Evenement/getWithHash");
+      EC::addBDDError($e->getMessage(),"Evenement/getArrayWithHash");
     }
     return null;
   }
