@@ -6,18 +6,15 @@ import { app } from 'app'
 
 Controller = MnObject.extend {
   channelName: "entities",
-  show: (options) ->
+  show: (id,cle) ->
     app.trigger "loading:up"
-    require "entities/dataManager.coffee"
+    require "entities/parties.coffee"
     channel = @getChannel()
-    fetchingData = channel.request("custom:partie", options)
+    fetchingData = channel.request("partie:fetch", id, cle)
     $.when(fetchingData).done( (data)->
       partie = data.partie
       id = partie.get("id")
-      if options.cle
-        cle = options.cle
-      else
-        cle = ""
+      cle = cle or ""
       evenement = data.evenement
       layout = new PartieLayout()
       panel = new PartiePanelView {
@@ -96,7 +93,7 @@ Controller = MnObject.extend {
           vueCles.setFilter clesFilterFct, {}
 
       vueCles.on "cles:test:need:refresh", ->
-        fetchingCount = channel.request("custom:count:essais", id)
+        fetchingCount = channel.request("partie:count:essais", id)
         app.trigger "loading:up"
         $.when(fetchingCount).done( (cnt)->
           if cnt+vueCles.collection.where({idItem:-1}).length isnt vueCles.children.length
@@ -128,17 +125,7 @@ Controller = MnObject.extend {
         layout.getRegion('motsRegion').show(vueCles)
       app.regions.getRegion('main').show(layout)
     ).fail( (response) ->
-      if response.status is 404
-        view = new MissingView {
-          message: "<ul><li>Vous cherchez une partie qui n'existe pas,</li><li>ou peut-être un événement qui n'est pas encore activé. Dans ce cas, essayez plus tard.</li></ul>"
-        }
-        app.regions.getRegion('main').show(view)
-      else if response.status is 401
-        alert("Vous devez vous (re)connecter !")
-        app.trigger "home:logout"
-      else
-        alertView = new AlertView()
-        app.regions.getRegion('main').show(alertView)
+      app.trigger "data:fetch:fail", response
     ).always( ->
       app.trigger "loading:down"
     )
