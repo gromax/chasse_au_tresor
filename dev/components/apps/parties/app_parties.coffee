@@ -3,7 +3,7 @@ Router = Backbone.Router.extend {
   routes: {
     "parties(/filter/criterion::criterion)": "list"
     "partie::id(/cle::cle)": "show"
-    "partie/hash::hash": "showHash"
+    "partie/hash::hash": "startHash"
     "partie/start::id": "start"
     "partie::id/essais": "showEssaisPartie"
   }
@@ -24,18 +24,18 @@ Router = Backbone.Router.extend {
     rank = app.Auth.get("rank")
     if (rank is "joueur")
       if typeof cle is "string" then cle = cle.replace(/\+/g," ")
-      require("apps/parties/show/partie_joueur_controller.coffee").controller.show({id, cle})
+      require("apps/parties/show/partie_joueur_controller.coffee").controller.show(id, cle)
     else
       app.trigger "not:found"
 
-  showHash: (hash) ->
+  startHash: (hash) ->
     rank = app.Auth.get("rank")
     if rank is "off"
       cb = ->
-        app.trigger "partie:show:hash", hash
+        app.trigger "partie:start:hash", hash
       require("apps/common/sign/sign_controller.coffee").controller.show({signin:true, desactiveModeChoiceButton:true, adm:0, callback:cb, showToggleButton:true })
     if rank is "joueur"
-      require("apps/parties/show/partie_joueur_controller.coffee").controller.show({hash})
+      require("apps/parties/new/new_partie_controller.coffee").controller.showHash(hash)
 
   start: (id) ->
     rank = app.Auth.get("rank")
@@ -63,6 +63,10 @@ app.on "partie:start", (id) ->
   app.navigate "partie/start:#{id}"
   router.start(id)
 
+app.on "partie:start:hash", (hash) ->
+  app.navigate "partie/hash:#{hash}"
+  router.startHash(hash)
+
 app.on "partie:show", (id) ->
   app.navigate "partie:#{id}"
   router.show(id,"")
@@ -73,10 +77,6 @@ app.on "partie:show:cle", (id,cle) ->
   else
     app.navigate "partie:#{id}/cle:#{cle.replace(/\s/g,"+")}"
     router.show(id,cle)
-
-app.on "partie:show:hash", (hash) ->
-  app.navigate "partie/hash:#{hash}"
-  router.showHash(hash)
 
 app.on "partie:essais:list", (id) ->
   app.navigate "partie:#{id}/essais"
