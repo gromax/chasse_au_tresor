@@ -136,7 +136,7 @@ class data
             // si la clé n'est pas crée car existait déjà, c'est idem
         }
 
-        $essais = EssaiJoueur::getList(array("partie"=>$partie->getId()));
+        $essais = EssaiJoueur::getList(array("partie"=>$partie->getId(), "markFinished"=>$evenement->getSuites()));
 
         $output = array(
             "partie"=>$partie->getValues(),
@@ -245,7 +245,7 @@ class data
             return false;
         }
 
-        $essais = EssaiJoueur::getList(array("partie"=>$id));
+        $essais = EssaiJoueur::getList(array("partie"=>$id, "markFinished"=>$evenement->getSuites()));
         return array(
             "partie"=>$partie->getValues(),
             "evenement"=>$evenement->getValues(),
@@ -253,6 +253,5 @@ class data
             "nomJoueur"=>$nomJoueur
         );
     }
-
 }
 ?>
