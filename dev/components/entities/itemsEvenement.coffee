@@ -57,6 +57,10 @@ Item = Backbone.Model.extend {
       errors.regexCle = "Ne doit pas être vide"
     if attrs.pts and (/^\s*[-+]?\s*[0-9]+$/.test(attrs.pts) is false)
         errors.pts = "Entier positif ou négatif"
+    if attrs.prerequis and (attrs.prerequis!="") and (/^[0-9]+((&|\|)[0-9]+)*$/.test(attrs.prerequis) is false)
+        errors.prerequis = "doit être vide ou, id1&id2|id3..."
+    if attrs.suite and (attrs.suite!="") and (attrs.suite!="$") and (/^[0-9]+(;[0-9]+)*$/.test(attrs.suite) is false)
+        errors.suite = "doit être vide ou, $ ou id1;id2..."
     if not _.isEmpty(errors)
       return errors
 
