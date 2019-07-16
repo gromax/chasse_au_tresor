@@ -29,6 +29,7 @@ function loadRouter()
   $router->addRule('api/evenements/:id', 'evenements', 'delete', 'DELETE');
   $router->addRule('api/evenements/:id', 'evenements', 'update', 'PUT');
   $router->addRule('api/evenements', 'evenements', 'insert', 'POST');
+  $router->addRule('api/event/hash/:hash', 'evenements', 'getEventWithHash', 'GET');
 
   // itemEvenements
   $router->addRule('api/itemsEvenement/:id', 'itemsEvenement', 'fetch', 'GET');
@@ -52,7 +53,6 @@ function loadRouter()
   // data
   $router->addRule('api/customData/:asks', 'data', 'customFetch', 'GET');
   $router->addRule('api/customData/partie/:id', 'data', 'partieFetch', 'GET');
-  $router->addRule('api/event/hash/:hash', 'data', 'getPartieWithHash', 'GET');
   $router->addRule('api/customData/essais/:id', 'data', 'getEssaisFromPartie', 'GET');
 
   // forgotten
