@@ -175,5 +175,36 @@ class evenements
         }
     }
 
+    public function getEventWithHash()
+    {
+        $ac = new AC();
+        if (!$ac->connexionOk())
+        {
+            EC::addError("Déconnecté !");
+            EC::set_error_code(401);
+            return false;
+        }
+
+        if ($ac->isJoueur())
+        {
+            $hash = $this->params['hash'];
+            $idJoueur = $ac->getLoggedUserId();
+            // On vérifie l'existence de l'événement
+            $arrayEvenement = Evenement::getArrayWithHash($hash, $idJoueur);
+            if ($arrayEvenement===null)
+            {
+            // Le hash n'existe pas
+                EC::set_error_code(404);
+                return false;
+            }
+            return $arrayEvenement;
+        }
+        else
+        {
+            EC::set_error_code(403);
+            return false;
+        }
+    }
+
 }
 ?>
