@@ -25,12 +25,15 @@ IEItemView = View.extend {
 
 IEListPanel = View.extend {
   template: ie_list_panel_tpl
+  partagesView: false
   triggers: {
     "click a.js-parent": "navigate:parent"
+    "click a.js-partage": "navigate:partage"
   }
   templateContext: ->
     {
       baseUrl: window.location.href.split("#")[0].slice(0, -1)+"#"
+      partagesView: @getOption "partagesView"
     }
 }
 
