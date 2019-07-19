@@ -1,3 +1,4 @@
+<table class="table table-hover">
 <thead>
   <tr>
     <th width="20"><a href="" class="js-sort" sort="id">#</a></th>
@@ -10,3 +11,4 @@
 </thead>
 <tbody>
 </tbody>
+</table>
