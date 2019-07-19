@@ -8,19 +8,23 @@ SortList = Behavior.extend {
 
   sortFct: (e)->
     e.preventDefault()
-    tag = $(e.currentTarget).attr("sort")
+    @view.$el.find(".js-sort-icon").remove()
+    $sortEl = $(e.currentTarget)
+    tag = $sortEl.attr("sort")
     collection = @view.collection
     if collection.comparatorAttr is tag
+      $sortEl.append("<span class='js-sort-icon'>&nbsp;<i class='fa fa-sort-amount-desc'></i></span>")
       collection.comparatorAttr = "inv_"+tag
       collection.comparator = (a,b)->
-      if a.get(tag)>b.get(tag)
-        -1
-      else
-        1
+        if a.get(tag)>b.get(tag)
+          -1
+        else
+          1
     else
-       collection.comparatorAttr = tag
-       collection.comparator = tag
-       collection.sort()
+      $sortEl.append("<span class='js-sort-icon'>&nbsp;<i class='fa fa-sort-amount-asc'></i></span>")
+      collection.comparatorAttr = tag
+      collection.comparator = tag
+    collection.sort()
 }
 
 FilterList = Behavior.extend {
@@ -246,14 +250,24 @@ FilterPanel = Behavior.extend {
     filterCriterion = @view.getOption("filterCriterion") or ""
     @view.options.filterCriterion = filterCriterion.replace(/\+/g," ")
   applyFilter: (e)->
+    # à partir du input
     e.preventDefault()
     criterion = @ui.criterion.val()
     criterionForNav = criterion.replace(/\s/g,"+")
-    @view.getOption("listView")?.triggerMethod("set:filter:criterion", criterion, { preventRender:false })
-    require('app').app.trigger("evenements:filter", criterionForNav)
+    @triggerListView(criterion, criterionForNav)
   onSetFilterCriterion: (criterion)->
-    modCriterion = String(criterion).replace(/\+/g," ")
-    @ui.criterion.val(modCriterion)
+    # par un événement
+    criterionForNav = criterion.replace(/\s/g,"+")
+    @ui.criterion.val(criterion)
+    @triggerListView(criterion, criterionForNav)
+  triggerListView: (criterion, criterionForNav) ->
+    @view.getOption("listView")?.triggerMethod("set:filter:criterion", criterion, { preventRender:false })
+    appTrigger = @view.getOption("appTrigger")
+    if typeof appTrigger is "string"
+      require('app').app.trigger(appTrigger, criterionForNav)
+    else if typeof appTrigger is "function"
+      appTrigger(@view, criterionForNav)
+
 }
 
 export { SortList, FilterList, DestroyWarn, SubmitClicked, FlashItem, ToggleItemValue, FilterPanel, EditItem }
