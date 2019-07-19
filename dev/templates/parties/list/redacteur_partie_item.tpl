@@ -1,5 +1,5 @@
 <td><span class="badge badge-pill badge-primary"><%- id %></span></td>
-<td><%- nomProprietaire %><br/><small><i class="fa fa-gamepad">&nbsp;</i><%- titreEvenement %></small></td>
+<td><%- nomProprietaire %><br/><small><a href='#' class='badge badge-secondary js-event-filter'><i class="fa fa-filter"></i>&nbsp;<%- titreEvenement %></a></small></td>
 <td align="center"><%- dateDebut_fr %></td>
 <td align="center"><%- score %></td>
 <td align="center"><% if(dureeStr=="") { %>&infin;<% } else { %><%- dureeStr %><% } %></td>
