@@ -137,7 +137,7 @@ final class EssaiJoueur extends Item
     $errors = array();
     if (!isset($data['idPartie']))
     {
-      $errors['partie'] = "Il faut préciser l'id d'un propriétaire";
+      $errors['partie'] = "Il faut préciser l'id d'une partie";
     }
     if (!isset($data['idItem']))
     {
