@@ -26,7 +26,7 @@ ListEssaisPanel = View.extend {
 NoView = View.extend {
   template: list_essais_none_tpl
   tagName: "tr"
-  className: "alert"
+  className: "table-warning"
 }
 
 ItemView = View.extend {

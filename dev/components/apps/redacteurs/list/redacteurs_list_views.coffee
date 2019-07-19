@@ -8,7 +8,7 @@ import { app } from 'app'
 NoRedacteurView = View.extend {
   template:  templateNone
   tagName: "tr"
-  className: "alert"
+  className: "table-warning"
 }
 
 RedacteurItemView = View.extend {

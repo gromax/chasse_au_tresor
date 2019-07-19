@@ -8,7 +8,7 @@ import { app } from 'app'
 NoJoueurView = View.extend {
   template:  no_joueur_tpl
   tagName: "tr"
-  className: "alert"
+  className: "table-warning"
 }
 
 JoueurItemView = View.extend {
