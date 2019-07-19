@@ -20,6 +20,7 @@ Controller = MnObject.extend {
       }
       listPanel = new ListPanel {
         listView
+        appTrigger:"parties:filter"
         title: "Parties"
         filterCriterion: criterion
       }
@@ -32,6 +33,9 @@ Controller = MnObject.extend {
         model = childView.model
         idItem = model.get("id")
         app.trigger("partie:essais:list",idItem)
+
+      listView.on "item:event:filter", (eventName) ->
+        app.trigger "parties:list", eventName
 
       app.regions.getRegion('main').show(listLayout)
     ).fail( (response)->
