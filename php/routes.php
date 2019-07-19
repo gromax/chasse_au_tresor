@@ -65,6 +65,7 @@ function loadRouter()
   $router->addRule('api/partages/list', 'partages', 'fetchList', 'GET');
   $router->addRule('api/partages/:id', 'partages', 'delete', 'DELETE');
   $router->addRule('api/evenement/:id/partages', 'partages', 'fetchEventList', 'GET');
+  $router->addRule('api/evenement/:id/userswithnopartages', 'partages', 'getUsersWithNoPartageList', 'GET');
 
   return $router;
 
