@@ -1,7 +1,7 @@
 import { MnObject } from 'backbone.marionette'
 import { ListPanel } from 'apps/common/common_views.coffee'
 import { IEListPanel } from 'apps/evenements/edit/ie_list_views.coffee'
-import { PartagesCollectionView, PartagesListLayout } from 'apps/evenements/partages/partages_list_views.coffee'
+import { PartagesCollectionView, PartagesListLayout, PartageAddListItems } from 'apps/evenements/partages/partages_list_views.coffee'
 import { app } from 'app'
 
 Controller = MnObject.extend {
@@ -43,17 +43,12 @@ Controller = MnObject.extend {
         listLayout.getRegion('panelRegion').show(listPanel)
         listLayout.getRegion('itemsRegion').show(listView)
 
-      '''
       listPanel.on "item:new", ->
-        Item = require("entities/redacteurs.coffee").Item
-        newItem = new Item()
-        view = new NewUserView {
-          model: newItem
-          title: "Nouveau rédacteur"
-          listView: listView
-        }
-        app.regions.getRegion('dialog').show(view)
-      '''
+        fetching = channel.request("evenement:users:nopartages", id)
+        $.when(fetching).done( (items)->
+          usersView = new PartageAddListItems { collection:items }
+          app.regions.getRegion('dialog').show(usersView)
+        )
 
       app.regions.getRegion('main').show(listLayout)
     ).fail( (response)->
