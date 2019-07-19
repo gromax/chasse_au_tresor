@@ -119,6 +119,18 @@ final class Evenement extends Item
     return array_combine($ids, $suites);
   }
 
+  public function getRedacteursWithNoPartage()
+  {
+    require_once BDD_CONFIG;
+    try {
+      return DB::query("SELECT u.id, u.nom FROM (".PREFIX_BDD."users u LEFT JOIN ".PREFIX_BDD."partages p ON u.id = p.idRedacteur AND p.id!=%i) WHERE u.isredac=1 AND u.id != %i", $this->id, $this->values['idProprietaire']);
+      //return DB::query("SELECT u.id, u.nom FROM (".PREFIX_BDD."users u LEFT JOIN ".PREFIX_BDD."partages p ON u.id = p.idRedacteur) WHERE u.isredac=1 AND p.idEvenement != %i AND u.id != %i", $this->id, $this->values['idProprietaire']);
+    } catch(MeekroDBException $e) {
+      EC::addBDDError($e->getMessage(),"Evenement/getRedacteursWithNoPartage");
+    }
+    return null;
+  }
+
 }
 
 ?>
