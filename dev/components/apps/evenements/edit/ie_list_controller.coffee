@@ -22,6 +22,9 @@ Controller = MnObject.extend {
         entete.on "navigate:parent", ->
           app.trigger "evenements:list"
 
+        entete.on "navigate:partage", ->
+          app.trigger "evenement:partages", id
+
         liste.on "item:new", ()->
           Item = require("entities/itemsEvenement.coffee").Item
           newItem =
