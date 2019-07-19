@@ -14,7 +14,7 @@ import joueur_parties_none_tpl from 'templates/parties/list/joueur_parties_none.
 NoPartie_RedacteurView = View.extend {
   template:  redacteur_parties_none_tpl
   tagName: "tr"
-  className: "alert"
+  className: "table-warning"
 }
 
 PartieItem_RedacteurView = View.extend {
@@ -24,6 +24,16 @@ PartieItem_RedacteurView = View.extend {
   triggers: {
     "click": "show"
   }
+  events: {
+    "click a.js-event-filter": "eventFilter"
+  }
+
+  eventFilter: (e)->
+    e.preventDefault()
+    e.stopPropagation()
+    content = $(e.currentTarget).html()
+    @trigger "event:filter", content.split("&nbsp;")[1]
+
 }
 
 PartiesList_RedacteurView = CollectionView.extend {
