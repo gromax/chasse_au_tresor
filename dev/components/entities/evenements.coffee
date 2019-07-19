@@ -11,7 +11,7 @@ Item = Backbone.Model.extend {
     sauveEchecs: false
     ptsEchecs: 0
     hash: ""
-  },
+  }
 
   parse: (data) ->
     if (data.id)
@@ -66,8 +66,7 @@ API = {
     })
 
     request.done( (data)->
-      OEvenement = require("entities/evenements.coffee").Item
-      evenement = new OEvenement(data, {parse:true})
+      evenement = new Item(data, {parse:true})
       defer.resolve evenement
     ).fail( (response)->
       defer.reject(response)
