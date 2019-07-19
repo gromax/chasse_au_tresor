@@ -28,11 +28,10 @@ EvenementItemView_Redacteur = View.extend {
     "click button.js-sauveEchecs": "sauveEchecs:toggle"
     "click": "show"
   }
-
 }
+
 EvenementsCollectionView_Redacteur = CollectionView.extend {
-  tagName: "table"
-  className:"table table-hover"
+  className:"table-responsive"
   template: list_evenements_redacteur_tpl
   childViewContainer: "tbody"
   childView:EvenementItemView_Redacteur
