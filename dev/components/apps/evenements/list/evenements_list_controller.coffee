@@ -21,6 +21,7 @@ Controller = MnObject.extend {
 
       listPanel = new ListPanel {
         listView
+        appTrigger: "evenements:filter"
         title: "Événements"
         filterCriterion:criterion
         showAddButton: app.Auth.get("rank") is "redacteur"

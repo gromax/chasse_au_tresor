@@ -19,6 +19,7 @@ Controller = MnObject.extend {
       }
       listPanel = new ListPanel {
         listView
+        appTrigger: "joueurs:filter"
         title: "Joueurs"
         filterCriterion:criterion
         showAddButton:false
