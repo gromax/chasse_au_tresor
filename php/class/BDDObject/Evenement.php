@@ -9,6 +9,7 @@ use MeekroDBException;
 use BDDObject\Partie;
 use BDDObject\ItemEvenement;
 use BDDObject\Image;
+use BDDObject\Partage;
 
 final class Evenement extends Item
 {
@@ -51,7 +52,7 @@ final class Evenement extends Item
 
   public static function deleteList($options = array())
   {
-    if (!Partie::deleteList($options) || !ItemEvenement::deleteList($options) || !Image::deleteList($options))
+    if (!Partie::deleteList($options) || !ItemEvenement::deleteList($options) || !Image::deleteList($options) || !Partage::deleteList($options))
     {
       return false;
     }
@@ -104,7 +105,7 @@ final class Evenement extends Item
   public function customDelete()
   {
     $options = array("evenement"=>$this->id);
-    return (Partie::deleteList($options) && ItemEvenement::deleteList($options) && Image::deleteList($options));
+    return (Partie::deleteList($options) && ItemEvenement::deleteList($options) && Image::deleteList($options) && Partage::deleteList($options));
   }
   public function isActif()
   {
