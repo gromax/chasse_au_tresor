@@ -1,1 +1,1 @@
-<td colspan="5">Aucune partie à afficher.</td>
+<td colspan="6">Aucune partie à afficher.</td>
