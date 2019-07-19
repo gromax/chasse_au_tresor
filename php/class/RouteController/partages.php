@@ -224,5 +224,33 @@ class partages
         }
     }
 
+    public function getUsersWithNoPartageList()
+    {
+        $ac = new AC();
+        if (!$ac->connexionOk())
+        {
+            EC::set_error_code(401);
+            return false;
+        }
+        if ((!$ac->isRedacteur()) && (!$ac->isRoot()))
+        {
+            EC::set_error_code(403);
+            return false;
+        }
+        $idEvenement = (integer) $this->params['id'];
+        $evenement=Evenement::getObject($idEvenement);
+        if ($evenement === null)
+        {
+            EC::set_error_code(404);
+            return false;
+        }
+        if (!$ac->isRoot() && ($ac->getLoggedUserId()!==$evenement->getIdProprietaire()))
+        {
+            EC::set_error_code(403);
+            return false;
+        }
+        return $evenement->getRedacteursWithNoPartage();
+    }
+
 }
 ?>
