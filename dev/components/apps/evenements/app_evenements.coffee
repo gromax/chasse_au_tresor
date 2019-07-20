@@ -2,6 +2,7 @@ app = require('app').app
 Router = Backbone.Router.extend {
   routes: {
     "evenements(/filter/criterion::criterion)": "list"
+    "evenements/disponibles(/filter/criterion::criterion)": "listJoueur"
     "evenement::id": "show"
     "evenement::id/edit": "edit"
     "evenement::id/password": "editPwd"
@@ -16,12 +17,17 @@ Router = Backbone.Router.extend {
     else
       app.trigger "not:found"
 
+  listJoueur: (criterion) ->
+    rank = app.Auth.get("rank")
+    if (rank is "joueur")
+      require("apps/evenements/list/evenements_list_controller.coffee").controller.listJoueur(criterion)
+    else
+      app.trigger "not:found"
+
   list: (criterion) ->
     rank = app.Auth.get("rank")
     if (rank is "root") or (rank is "redacteur")
       require("apps/evenements/list/evenements_list_controller.coffee").controller.listRedacteur(criterion)
-    else if (rank is "joueur")
-      require("apps/evenements/list/evenements_list_controller.coffee").controller.listJoueur(criterion)
     else
       app.trigger "not:found"
 
@@ -42,8 +48,12 @@ Router = Backbone.Router.extend {
 
 router = new Router()
 
-app.on "evenements:list", ()->
+app.on "evenements:list", ->
   app.navigate("evenements")
+  router.list()
+
+app.on "evenements:disponibles:list", ->
+  app.navigate("evenements.disponibles")
   router.list()
 
 app.on "evenement:partages", (id)->
@@ -61,6 +71,12 @@ app.on "evenements:filter", (criterion) ->
     app.navigate "evenements/filter/criterion:#{criterion}"
   else
     app.navigate "evenements"
+
+app.on "evenements:disponibles:filter", (criterion) ->
+  if criterion
+    app.navigate "evenements/disponibles/filter/criterion:#{criterion}"
+  else
+    app.navigate "evenements/disponibles"
 
 app.on "evenement:show", (id) ->
   app.navigate "evenement:#{id}"
