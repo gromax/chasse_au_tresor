@@ -12,17 +12,11 @@ function loadRouter()
   $router->addRule('api/session/:id', 'session', 'delete', 'DELETE'); // Déconnexion
   $router->addRule('api/session/test', 'session', 'logged', 'GET'); // Vérifie l'état de connexion
 
-  // redacteurs
-  $router->addRule('api/redacteurs/:id', 'users', 'fetch', 'GET');
-  $router->addRule('api/redacteurs/:id', 'redacteurs', 'delete', 'DELETE');
-  $router->addRule('api/redacteurs/:id', 'redacteurs', 'update', 'PUT');
-  $router->addRule('api/redacteurs', 'redacteurs', 'insert', 'POST');
-
-  // joueurs
-  $router->addRule('api/joueurs/:id', 'users', 'fetch', 'GET');
-  $router->addRule('api/joueurs/:id', 'joueurs', 'delete', 'DELETE');
-  $router->addRule('api/joueurs/:id', 'joueurs', 'update', 'PUT');
-  $router->addRule('api/joueurs', 'joueurs', 'insert', 'POST');
+  // users
+  $router->addRule('api/users/:id', 'users', 'fetch', 'GET');
+  $router->addRule('api/users/:id', 'users', 'delete', 'DELETE');
+  $router->addRule('api/users/:id', 'users', 'update', 'PUT');
+  $router->addRule('api/users', 'users', 'insert', 'POST');
 
   // evenements
   $router->addRule('api/evenements/:id', 'evenements', 'fetch', 'GET');
