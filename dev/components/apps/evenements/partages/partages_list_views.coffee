@@ -34,8 +34,12 @@ PartageItemView = View.extend {
 PartageAddItem = View.extend {
   tagName: "a"
   attributes: { href:"#" }
+  behaviors: [DestroyWarn, FlashItem]
   className: "list-group-item list-group-item-action"
   template: add_partage_item_tpl
+  triggers: {
+    'click' : 'add'
+  }
 }
 
 PartageAddNoItem = View.extend {
@@ -51,6 +55,7 @@ PartageAddListItems = CollectionView.extend {
   className: "list-group"
   childView: PartageAddItem
   emptyView: PartageAddNoItem
+  childViewEventPrefix: 'item'
 }
 
 PartagesCollectionView = CollectionView.extend {
