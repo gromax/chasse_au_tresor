@@ -9,15 +9,15 @@ JoueurHomeView = View.extend {
   template: home_joueur_tpl
   triggers: {
     "click a.js-edit-me": "edit:me"
-    "click a.js-evenements": "evenements:list"
+    "click a.js-evenements": "evenements:disponibles:list"
     "click a.js-parties": "parties:list"
   }
 
   onEditMe: (e) ->
     app.trigger "edit:me"
 
-  onEvenementsList: (e) ->
-    app.trigger "evenements:list"
+  onEvenementsDisponiblesList: (e) ->
+    app.trigger "evenements:disponibles:list"
 
   onPartiesList: (e) ->
     app.trigger "parties:list"
