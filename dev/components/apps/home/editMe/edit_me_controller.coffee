@@ -9,10 +9,7 @@ Controller = MnObject.extend {
   show: (criterion)->
     loggeUser = app.Auth
 
-    if app.Auth.get("rank") is "redacteur"
-      Item = require("entities/redacteurs.coffee").Item
-    else
-      Item = require("entities/joueurs.coffee").Item
+    Item = require("entities/users.coffee").Item
     item = new Item {
       username: app.Auth.get("username")
       id: app.Auth.get("id")
