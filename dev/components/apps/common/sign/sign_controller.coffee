@@ -41,7 +41,7 @@ Controller = MnObject.extend {
           view.triggerMethod("form:data:invalid", app.Auth.validationError)
 
       signupCallback = (data) ->
-        Joueur = require("entities/joueurs.coffee").Item
+        Joueur = require("entities/users.coffee").Item
         nJoueur = new Joueur()
         creatingSession = nJoueur.save(data)
         if creatingSession
