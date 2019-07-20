@@ -66,7 +66,7 @@ class users
 
     public function delete()
     {
-        // Seul root peut effacer un rédacteur
+        // Seul root peut effacer un user
         $ac = new AC();
         if (!$ac->connexionOk())
         {
@@ -99,6 +99,7 @@ class users
         if ($ac->isRoot())
         {
             $data = json_decode(file_get_contents("php://input"),true);
+            $data['isredac'] = 1; // forcément un rédac
             $itAdd = new Item();
             $validation = $itAdd->update_validation($data, true);
             if ($validation === true)
@@ -113,6 +114,25 @@ class users
                 return array('errors'=>$validation);
             }
 
+        }
+        elseif (!$ac->connexionOk())
+        {
+            // inscription d'un joueur
+            $data = json_decode(file_get_contents("php://input"),true);
+            $data['isredac'] = 0;
+            $itAdd = new User();
+            $validation = $itAdd->update_validation($data);
+            if ($validation === true)
+            {
+                $id = $itAdd->update($data);
+                if ($id!==null)
+                    return $itAdd->getValues();
+            }
+            else
+            {
+                EC::set_error_code(422);
+                return array('errors'=>$validation);
+            }
         }
         else
         {
@@ -135,9 +155,9 @@ class users
         }
 
         $id = (integer) $this->params['id'];
-        if (!$ac->isRoot() && (!$ac->isRedacteur() || ($ac->getLoggedUserId() != $id)))
+        if (!$ac->isRoot() && ($ac->getLoggedUserId() != $id))
         {
-            // Seul root ou rédacteur soi même peut modifier
+            // Seul root ou soi-même peut modifier
             EC::set_error_code(403);
             return false;
         }
