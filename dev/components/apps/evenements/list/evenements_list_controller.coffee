@@ -85,6 +85,7 @@ Controller = MnObject.extend {
 
       listPanel = new ListPanel {
         listView
+        appTrigger: "evenements:disponibles:filter"
         title: "Événements"
         filterCriterion: criterion
         showAddButton: false
