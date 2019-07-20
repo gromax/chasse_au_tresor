@@ -14,7 +14,7 @@ class Redacteur extends User
     require_once BDD_CONFIG;
     try {
       if (isset($options['root']))
-        return DB::query("SELECT r.id, r.nom, r.username, (SELECT COUNT(e.id) FROM ".PREFIX_BDD."evenements e where e.idProprietaire = r.id) AS count_evenements FROM ".PREFIX_BDD."users r WHERE r.isredac=1");
+        return DB::query("SELECT r.id, r.nom, r.username, (SELECT COUNT(e.id) FROM ".PREFIX_BDD."evenements e where e.idProprietaire = r.id) AS count_evenements, 1 AS isredac FROM ".PREFIX_BDD."users r WHERE r.isredac=1");
       else
         return array();
     } catch(MeekroDBException $e) {
