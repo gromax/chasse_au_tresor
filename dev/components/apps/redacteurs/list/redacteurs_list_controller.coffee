@@ -29,7 +29,7 @@ Controller = MnObject.extend {
         listLayout.getRegion('itemsRegion').show(listView)
 
       listPanel.on "item:new", ->
-        Item = require("entities/redacteurs.coffee").Item
+        Item = require("entities/users.coffee").Item
         newItem = new Item()
         view = new NewUserView {
           model: newItem
