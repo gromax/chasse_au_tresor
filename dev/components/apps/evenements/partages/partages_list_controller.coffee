@@ -9,7 +9,7 @@ Controller = MnObject.extend {
   show: (id,criterion)->
     app.trigger "loading:up"
     channel = @getChannel()
-    require "entities/partages.coffee"
+    PartageItem = require("entities/partages.coffee").Item
     fetching = channel.request("evenement:partages", id)
     $.when(fetching).done( (evenement, items)->
       listLayout = new PartagesListLayout()
@@ -45,9 +45,32 @@ Controller = MnObject.extend {
 
       listPanel.on "item:new", ->
         fetching = channel.request("evenement:users:nopartages", id)
-        $.when(fetching).done( (items)->
-          usersView = new PartageAddListItems { collection:items }
+        app.trigger "loading:up"
+        $.when(fetching).done( (users)->
+          usersView = new PartageAddListItems { collection:users }
+          usersView.on "item:add", (v)->
+            model = v.model
+            p = new PartageItem {
+              nom: v.model.get("nom")
+              idEvenement: id
+              idRedacteur: v.model.get("id")
+            }
+            app.trigger "loading:up"
+            inserting = p.save()
+            $.when(inserting).done( ->
+              items.add p
+              listView.children.findByModel(p).trigger("flash:success")
+              usersView.trigger "dialog:close"
+            ).fail( (response)->
+              usersView.$el.append("<div class='alert alert-danger' role='alert'>Une erreur est survenue. Réessayez.</div>")
+            ).always( ->
+              app.trigger "loading:down"
+            )
           app.regions.getRegion('dialog').show(usersView)
+        ).fail( (response)->
+          alert "Une erreur est survenue."
+        ).always( ->
+          app.trigger "loading:down"
         )
 
       app.regions.getRegion('main').show(listLayout)
