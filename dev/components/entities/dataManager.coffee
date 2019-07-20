@@ -21,8 +21,8 @@ API = {
       request.done( (data)->
         for colName in ask
           switch colName
-            when "joueurs" then colObj = require("entities/joueurs.coffee")
-            when "redacteurs" then colObj = require("entities/redacteurs.coffee")
+            when "joueurs" then colObj = require("entities/users.coffee")
+            when "redacteurs" then colObj = require("entities/users.coffee")
             when "evenements" then colObj = require("entities/evenements.coffee")
             when "parties" then colObj = require("entities/parties.coffee")
             when "itemsEvenement" then colObj = require("entities/itemsEvenement.coffee")
