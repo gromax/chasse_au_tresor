@@ -11,6 +11,9 @@ Item = Backbone.Model.extend {
     sauveEchecs: false
     ptsEchecs: 0
     hash: ""
+    modevent: false
+    moditem: false
+    isshare: false
   }
 
   parse: (data) ->
@@ -20,6 +23,12 @@ Item = Backbone.Model.extend {
       data.idProprietaire = Number(data.idProprietaire)
     data.actif = (data.actif is "1") or (data.actif is 1) or (data.actif is true)
     data.visible = (data.visible is "1") or (data.visible is 1) or (data.visible is true)
+    if (typeof data.isshare isnt "undefined")
+      data.isshare = (data.isshare is "1") or (data.isshare is 1) or (data.isshare is true)
+    if (typeof data.modevent isnt "undefined")
+      data.modevent = (data.modevent is "1") or (data.modevent is 1) or (data.modevent is true)
+    if (typeof data.moditem isnt "undefined")
+      data.moditem = (data.moditem is "1") or (data.moditem is 1) or (data.moditem is true)
     if (data.count_parties)
       data.count_parties = Number(data.count_parties)
     else
