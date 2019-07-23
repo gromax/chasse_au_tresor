@@ -130,6 +130,25 @@ final class Evenement extends Item
     return null;
   }
 
+  public function modEventAuthorized($idRedac)
+  {
+    if ($idRedac===$this->values['idProprietaire'])
+    {
+      return true;
+    }
+    require_once BDD_CONFIG;
+    try {
+      $bdd_result = DB::queryFirstRow("SELECT id FROM ".PREFIX_BDD."partages WHERE modevent=1 AND idRedacteur=%i AND idEvenement=%i", $idRedac, $this->id);
+      if ($bdd_result!==null)
+      {
+        return true;
+      }
+    } catch(MeekroDBException $e) {
+      EC::addBDDError($e->getMessage(),"Evenement/modEventAutorized");
+    }
+    return false;
+  }
+
 }
 
 ?>

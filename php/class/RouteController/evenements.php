@@ -155,7 +155,7 @@ class evenements
             return false;
         }
 
-        if (!$ac->isRoot() && ($ac->getLoggedUserId()!==$item->getIdProprietaire()))
+        if (!$ac->isRoot() && !$item->modEventAuthorized($ac->getLoggedUserId()))
         {
             EC::set_error_code(403);
             return false;
