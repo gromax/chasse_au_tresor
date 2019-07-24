@@ -20,6 +20,8 @@ Controller = MnObject.extend {
       else evenement = null
 
       if (item isnt undefined) and (evenement isnt undefined)
+        moditem = evenement.get("moditem")
+        isshare = evenement.get("isshare")
         layout = new ListLayout()
         panel = new SubIEListPanel { model:item, evenement:evenement }
         subItemsData = item.get "subItemsData"
@@ -32,7 +34,7 @@ Controller = MnObject.extend {
           SubItemCollection = require("entities/itemsEvenement.coffee").SubItemCollection
           subItemsCollection = new SubItemCollection()
           subItemsCollection.add d, { parse:true }
-        subItemsView = new SubIECollectionView { collection: subItemsCollection, redacteurMode:true, itemEvenement: item }
+        subItemsView = new SubIECollectionView { collection: subItemsCollection, redacteurMode: moditem, itemEvenement: item }
 
         panel.on "navigate:parent", ->
           app.trigger "evenement:show", idEvenement
@@ -44,7 +46,7 @@ Controller = MnObject.extend {
             childView.render()
 
         subItemsView.on "subItem:image:select", (childView) ->
-          imgView = new FilesView { model:evenement, title: "Images de ##{evenement.get('id')}: #{evenement.get('titre')}", items:images, selectButton:true }
+          imgView = new FilesView { model:evenement, title: "Images de ##{evenement.get('id')}: #{evenement.get('titre')}", items:images, selectButton: true }
           imgView.on "item:select", (v,e)->
             { hash, ext } = v.getSelectedAttr()
             childView.$el.find("input[name='imgUrl']").val("#{hash}.#{ext}")
@@ -76,8 +78,8 @@ Controller = MnObject.extend {
             model:evenement
             title:"Images de ##{evenement.get('id')}: #{evenement.get('titre')}"
             items:images
-            addFile:true
-            delFile:true
+            addFile: moditem
+            delFile: !isshare
           }
 
           fileView.on "item:submit", (formData)->
