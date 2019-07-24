@@ -55,7 +55,7 @@ final class Image extends Item
 		try {
 			if (isset($options['redacteur']))
 				// rédacteur
-				return DB::query("SELECT i.id, i.idEvenement, i.hash, i.ext FROM (".PREFIX_BDD."images i JOIN ".PREFIX_BDD."evenements e ON e.id = i.idEvenement) WHERE e.idProprietaire=%i", $options['redacteur']);
+				return DB::query("SELECT i.id, i.idEvenement, i.hash, i.ext FROM ((".PREFIX_BDD."images i JOIN ".PREFIX_BDD."evenements e ON e.id = i.idEvenement) LEFT JOIN ".PREFIX_BDD."partages s ON s.idEvenement = e.id) WHERE e.idProprietaire=%i OR NOT s.id IS NULL", $options['redacteur']);
 			elseif (isset($options['evenement']))
 				return DB::query("SELECT id, idEvenement, hash, ext FROM ".PREFIX_BDD."images WHERE idEvenement=%i", $options['evenement']);
 			elseif (isset($options['root']))
