@@ -97,6 +97,7 @@ FilesView = View.extend {
       selectButton:@options.selectButton is true
       addFile:@options.addFile is true
       delFile: @options.delFile is true
+      filesnumber: @filteredList().length
     }
 
 }
