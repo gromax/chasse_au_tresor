@@ -4,6 +4,7 @@ namespace RouteController;
 use ErrorController as EC;
 use AuthController as AC;
 use BDDObject\Image;
+use BDDObject\Evenement;
 
 class images
 {
@@ -95,13 +96,21 @@ class images
         $ac = new AC();
         if ($ac->isRedacteur())
         {
-            //$data = json_decode(file_get_contents("php://input"),true);
-            //var_dump($_POST);
-
-
             if (isset($_FILES['image']) && isset($_POST['idEvenement']))
             {
-                $idEvenement = $_POST['idEvenement'];
+                $idEvenement = (integer) $_POST['idEvenement'];
+                # Il faut vérifier que l'utilisateur a le droit de mofifier cet événement
+                $evenement = Evenement::getObject($idEvenement);
+                if ($evenement==null)
+                {
+                    EC::set_error_code(404);
+                    return false;
+                }
+                if (!$evenement->modItemAuthorized($ac->getLoggedUserId()))
+                {
+                    EC::set_error_code(403);
+                    return false;
+                }
                 $file = $_FILES['image']['tmp_name'];
                 $ext = pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION);
                 // On ajoute le idEvenement en tête du nom
