@@ -30,6 +30,7 @@ ListPanel = View.extend {
 ListLayout = View.extend {
   template: list_layout_tpl
   regions: {
+    enteteRegion: "#entete-region"
     panelRegion: "#panel-region"
     itemsRegion: "#items-region"
   }
