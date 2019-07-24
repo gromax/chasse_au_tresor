@@ -19,6 +19,7 @@ SubIEListPanel = View.extend {
   templateContext: ->
     {
       titreEvenement: @getOption("evenement")?.get("titre")
+      moditem: @getOption("evenement")?.get("moditem")
     }
 }
 
@@ -211,9 +212,10 @@ SubIEItemSVGView_Redacteur = SubIEItemSVGView.extend RedacteurExtensions
 SubIEItemBrutView_Redacteur = SubIEItemBrutView.extend RedacteurExtensions
 
 SubIECollectionView = CollectionView.extend {
+  redacteurMode: false
   childView:  (model)->
     type = model.get("type")
-    if @options.redacteurMode is true
+    if @getOption "redacteurMode"
       switch type
         when "image" then SubIEItemImageView_Redacteur
         when "svg" then SubIEItemSVGView_Redacteur
