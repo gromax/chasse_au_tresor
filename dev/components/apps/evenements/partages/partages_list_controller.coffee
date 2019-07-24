@@ -1,7 +1,7 @@
 import { MnObject } from 'backbone.marionette'
-import { ListPanel } from 'apps/common/common_views.coffee'
+import { ListPanel, ListLayout } from 'apps/common/common_views.coffee'
 import { IEListPanel } from 'apps/evenements/edit/ie_list_views.coffee'
-import { PartagesCollectionView, PartagesListLayout, PartageAddListItems } from 'apps/evenements/partages/partages_list_views.coffee'
+import { PartagesCollectionView, PartageAddListItems } from 'apps/evenements/partages/partages_list_views.coffee'
 import { app } from 'app'
 
 Controller = MnObject.extend {
@@ -12,7 +12,10 @@ Controller = MnObject.extend {
     PartageItem = require("entities/partages.coffee").Item
     fetching = channel.request("evenement:partages", id)
     $.when(fetching).done( (evenement, items)->
-      listLayout = new PartagesListLayout()
+      if evenement.get("isshare")
+        app.trigger "not:found"
+        return
+      listLayout = new ListLayout()
       listView = new PartagesCollectionView {
         collection: items
       }
