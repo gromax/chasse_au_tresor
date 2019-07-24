@@ -1,5 +1,5 @@
 import { View, CollectionView } from 'backbone.marionette'
-import { SortList, DestroyWarn, FlashItem, SubmitClicked, EditItem } from 'apps/common/behaviors.coffee'
+import { SortList, DestroyWarn, FlashItem, SubmitClicked, EditItem, FilterList } from 'apps/common/behaviors.coffee'
 
 import ie_list_tpl from 'templates/evenements/edit/list-ie.tpl'
 import ie_list_item_view_tpl from 'templates/evenements/edit/list-ie-item.tpl'
@@ -21,6 +21,11 @@ IEItemView = View.extend {
     "click a.js-edit": "edit"
     "click": "show"
   }
+  templateContext: ->
+    {
+      moditem: @getOption "moditem"
+      isshare: @getOption "isshare"
+    }
 }
 
 IEListPanel = View.extend {
@@ -41,26 +46,25 @@ IECollectionView = CollectionView.extend {
   tagName: "table"
   className:"table table-hover"
   template: ie_list_tpl
+  behaviors: [SortList, FilterList]
+  filterKeys: ["tagCle", "regexCle"]
   childViewContainer: "tbody"
   childView:IEItemView
   childViewEventPrefix: 'item'
   emptyView: IENoItemView
-  addButton: false
+  moditem: true
+  isshare: false
 
-  emptyViewOptions: ->
-    {
-      addButton: @getOption "addButton"
-    }
   templateContext: ->
     {
       addButton: @getOption "addButton"
     }
 
-  behaviors: [SortList]
-
-  triggers:{
-    "click button.js-new": "item:new"
-  }
+  childViewOptions: ->
+    {
+      moditem: @getOption "moditem"
+      isshare: @getOption "isshare"
+    }
 
   viewFilter: (child, index, collection) ->
     idE = @options.idEvenement
