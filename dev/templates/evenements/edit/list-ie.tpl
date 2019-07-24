@@ -5,7 +5,7 @@
     <th>Regex</th>
     <th width="40"><i class="fa fa-star"></i></th>
     <!-- édition - suppression -->
-    <th width="60"><%if (addButton){%><button class="btn btn-sm btn-primary js-new" type="button"><i class="fa fa-plus"></i></button><%}%></th>
+    <th width="60"></th>
   </tr>
 </thead>
 <tbody>
