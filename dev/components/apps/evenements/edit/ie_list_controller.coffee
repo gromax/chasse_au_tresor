@@ -1,11 +1,11 @@
 import { MnObject } from 'backbone.marionette'
-import { ListLayout } from 'apps/common/common_views.coffee'
+import { ListLayout, ListPanel } from 'apps/common/common_views.coffee'
 import { IEListPanel, IECollectionView, EditIEDescriptionView } from 'apps/evenements/edit/ie_list_views.coffee'
 import { app } from 'app'
 
 Controller = MnObject.extend {
   channelName: "entities"
-  show: (id) ->
+  show: (id, criterion) ->
     app.trigger "loading:up"
 
     require "entities/dataManager.coffee"
@@ -16,8 +16,20 @@ Controller = MnObject.extend {
       evenement = evenements.get(id)
       if evenement isnt  undefined
         layout = new ListLayout()
-        entete = new IEListPanel { model: evenement }
-        liste = new IECollectionView { collection: itemsEvenement, idEvenement:evenement.get("id"), addButton: true }
+        entete = new IEListPanel {
+          model: evenement
+        }
+        liste = new IECollectionView { collection: itemsEvenement, idEvenement:evenement.get("id"), moditem: evenement.get("moditem"), isshare: evenement.get("isshare") }
+
+        listPanel = new ListPanel {
+          listView:liste
+          appTrigger: (view, criterion)->
+            app.trigger "evenements:items:filter", id, criterion
+          title: ""
+          filterCriterion:criterion
+          showAddButton: (app.Auth.get("rank") is "redacteur") and (evenement.get("moditem"))
+        }
+
 
         entete.on "navigate:parent", ->
           app.trigger "evenements:list"
@@ -25,11 +37,10 @@ Controller = MnObject.extend {
         entete.on "navigate:partage", ->
           app.trigger "evenement:partages", id
 
-        liste.on "item:new", ()->
+        listPanel.on "item:new", ->
           Item = require("entities/itemsEvenement.coffee").Item
-          newItem =
           view = new EditIEDescriptionView {
-            model: new Item({ idEvenement:id})
+            model: new Item { idEvenement:id }
             listView: liste
             title: "Nouvel item"
           }
@@ -52,7 +63,8 @@ Controller = MnObject.extend {
           app.trigger("evenement:cle:show", idEvenement, idItem)
 
         layout.on "render", ->
-          layout.getRegion('panelRegion').show(entete)
+          layout.getRegion('enteteRegion').show(entete)
+          layout.getRegion('panelRegion').show(listPanel)
           layout.getRegion('itemsRegion').show(liste)
         app.regions.getRegion('main').show(layout)
       else
