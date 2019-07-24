@@ -40,6 +40,7 @@ Item = Backbone.Model.extend {
     regexCle:""
     pts: 0
     prerequis: ""
+    suite: ""
   }
 
   parse: (data) ->
