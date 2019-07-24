@@ -169,6 +169,19 @@ final class ItemEvenement extends Item
     }
   }
 
+  public function modItemAuthorized($idRedac)
+  {
+    $parent = $this->getEvenement();
+    if ($parent!=null)
+    {
+      return $parent->modItemAuthorized($idRedac);
+    }
+    else
+    {
+      return null;
+    }
+  }
+
   public function customDelete()
   {
     $options = array("evenement"=>$this->id);
