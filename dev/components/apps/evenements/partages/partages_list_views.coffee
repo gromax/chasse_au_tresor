@@ -2,7 +2,6 @@ import { View, CollectionView } from 'backbone.marionette'
 import templateList from 'templates/evenements/partages/partage-list.tpl'
 import templateItem from 'templates/evenements/partages/partage-item.tpl'
 import templateNone from 'templates/evenements/partages/partage-no-item.tpl'
-import list_layout_tpl from 'templates/evenements/partages/partages-list-layout.tpl'
 import add_partage_item_tpl from 'templates/evenements/partages/partage-add-item.tpl'
 import add_partage_no_item_tpl from 'templates/evenements/partages/partage-add-no-item.tpl'
 import { SortList, FilterList, DestroyWarn, FlashItem } from 'apps/common/behaviors.coffee'
@@ -12,15 +11,6 @@ NoPartageView = View.extend {
   template:  templateNone
   tagName: "tr"
   className: "table-warning"
-}
-
-PartagesListLayout = View.extend {
-  template: list_layout_tpl
-  regions: {
-    enteteRegion: "#entete-region"
-    panelRegion: "#panel-region"
-    itemsRegion: "#items-region"
-  }
 }
 
 PartageItemView = View.extend {
@@ -69,4 +59,4 @@ PartagesCollectionView = CollectionView.extend {
   filterKeys: ["nom"]
 }
 
-export { PartagesCollectionView, PartagesListLayout, PartageAddListItems }
+export { PartagesCollectionView, PartageAddListItems }
