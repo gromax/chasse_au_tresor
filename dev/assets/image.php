@@ -3,7 +3,7 @@ require_once "../php/constantes.php";
 
 if (isset($_GET['ext'])&&($_GET['ext']=="pdf"))
 {
-  if(isset($_GET['src'])&&(file_exists(PATH_TO_UPLOAD.$_GET['src'])))
+  if(isset($_GET['src'])&&($_GET['src']!="")&&(file_exists(PATH_TO_UPLOAD.$_GET['src'])))
   {
     $file = PATH_TO_UPLOAD.$_GET['src'];
   } else {
@@ -19,17 +19,16 @@ if (isset($_GET['ext'])&&($_GET['ext']=="pdf"))
   exit;
 }
 
-if(isset($_GET['src'])&&(file_exists(PATH_TO_UPLOAD.$_GET['src'])))
+if(isset($_GET['src'])&&($_GET['src']!="")&&(file_exists(PATH_TO_UPLOAD.$_GET['src'])))
 {
     $file = PATH_TO_UPLOAD.$_GET['src'];
 }
 else
 {
-    $file = PATH_TO_UPLOAD."inconnu";
+    $file = PATH_TO_UPLOAD."inconnu.png";
 }
 
 $size = getimagesize($file);
-
 $fp = fopen($file, 'rb');
 
 if ($size and $fp)
