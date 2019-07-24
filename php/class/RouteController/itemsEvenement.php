@@ -93,13 +93,21 @@ class itemsEvenement
     {
         // Seul un rédacteur peut créer un événement
         $ac = new AC();
-        if ($ac->isRedacteur())
+        if ($ac->isRedacteur() )
         {
             $data = json_decode(file_get_contents("php://input"),true);
-            $item = new ItemEvenement();
-            $id = $item->update($data);
-            if ($id!==null)
+            $item = new ItemEvenement($data);
+            if ($item->modItemAuthorized($ac->getLoggedUserId()) === true)
+            {
+              $id = $item->insertion();
+              if ($id!==null)
+              {
                 return $item->getValues();
+              }
+            } else {
+              EC::set_error_code(403);
+              return false;
+            }
         }
         else
         {
@@ -131,7 +139,14 @@ class itemsEvenement
             return false;
         }
 
-        if ($ac->getLoggedUserId()!==$item->getIdProprietaire())
+        $moditem = $item->modItemAuthorized($ac->getLoggedUserId());
+        if ($moditem===null)
+        {
+          EC::set_error_code(501);
+          return false;
+        }
+
+        if ($moditem===false)
         {
             EC::set_error_code(403);
             return false;
