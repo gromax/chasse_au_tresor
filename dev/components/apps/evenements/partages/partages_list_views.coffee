@@ -4,7 +4,7 @@ import templateItem from 'templates/evenements/partages/partage-item.tpl'
 import templateNone from 'templates/evenements/partages/partage-no-item.tpl'
 import add_partage_item_tpl from 'templates/evenements/partages/partage-add-item.tpl'
 import add_partage_no_item_tpl from 'templates/evenements/partages/partage-add-no-item.tpl'
-import { SortList, FilterList, DestroyWarn, FlashItem } from 'apps/common/behaviors.coffee'
+import { SortList, FilterList, DestroyWarn, FlashItem, ToggleItemValue } from 'apps/common/behaviors.coffee'
 import { app } from 'app'
 
 NoPartageView = View.extend {
@@ -16,9 +16,12 @@ NoPartageView = View.extend {
 PartageItemView = View.extend {
   tagName: "tr"
   template: templateItem
-  behaviors: [DestroyWarn, FlashItem]
-  #triggers: {
-  #}
+  behaviors: [DestroyWarn, FlashItem, ToggleItemValue]
+  triggers: {
+    "click button.js-modevent": "modevent:toggle"
+    "click button.js-moditem": "moditem:toggle"
+    "click button.js-modessai": "modessai:toggle"
+  }
 }
 
 PartageAddItem = View.extend {
