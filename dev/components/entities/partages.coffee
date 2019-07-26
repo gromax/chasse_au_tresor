@@ -7,6 +7,9 @@ Item = Backbone.Model.extend {
     nom: ""
     idRedacteur: false
     idEvenement: false
+    moditem: false
+    modevent: false
+    modessai: false
   }
 
   parse: (data) ->
@@ -16,10 +19,16 @@ Item = Backbone.Model.extend {
       data.idRedacteur = Number(data.idRedacteur)
     if (data.idEvenement)
       data.idEvenement = Number(data.idEvenement)
+    if typeof data.moditem isnt "undefined"
+      data.moditem = (data.moditem is "1") or (data.moditem is 1) or (data.moditem is true)
+    if typeof data.modevent isnt "undefined"
+      data.modevent = (data.modevent is "1") or (data.modevent is 1) or (data.modevent is true)
+    if typeof data.modessai isnt "undefined"
+      data.modessai = (data.modessai is "1") or (data.modessai is 1) or (data.modessai is true)
     return data
 
   toJSON: ->
-    return _.pick(this.attributes, 'id', 'idRedacteur', 'idEvenement');
+    return _.pick(this.attributes, 'id', 'idRedacteur', 'idEvenement', 'modevent', 'moditem', 'modessai');
 }
 
 Collection = Backbone.Collection.extend {
