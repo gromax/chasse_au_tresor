@@ -22,6 +22,9 @@ class Partage extends Item
     return array(
       'idEvenement' => array( 'def' => "", 'type' => 'integer'),  // id de l'événement
       'idRedacteur' => array( 'def' => "", 'type'=> 'integer'),  // id du rédacteur
+      'modevent' => array( 'def' => false, 'type'=> 'boolean'),  // id du rédacteur
+      'moditem' => array( 'def' => false, 'type'=> 'boolean'),  // id du rédacteur
+      'modessai' => array( 'def' => false, 'type'=> 'boolean'),  // id du rédacteur
       );
   }
 
@@ -50,15 +53,15 @@ class Partage extends Item
     try {
       if (isset($options['redacteur']))
       {
-        return DB::query("SELECT p.id, p.idRedacteur, p.idEvenement, u.nom FROM (".PREFIX_BDD."partages p JOIN ".PREFIX_BDD."users u ON p.idRedacteur = u.id) WHERE p.idRedacteur=%i", $options['redacteur']);
+        return DB::query("SELECT p.id, p.idRedacteur, p.idEvenement, p.moditem, p.modevent, p.modessai, u.nom FROM (".PREFIX_BDD."partages p JOIN ".PREFIX_BDD."users u ON p.idRedacteur = u.id) WHERE p.idRedacteur=%i", $options['redacteur']);
       }
       elseif (isset($options['evenement']))
       {
-        return DB::query("SELECT p.id, p.idRedacteur, p.idEvenement, u.nom FROM (".PREFIX_BDD."partages p JOIN ".PREFIX_BDD."users u ON p.idRedacteur = u.id) WHERE p.idEvenement=%i", $options['evenement']);
+        return DB::query("SELECT p.id, p.idRedacteur, p.idEvenement, p.moditem, p.modevent, p.modessai, u.nom FROM (".PREFIX_BDD."partages p JOIN ".PREFIX_BDD."users u ON p.idRedacteur = u.id) WHERE p.idEvenement=%i", $options['evenement']);
       }
       elseif (isset($options['root']))
       {
-        return DB::query("SELECT p.id, p.idRedacteur, p.idEvenement, u.nom FROM (".PREFIX_BDD."partages p JOIN ".PREFIX_BDD."users u ON p.idRedacteur = u.id)");
+        return DB::query("SELECT p.id, p.idRedacteur, p.idEvenement, p.moditem, p.modevent, p.modessai, u.nom FROM (".PREFIX_BDD."partages p JOIN ".PREFIX_BDD."users u ON p.idRedacteur = u.id)");
       }
       else
       {
