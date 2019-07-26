@@ -25,6 +25,16 @@ Controller = MnObject.extend {
         partagesView: true
       }
 
+      listView.on "item:moditem:toggle", (childView)->
+        childView.trigger "toggle:attribute", "moditem"
+
+      listView.on "item:modevent:toggle", (childView)->
+        childView.trigger "toggle:attribute", "modevent"
+
+      listView.on "item:modessai:toggle", (childView)->
+        childView.trigger "toggle:attribute", "modessai"
+
+
       entete.on "navigate:parent", ->
         app.trigger "evenements:list"
 
