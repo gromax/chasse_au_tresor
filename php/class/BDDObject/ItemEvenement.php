@@ -52,17 +52,23 @@ final class ItemEvenement extends Item
     require_once BDD_CONFIG;
     try {
       if (isset($options['redacteur']))
+      {
         // rédacteur
-        return DB::query("SELECT i.id, i.idEvenement, i.subItemsData, i.tagCle, i.regexCle, i.pts, i.prerequis, i.suite FROM ((".PREFIX_BDD."itemsEvenement i JOIN ".PREFIX_BDD."evenements e ON e.id = i.idEvenement) LEFT JOIN ".PREFIX_BDD."partages s ON s.idEvenement=i.idEvenement) WHERE e.idProprietaire=%i OR NOT s.id IS NULL", $options['redacteur']);
+        $idRedacteur = $options['redacteur'];
+        return DB::query("SELECT i.id, i.idEvenement, i.subItemsData, i.tagCle, i.regexCle, i.pts, i.prerequis, i.suite FROM ((".PREFIX_BDD."itemsEvenement i JOIN ".PREFIX_BDD."evenements e ON e.id = i.idEvenement) LEFT JOIN ".PREFIX_BDD."partages s ON s.idEvenement=i.idEvenement  AND s.idRedacteur=%i) WHERE e.idProprietaire=%i OR NOT s.id IS NULL", $idRedacteur, $idRedacteur);
+      }
       elseif (isset($options['evenement']))
+      {
         return DB::query("SELECT id, idEvenement, subItemsData, tagCle, regexCle, pts, prerequis, suite FROM ".PREFIX_BDD."itemsEvenement WHERE idEvenement=%i", $options['evenement']);
+      }
       elseif (isset($options['root']))
+      {
         return DB::query("SELECT id, idEvenement, subItemsData, tagCle, regexCle, pts, prerequis, suite FROM ".PREFIX_BDD."itemsEvenement");
+      }
       else
       {
         return array();
       }
-
     } catch(MeekroDBException $e) {
       if (DEV) return array('error'=>true, 'message'=>"#ItemEvenement/getList : ".$e->getMessage());
       return array('error'=>true, 'message'=>'Erreur BDD');

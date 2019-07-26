@@ -61,7 +61,8 @@ final class Partie extends Item
       }
       elseif (isset($options['redacteur']))
       {
-        return DB::query("SELECT p.id, p.idEvenement, e.titre AS titreEvenement, p.idProprietaire, j.nom AS nomProprietaire, p.dateDebut, MAX(essai.date) AS dateFin, SUM(COALESCE(ie.pts,e.ptsEchecs)) AS score, e.actif, (NOT s.id IS NULL) AS isshare FROM (((((".PREFIX_BDD."parties p JOIN ".PREFIX_BDD."users j ON j.id=p.idProprietaire) JOIN ".PREFIX_BDD."evenements e ON e.id=p.idEvenement) LEFT JOIN ".PREFIX_BDD."essaisJoueur essai ON essai.idPartie=p.id) LEFT JOIN ".PREFIX_BDD."itemsEvenement ie ON ie.id=essai.idItem) LEFT JOIN ".PREFIX_BDD."partages s ON s.idEvenement=p.idEvenement) WHERE e.idProprietaire=%i or NOT s.id IS NULL GROUP BY p.id", $options['redacteur']);
+        $idRedacteur = $options['redacteur'];
+        return DB::query("SELECT p.id, p.idEvenement, e.titre AS titreEvenement, p.idProprietaire, j.nom AS nomProprietaire, p.dateDebut, MAX(essai.date) AS dateFin, SUM(COALESCE(ie.pts,e.ptsEchecs)) AS score, e.actif, (NOT s.id IS NULL) AS isshare FROM (((((".PREFIX_BDD."parties p JOIN ".PREFIX_BDD."users j ON j.id=p.idProprietaire) JOIN ".PREFIX_BDD."evenements e ON e.id=p.idEvenement) LEFT JOIN ".PREFIX_BDD."essaisJoueur essai ON essai.idPartie=p.id) LEFT JOIN ".PREFIX_BDD."itemsEvenement ie ON ie.id=essai.idItem) LEFT JOIN ".PREFIX_BDD."partages s ON s.idEvenement=p.idEvenement AND s.idRedacteur=%i) WHERE e.idProprietaire=%i or NOT s.id IS NULL GROUP BY p.id", $idRedacteur, $idRedacteur);
       }
       elseif (isset($options['evenement']))
       {
