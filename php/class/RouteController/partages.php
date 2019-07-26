@@ -169,15 +169,14 @@ class partages
         if ($validation===true)
         {
             $id = $item->update($data);
+            if ($id!==null)
+            {
+                $user = $item->getRedacteur();
+                $out = $item->getValues();
+                $out["nom"] = $user->getValues()["nom"];
+                return $out;
+            }
         }
-        if ($id!==null)
-        {
-            $user = $item->getRedacteur();
-            $out = $item->getValues();
-            $out["nom"] = $user->getValues()["nom"];
-            return $out;
-        }
-
         EC::set_error_code(501);
         return false;
     }
