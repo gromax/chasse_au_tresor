@@ -1,5 +1,11 @@
 {
   "require": {
-    "sergeytsalkov/meekrodb": "*"
+    "sergeytsalkov/meekrodb": "*",
+    "phpmailer/phpmailer": "^6.2"
+  },
+  "extra": {
+    "installer-paths": {
+        "phpmailer/phpmailer": ["php/class"]
+    }
   }
 }
