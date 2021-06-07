@@ -122,7 +122,7 @@ class User extends Item
   public function addHashForPasswordLost()
   {
     $hash = bin2hex(random_bytes(20));
-    $values = array( "hash"=>$hash, "idProprietaire"=>$this->id, "type"=>JOUEUR_PWD_LOST);
+    $values = array( "hash"=>$hash, "idProprietaire"=>$this->id, "type"=>USER_PWD_LOST);
     require_once BDD_CONFIG;
     try {
       DB::insert(PREFIX_BDD."hashs", $values);
