@@ -32,7 +32,7 @@ SignView = View.extend {
     if emailRegex.test(email)
       @trigger("forgottenButton:click", email, adm)
     else
-      @onFormDataInvalid [{ success:false, message:"L'adresse e-mail n'est pas valide !" }]
+      @trigger("form:data:invalid", [{ success:false, message:"L'adresse e-mail n'est pas valide !" }])
 
   templateContext: ->
     {
