@@ -15,6 +15,7 @@ Controller = MnObject.extend {
       id: app.Auth.get("id")
       nom: app.Auth.get("nom")
       pwd: app.Auth.get("pwd")
+      isredac: app.Auth.get("rank") is "redacteur"
     }
 
     view = new EditUserView {
