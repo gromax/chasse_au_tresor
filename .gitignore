@@ -35,4 +35,4 @@ up/
 # Output folder.
 public/
 vendor/
-
+/package-lock.json
