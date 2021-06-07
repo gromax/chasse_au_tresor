@@ -68,6 +68,10 @@
 					default:
 						header('HTTP/1.0 200 OK');
 				}
+				//$sid = session_id();
+				//if ($sid!==False){
+				//	header("Set-Cookie: sid=$sid; SameSite=Strict; Secure");
+				//}
 			} else {
 				header('HTTP/1.0 302 Found');
 				header("Location: $redirect");
