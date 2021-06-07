@@ -44,6 +44,7 @@ final class SessionController
 		$this->rename ();
 
 		// Puis on la démarre
+		ini_set("session.cookie_secure", 1);
 		session_start ();
 		$this->session_started = true;
 
@@ -65,7 +66,7 @@ final class SessionController
 
 		// On détruit la session
 		session_destroy ();
-		setcookie (session_name () , '');
+		//setcookie (session_name () , '');
 
 		// On met $session_started à false
 		$this->session_started = false;
@@ -85,7 +86,7 @@ final class SessionController
 	{
 		if (session_name () == $this->session_name) return;
 
-		setcookie (session_name (), '');
+		//setcookie (session_name (), '');
 		session_name ($this->session_name);
 	}
 
